@@ -1,0 +1,148 @@
+            </div> <!-- Close page-content -->
+        </main> <!-- Close main-panel -->
+    </div> <!-- Close app-container -->
+
+    <!-- Persistent Music Player Bar -->
+    <footer id="player-bar">
+        <div class="player-bar-container">
+            <div class="player-controls">
+                <button class="control-btn" id="player-btn-prev" title="Previous"><i class="ti-control-skip-backward"></i></button>
+                <button class="control-btn play-btn" id="player-btn-play" title="Play/Pause">
+                    <i class="ti-control-play" id="play-icon"></i>
+                    <i class="ti-control-pause" id="pause-icon" style="display: none;"></i>
+                </button>
+                <button class="control-btn" id="player-btn-next" title="Next"><i class="ti-control-skip-forward"></i></button>
+                <button class="control-btn" id="player-btn-shuffle" title="Shuffle"><i class="ti-control-shuffle"></i></button>
+                <button class="control-btn" id="player-btn-loop" title="Repeat"><i class="ti-loop"></i></button>
+                
+                <span class="player-time" id="player-time-current">0:00</span>
+                <div class="player-timeline" id="player-timeline-slider">
+                    <div class="player-progress" id="player-progress-bar"></div>
+                </div>
+                <span class="player-time" id="player-time-duration">0:00</span>
+                
+                <div class="volume-container">
+                    <button class="control-btn" id="player-btn-volume" title="Volume"><i class="ti-volume"></i></button>
+                    <input type="range" class="volume-slider" id="player-volume-slider" min="0" max="1" step="0.01" value="0.8">
+                </div>
+            </div>
+
+            <!-- Current Song Info -->
+            <div class="current-song-details" id="player-song-details" style="display: none;">
+                <img src="" alt="" class="player-song-img" id="player-song-thumbnail">
+                <div class="player-song-meta">
+                    <span class="player-song-title" id="player-song-title">Song Name</span>
+                    <a href="" class="player-song-artist" id="player-song-artist">Artist</a>
+                </div>
+                
+                <% if (userID) { %>
+                    <div class="player-song-actions">
+                        <button class="action-btn" id="player-btn-like" data-id="">
+                            <i class="ti-heart"></i>
+                        </button>
+                        
+                        <div class="player-queue-wrapper">
+                            <button class="action-btn" id="player-btn-queue" title="Queue">
+                                <i class="ti-menu-alt"></i>
+                            </button>
+                            <div class="queue-dropdown" id="queue-dropdown-panel">
+                                <div class="queue-dropdown-header">
+                                    <h4>Next Up</h4>
+                                    <button id="close-queue-btn">&times;</button>
+                                </div>
+                                <ul class="queue-dropdown-list" id="queue-list-items">
+                                    <!-- Populated via JS -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Audio element -->
+    <audio id="player-audio" preload="metadata"></audio>
+
+    <!-- Create Playlist Modal -->
+    <div class="modal-overlay" id="playlist-modal-overlay">
+        <div class="playlist-modal">
+            <div class="playlist-modal-header">
+                <h3>Create Playlist</h3>
+                <button class="modal-close-btn" id="playlist-modal-close-btn">&times;</button>
+            </div>
+            <form id="playlist-create-form">
+                <div class="modal-form-group">
+                    <label for="new-playlist-name">Name</label>
+                    <input type="text" id="new-playlist-name" name="name" placeholder="My Awesome Playlist" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="playlist-modal-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn-confirm">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dropdown for adding songs to playlists -->
+    <div class="playlist-select-dropdown" id="playlist-select-dropdown">
+        <div class="dropdown-header">Add to Playlist</div>
+        <ul id="playlist-select-options">
+            <!-- Dynamic user playlists options -->
+        </ul>
+    </div>
+
+    <!-- Client-side Scripts -->
+    <script src="/js/player.js"></script>
+    <script>
+        // Create Playlist Modal Controls
+        const createPlaylistBtn = document.getElementById('btn-create-playlist');
+        const modalOverlay = document.getElementById('playlist-modal-overlay');
+        const modalCloseBtn = document.getElementById('playlist-modal-close-btn');
+        const modalCancelBtn = document.getElementById('playlist-modal-cancel-btn');
+        const playlistCreateForm = document.getElementById('playlist-create-form');
+
+        if (createPlaylistBtn) {
+            createPlaylistBtn.addEventListener('click', () => {
+                modalOverlay.classList.add('active');
+            });
+        }
+
+        const closeModal = () => {
+            modalOverlay.classList.remove('active');
+            playlistCreateForm.reset();
+        };
+
+        if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+        if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
+
+        if (playlistCreateForm) {
+            playlistCreateForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('new-playlist-name').value;
+                try {
+                    const response = await fetch('/playlists/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ name })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        closeModal();
+                        // Reload or dynamically add to list
+                        window.location.reload();
+                    } else {
+                        alert(data.error || 'Failed to create playlist');
+                    }
+                } catch (err) {
+                    console.error('Error creating playlist:', err);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

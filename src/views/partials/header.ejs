@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Music Streaming Platform' %></title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icon Library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <!-- Style Sheet -->
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i class="ti-music-alt"></i>
+                <span>Antigravity Music</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="/" class="<%= typeof title !== 'undefined' && title === 'Home' ? 'active' : '' %>">
+                            <i class="ti-home"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/search" class="<%= typeof title !== 'undefined' && title.startsWith('Search') ? 'active' : '' %>">
+                            <i class="ti-search"></i>
+                            <span>Search</span>
+                        </a>
+                    </li>
+                    <% if (userID) { %>
+                        <li>
+                            <a href="/favorites" class="<%= typeof title !== 'undefined' && title === 'Favorite Songs' ? 'active' : '' %>">
+                                <i class="ti-heart"></i>
+                                <span>Favorites</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/history" class="<%= typeof title !== 'undefined' && title === 'Listening History' ? 'active' : '' %>">
+                                <i class="ti-time"></i>
+                                <span>History</span>
+                            </a>
+                        </li>
+                        <% if (user && (user.role === 'artist' || user.role === 'admin')) { %>
+                            <li>
+                                <a href="/songs/upload" class="<%= typeof title !== 'undefined' && title === 'Upload Song' ? 'active' : '' %>">
+                                    <i class="ti-upload"></i>
+                                    <span>Upload Track</span>
+                                </a>
+                            </li>
+                        <% } %>
+                    <% } %>
+                </ul>
+            </nav>
+
+            <div class="sidebar-playlists">
+                <div class="playlists-header">
+                    <h3>PLAYLISTS</h3>
+                    <% if (userID) { %>
+                        <button type="button" id="btn-create-playlist" title="Create Playlist">
+                            <i class="ti-plus"></i>
+                        </button>
+                    <% } %>
+                </div>
+                
+                <% if (userID) { %>
+                    <!-- Playlist list -->
+                    <ul class="playlists-list" id="playlists-sidebar-list">
+                        <% if (typeof userPlaylists !== 'undefined' && userPlaylists.length > 0) { %>
+                            <% userPlaylists.forEach(function(playlist) { %>
+                                <li>
+                                    <a href="/playlists/<%= playlist._id %>" class="<%= typeof playlistData !== 'undefined' && playlistData._id.toString() === playlist._id.toString() ? 'active' : '' %>">
+                                        <i class="ti-list"></i>
+                                        <span><%= playlist.name %></span>
+                                    </a>
+                                </li>
+                            <% }); %>
+                        <% } else { %>
+                            <li class="empty-playlists-msg">No playlists created</li>
+                        <% } %>
+                    </ul>
+                <% } else { %>
+                    <p class="playlists-login-prompt"><a href="/login">Log in</a> to create playlists.</p>
+                <% } %>
+            </div>
+        </aside>
+
+        <!-- Main Content Panel -->
+        <main class="main-panel">
+            <!-- Top Navbar -->
+            <header class="top-nav">
+                <div class="nav-left">
+                    <button class="nav-arrow-btn" onclick="history.back()" title="Go Back">
+                        <i class="ti-angle-left"></i>
+                    </button>
+                    <button class="nav-arrow-btn" onclick="history.forward()" title="Go Forward">
+                        <i class="ti-angle-right"></i>
+                    </button>
+                    
+                    <form action="/search" method="GET" class="search-bar-form">
+                        <div class="search-input-wrapper">
+                            <i class="ti-search"></i>
+                            <input type="text" name="q" placeholder="Search for songs, artists, or genres..." value="<%= typeof query !== 'undefined' ? query : '' %>">
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="nav-right">
+                    <% if (userID && user) { %>
+                        <div class="user-profile-menu">
+                            <a href="/profile/<%= userID %>" class="user-badge">
+                                <img src="<%= user.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-avatar.png' %>" alt="<%= user.username %>" class="user-avatar-small">
+                                <span><%= user.username %></span>
+                            </a>
+                            <a href="/logout" class="btn-logout" title="Sign Out">
+                                <i class="ti-power-off"></i>
+                            </a>
+                        </div>
+                    <% } else { %>
+                        <div class="auth-buttons">
+                            <a href="/register" class="btn-register">Sign up</a>
+                            <a href="/login" class="btn-login">Log in</a>
+                        </div>
+                    <% } %>
+                </div>
+            </header>
+
+            <!-- Page Body Content Area -->
+            <div class="page-content">

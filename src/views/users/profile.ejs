@@ -1,0 +1,140 @@
+<%- include('../partials/header') %>
+
+<div class="profile-container">
+    <!-- Header Background Cover -->
+    <div class="profile-header-banner" style="background-image: url('<%= profileUser.background?.url || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1974&auto=format&fit=crop' %>')">
+        <% if (isOwnProfile) { %>
+            <form action="/profile/header" method="POST" enctype="multipart/form-data" class="header-upload-form" id="header-form">
+                <label for="header-file-input" class="btn-change-header" title="Change Banner">
+                    <i class="ti-camera"></i> Update Banner
+                </label>
+                <input type="file" id="header-file-input" name="image" accept="image/*" style="display: none;" onchange="document.getElementById('header-form').submit()">
+            </form>
+        <% } %>
+        
+        <div class="profile-header-info">
+            <div class="profile-avatar-wrapper">
+                <img src="<%= profileUser.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-avatar.png' %>" alt="<%= profileUser.username %>" class="profile-avatar">
+                
+                <% if (isOwnProfile) { %>
+                    <form action="/profile/avatar" method="POST" enctype="multipart/form-data" class="avatar-upload-form" id="avatar-form">
+                        <label for="avatar-file-input" class="avatar-upload-overlay" title="Change Avatar">
+                            <i class="ti-camera"></i>
+                        </label>
+                        <input type="file" id="avatar-file-input" name="image" accept="image/*" style="display: none;" onchange="document.getElementById('avatar-form').submit()">
+                    </form>
+                <% } %>
+            </div>
+            
+            <div class="profile-meta">
+                <span class="profile-role"><%= profileUser.role.toUpperCase() %></span>
+                <h1 class="profile-username"><%= profileUser.username %></h1>
+                
+                <div class="profile-stats">
+                    <span id="stat-tracks"><strong><%= profileUser.tracksCount || 0 %></strong> Tracks</span>
+                    <span id="stat-followers"><strong><%= profileUser.followerCount || 0 %></strong> Followers</span>
+                    <span id="stat-following"><strong><%= profileUser.followingCount || 0 %></strong> Following</span>
+                </div>
+            </div>
+            
+            <% if (!isOwnProfile && userID) { %>
+                <div class="profile-actions">
+                    <button class="btn-profile-follow <%= profileUser.isFollowing ? 'following' : 'follow' %>" onclick="toggleFollow('<%= profileUser._id %>', this)">
+                        <%= profileUser.isFollowing ? 'Following' : 'Follow' %>
+                    </button>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Uploaded Songs List -->
+    <div class="profile-content">
+        <h2 class="content-title">Uploaded Songs</h2>
+        
+        <div class="songs-list-container">
+            <% if (tracks && tracks.length > 0) { %>
+                <div class="songs-table">
+                    <div class="songs-table-header">
+                        <div class="col-index">#</div>
+                        <div class="col-title">Title</div>
+                        <div class="col-genre">Genre</div>
+                        <div class="col-plays"><i class="ti-headphone"></i></div>
+                        <div class="col-actions"></div>
+                    </div>
+                    
+                    <% tracks.forEach(function(song, index) { %>
+                        <div class="song-row" id="song-row-<%= song._id %>" data-id="<%= song._id %>">
+                            <div class="col-index">
+                                <span class="row-num"><%= index + 1 %></span>
+                                <button class="row-play-btn" onclick="playSong('<%= song._id %>')" title="Play">
+                                    <i class="ti-control-play"></i>
+                                </button>
+                            </div>
+                            <div class="col-title">
+                                <img src="<%= song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png' %>" alt="<%= song.title %>" class="song-row-img">
+                                <div class="song-row-info">
+                                    <div class="song-row-title"><%= song.title %></div>
+                                    <span class="song-row-artist"><%= song.artist %></span>
+                                </div>
+                            </div>
+                            <div class="col-genre"><%= song.genre || 'Unknown' %></div>
+                            <div class="col-plays"><%= song.playCount || 0 %></div>
+                            <div class="col-actions">
+                                <% if (userID) { %>
+                                    <button class="action-icon-btn like-btn <%= song.liked ? 'liked' : '' %>" onclick="toggleLike('<%= song._id %>', this)" title="Like">
+                                        <i class="ti-heart"></i>
+                                    </button>
+                                    <button class="action-icon-btn opt-btn" onclick="showAddToPlaylistMenu(event, '<%= song._id %>')" title="Add to Playlist">
+                                        <i class="ti-more-alt"></i>
+                                    </button>
+                                    
+                                    <% if (isOwnProfile || (user && user.role === 'admin')) { %>
+                                        <button class="action-icon-btn delete-btn" onclick="deleteSong('<%= song._id %>')" title="Delete Song">
+                                            <i class="ti-trash"></i>
+                                        </button>
+                                    <% } %>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% else { %>
+                <div class="empty-profile-tracks">
+                    <i class="ti-music-alt"></i>
+                    <p>No tracks uploaded yet.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function deleteSong(songId) {
+        if (!confirm('Are you sure you want to delete this song? This action cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/songs/${songId}`, {
+                method: 'DELETE'
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                const row = document.getElementById(`song-row-${songId}`);
+                if (row) {
+                    row.remove();
+                }
+                alert('Song deleted successfully!');
+                window.location.reload();
+            } else {
+                alert(data.error || 'Failed to delete song');
+            }
+        } catch (err) {
+            console.error('Error deleting song:', err);
+            alert('An error occurred while deleting the song.');
+        }
+    }
+</script>
+
+<%- include('../partials/footer') %>

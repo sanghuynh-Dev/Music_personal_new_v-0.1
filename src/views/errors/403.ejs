@@ -1,0 +1,10 @@
+<%- include('../partials/header') %>
+
+<div class="error-page-container" style="text-align: center; padding: 60px 20px;">
+    <h1 style="font-size: 72px; color: #e74c3c; margin-bottom: 20px;">403</h1>
+    <h2 style="font-size: 24px; margin-bottom: 16px;">Access Forbidden</h2>
+    <p style="color: var(--secondary-text); margin-bottom: 30px;"><%= typeof message !== 'undefined' ? message : 'You do not have permission to access this resource.' %></p>
+    <a href="/" class="btn-login" style="display: inline-block;">Go back home</a>
+</div>
+
+<%- include('../partials/footer') %>

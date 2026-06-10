@@ -1,0 +1,77 @@
+<%- include('../partials/header') %>
+
+<div class="upload-container">
+    <div class="form-wrapper">
+        <h2 class="form-title">Upload a New Track</h2>
+        <p class="form-subtitle">Share your music with the world. Audio and cover image files are required.</p>
+        
+        <form action="/songs/upload" method="POST" enctype="multipart/form-data" class="upload-form">
+            <div class="form-grid">
+                <div class="form-left-col">
+                    <div class="form-field-group">
+                        <label for="title">Song Title</label>
+                        <input type="text" id="title" name="title" placeholder="Enter song name" required>
+                    </div>
+
+                    <div class="form-field-group">
+                        <label for="artist">Artist Name</label>
+                        <input type="text" id="artist" name="artist" placeholder="Enter artist name" required>
+                    </div>
+
+                    <div class="form-field-group">
+                        <label for="genre">Genre</label>
+                        <input type="text" id="genre" name="genre" placeholder="e.g. Pop, Rock, Jazz, Hip Hop">
+                    </div>
+
+                    <div class="form-field-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4" placeholder="Tell us about your track..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-right-col">
+                    <div class="file-upload-box" id="audio-file-box">
+                        <label>Audio File (MP3/WAV)</label>
+                        <div class="file-drop-zone">
+                            <i class="ti-music-alt"></i>
+                            <span class="file-zone-text">Click to browse audio file</span>
+                            <input type="file" id="audio-file" name="file" accept="audio/*" required>
+                        </div>
+                        <div class="selected-filename" id="audio-filename">No file selected</div>
+                    </div>
+
+                    <div class="file-upload-box" id="image-file-box">
+                        <label>Cover Art (Image)</label>
+                        <div class="file-drop-zone">
+                            <i class="ti-image"></i>
+                            <span class="file-zone-text">Click to browse cover image</span>
+                            <input type="file" id="image-file" name="image" accept="image/*" required>
+                        </div>
+                        <div class="selected-filename" id="image-filename">No file selected</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-submit-wrapper">
+                <button type="submit" class="btn-submit-track">Upload Song</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Show selected filenames dynamically
+    const audioInput = document.getElementById('audio-file');
+    const audioName = document.getElementById('audio-filename');
+    audioInput.addEventListener('change', () => {
+        audioName.innerText = audioInput.files[0] ? audioInput.files[0].name : 'No file selected';
+    });
+
+    const imageInput = document.getElementById('image-file');
+    const imageName = document.getElementById('image-filename');
+    imageInput.addEventListener('change', () => {
+        imageName.innerText = imageInput.files[0] ? imageInput.files[0].name : 'No file selected';
+    });
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Antigravity Music</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body class="auth-body">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <i class="ti-music-alt"></i>
+            <h1>Antigravity Music</h1>
+        </div>
+        
+        <h2>Create an account</h2>
+        
+        <form id="register-form">
+            <div class="auth-form-group">
+                <input type="text" id="username" name="username" placeholder="Username" required>
+                <div class="error-msg" id="error-username"></div>
+            </div>
+
+            <div class="auth-form-group">
+                <input type="email" id="email" name="email" placeholder="Email (must end with @gmail.com)" required>
+                <div class="error-msg" id="error-email"></div>
+            </div>
+            
+            <div class="auth-form-group">
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <div class="error-msg" id="error-password"></div>
+            </div>
+            
+            <button type="submit" class="auth-submit-btn">Register</button>
+        </form>
+        
+        <p class="auth-switch-prompt">
+            Already have an account? <a href="/login">Sign in here</a>.
+        </p>
+    </div>
+
+    <script>
+        const registerForm = document.getElementById('register-form');
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('error-email');
+
+        // Real-time email validation on blur (as in the reference project)
+        emailInput.addEventListener('blur', async () => {
+            const email = emailInput.value;
+            if (!email) return;
+
+            if (!email.endsWith('@gmail.com')) {
+                emailError.innerText = 'Please enter a valid email address (must end with @gmail.com).';
+                return;
+            }
+
+            try {
+                const response = await fetch('/register/check-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await response.json();
+                if (!data.success && data.warning) {
+                    emailError.innerText = data.warning.email;
+                } else {
+                    emailError.innerText = '';
+                }
+            } catch (err) {
+                console.error('Error checking email:', err);
+            }
+        });
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Clear errors
+            emailError.innerText = '';
+            document.getElementById('error-username').innerText = '';
+            document.getElementById('error-password').innerText = '';
+
+            const username = document.getElementById('username').value;
+            const email = emailInput.value;
+            const password = document.getElementById('password').value;
+
+            if (!email.endsWith('@gmail.com')) {
+                emailError.innerText = 'Please enter a valid Gmail address.';
+                return;
+            }
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Registration successful! Please log in.');
+                    window.location.href = '/login';
+                } else if (data.warning) {
+                    if (data.warning.email) {
+                        emailError.innerText = data.warning.email;
+                    }
+                }
+            } catch (err) {
+                console.error('Error registering:', err);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

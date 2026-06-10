@@ -1,0 +1,159 @@
+<%- include('../partials/header') %>
+
+<div class="playlist-detail-container">
+    <div class="page-header-simple">
+        <div class="header-icon-circle playlist-icon">
+            <i class="ti-list"></i>
+        </div>
+        <div class="header-text-meta">
+            <span>PLAYLIST</span>
+            <h1><%= playlist.name %></h1>
+            <p>Created by <a href="/profile/<%= playlist.user._id %>"><%= playlist.user.username %></a> &bull; <%= songs ? songs.length : 0 %> tracks</p>
+        </div>
+        
+        <% if (isOwner) { %>
+            <div class="playlist-header-actions">
+                <button class="btn-delete-playlist" onclick="deletePlaylist('<%= playlist._id %>')">
+                    <i class="ti-trash"></i> Delete Playlist
+                </button>
+            </div>
+        <% } %>
+    </div>
+
+    <div class="profile-content">
+        <% if (songs && songs.length > 0) { %>
+            <div class="playlist-play-row">
+                <button class="btn-play-playlist" onclick="playPlaylist('<%= playlist._id %>')">
+                    <i class="ti-control-play"></i> Play
+                </button>
+            </div>
+        <% } %>
+
+        <div class="songs-list-container">
+            <% if (songs && songs.length > 0) { %>
+                <div class="songs-table">
+                    <div class="songs-table-header">
+                        <div class="col-index">#</div>
+                        <div class="col-title">Title</div>
+                        <div class="col-genre">Genre</div>
+                        <div class="col-plays"><i class="ti-headphone"></i></div>
+                        <div class="col-actions"></div>
+                    </div>
+                    
+                    <% songs.forEach(function(song, index) { %>
+                        <div class="song-row" id="song-row-<%= song._id %>" data-id="<%= song._id %>">
+                            <div class="col-index">
+                                <span class="row-num"><%= index + 1 %></span>
+                                <button class="row-play-btn" onclick="playSong('<%= song._id %>')" title="Play">
+                                    <i class="ti-control-play"></i>
+                                </button>
+                            </div>
+                            <div class="col-title">
+                                <img src="<%= song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png' %>" alt="<%= song.title %>" class="song-row-img">
+                                <div class="song-row-info">
+                                    <div class="song-row-title"><%= song.title %></div>
+                                    <a href="/profile/<%= song.uploadedBy._id %>" class="song-row-artist"><%= song.artist %></a>
+                                </div>
+                            </div>
+                            <div class="col-genre"><%= song.genre || 'Unknown' %></div>
+                            <div class="col-plays"><%= song.playCount || 0 %></div>
+                            <div class="col-actions">
+                                <% if (userID) { %>
+                                    <button class="action-icon-btn like-btn <%= song.liked ? 'liked' : '' %>" onclick="toggleLike('<%= song._id %>', this)" title="Like">
+                                        <i class="ti-heart"></i>
+                                    </button>
+                                    
+                                    <% if (isOwner) { %>
+                                        <button class="action-icon-btn remove-btn" onclick="removeSongFromPlaylist('<%= playlist._id %>', '<%= song._id %>')" title="Remove from Playlist">
+                                            <i class="ti-close"></i>
+                                        </button>
+                                    <% } %>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="empty-playlist">
+                    <i class="ti-music-alt"></i>
+                    <p>This playlist has no songs yet. Go check out the <a href="/">explore</a> page to add some!</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function removeSongFromPlaylist(playlistId, songId) {
+        if (!confirm('Are you sure you want to remove this song from the playlist?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/playlists/${playlistId}/remove-song`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ songId })
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                const row = document.getElementById(`song-row-${songId}`);
+                if (row) {
+                    row.remove();
+                }
+                // Reload to recalculate indices and stats
+                window.location.reload();
+            } else {
+                alert(data.error || 'Failed to remove song');
+            }
+        } catch (err) {
+            console.error('Error removing song from playlist:', err);
+            alert('An error occurred.');
+        }
+    }
+
+    async function deletePlaylist(playlistId) {
+        if (!confirm('Are you sure you want to delete this playlist? This action cannot be undone.')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/playlists/${playlistId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Playlist deleted successfully!');
+                window.location.href = '/';
+            } else {
+                alert(data.error || 'Failed to delete playlist');
+            }
+        } catch (err) {
+            console.error('Error deleting playlist:', err);
+            alert('An error occurred.');
+        }
+    }
+
+    // Play all songs inside this playlist
+    function playPlaylist(playlistId) {
+        const rows = document.querySelectorAll('.song-row');
+        if (rows.length === 0) return;
+        
+        const firstSongId = rows[0].getAttribute('data-id');
+        
+        // Fetch playlist songs to set custom queue in player
+        const songIds = Array.from(rows).map(row => row.getAttribute('data-id'));
+        
+        // Pass playlist ids to play
+        playSong(firstSongId, songIds);
+    }
+</script>
+
+<%- include('../partials/footer') %>
