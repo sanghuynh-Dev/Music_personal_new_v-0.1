@@ -1,0 +1,145 @@
+<%- include('../partials/header') %>
+
+    <div class="artist-dashboard-container">
+        <div class="dashboard-header-simple"
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+            <div>
+                <span class="detail-label">CREATOR PANEL</span>
+                <h1 style="font-size: 36px; font-weight: 800;">Welcome back, <%= user.username %>!</h1>
+                <p style="color: var(--secondary-text); font-size: 14px;">Manage your tracks and view real-time audience
+                    statistics.</p>
+            </div>
+
+            <a href="/songs/upload" class="btn-play-playlist" style="text-decoration: none;">
+                <i class="ti-upload"></i> Upload New Track
+            </a>
+        </div>
+
+        <!-- Stats Cards Row -->
+        <div class="stats-cards-grid"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px;">
+            <div class="stat-card"
+                style="background-color: var(--secondary-bg); padding: 24px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 20px;">
+                <div class="stat-icon-circle"
+                    style="width: 56px; height: 56px; border-radius: 50%; background-color: rgba(29, 185, 84, 0.1); color: var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                    <i class="ti-music-alt"></i>
+                </div>
+                <div>
+                    <span
+                        style="font-size: 12px; font-weight: 700; color: var(--secondary-text); letter-spacing: 1px; display: block; margin-bottom: 4px;">TOTAL
+                        SONGS</span>
+                    <strong style="font-size: 28px; font-weight: 800; color: var(--text-color);">
+                        <%= stats.totalSongs %>
+                    </strong>
+                </div>
+            </div>
+
+            <div class="stat-card"
+                style="background-color: var(--secondary-bg); padding: 24px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 20px;">
+                <div class="stat-icon-circle"
+                    style="width: 56px; height: 56px; border-radius: 50%; background-color: rgba(52, 152, 219, 0.1); color: #3498db; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                    <i class="ti-headphone"></i>
+                </div>
+                <div>
+                    <span
+                        style="font-size: 12px; font-weight: 700; color: var(--secondary-text); letter-spacing: 1px; display: block; margin-bottom: 4px;">TOTAL
+                        PLAYS</span>
+                    <strong style="font-size: 28px; font-weight: 800; color: var(--text-color);">
+                        <%= stats.totalPlays %>
+                    </strong>
+                </div>
+            </div>
+
+            <div class="stat-card"
+                style="background-color: var(--secondary-bg); padding: 24px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 20px;">
+                <div class="stat-icon-circle"
+                    style="width: 56px; height: 56px; border-radius: 50%; background-color: rgba(241, 196, 15, 0.1); color: #f1c40f; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                    <i class="ti-heart"></i>
+                </div>
+                <div>
+                    <span
+                        style="font-size: 12px; font-weight: 700; color: var(--secondary-text); letter-spacing: 1px; display: block; margin-bottom: 4px;">FOLLOWERS</span>
+                    <strong style="font-size: 28px; font-weight: 800; color: var(--text-color);">
+                        <%= stats.totalFollowers %>
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content split -->
+        <div style="display: flex; gap: 32px; margin-bottom: 32px;">
+            <!-- Left: Top Songs play count distribution graph (CSS) -->
+            <div
+                style="flex: 1.5; background-color: var(--secondary-bg); border-radius: 8px; padding: 24px; border: 1px solid var(--border-color);">
+                <h3 class="panel-title" style="margin-bottom: 20px;">Playcount Distribution (Top Songs)</h3>
+                <div class="bar-chart-container" style="display: flex; flex-direction: column; gap: 16px;">
+                    <% if (topSongs && topSongs.length> 0) { %>
+                        <% const maxPlays=Math.max(...topSongs.map(s=> s.playCount || 1)); %>
+                            <% topSongs.forEach(function(song) { %>
+                                <% const pct=maxPlays> 0 ? ((song.playCount || 0) / maxPlays) * 100 : 0; %>
+                                    <div class="chart-row" style="display: flex; flex-direction: column; gap: 6px;">
+                                        <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                                            <a href="/songs/<%= song._id %>"
+                                                style="font-weight: 700; color: var(--text-color);">
+                                                <%= song.title %>
+                                            </a>
+                                            <span style="color: var(--secondary-text); font-weight: 600;">
+                                                <%= song.playCount || 0 %> plays
+                                            </span>
+                                        </div>
+                                        <div
+                                            style="width: 100%; height: 8px; background-color: var(--hover-bg); border-radius: 4px; overflow: hidden;">
+                                            <div
+                                                style="width: <%= pct %>%; height: 100%; background: linear-gradient(90deg, var(--primary-color), #2ecc71); border-radius: 4px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <p
+                                                style="color: var(--secondary-text); font-size: 14px; text-align: center; padding: 24px 0;">
+                                                No tracks uploaded yet. Start by uploading a track to see metrics!</p>
+                                            <% } %>
+                </div>
+            </div>
+
+            <!-- Right: Recent Uploads list -->
+            <div
+                style="flex: 1; background-color: var(--secondary-bg); border-radius: 8px; padding: 24px; border: 1px solid var(--border-color);">
+                <h3 class="panel-title" style="margin-bottom: 20px;">Recent Uploads</h3>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 16px;">
+                    <% if (recentSongs && recentSongs.length> 0) { %>
+                        <% recentSongs.forEach(function(song) { %>
+                            <li style="display: flex; align-items: center; gap: 12px; justify-content: space-between;">
+                                <a href="/songs/<%= song._id %>"
+                                    style="display: flex; align-items: center; gap: 12px; text-decoration: none; overflow: hidden; flex-grow: 1;">
+                                    <img src="<%= song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png' %>"
+                                        alt="<%= song.title %>"
+                                        style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover; flex-shrink: 0;">
+                                    <div style="overflow: hidden;">
+                                        <strong
+                                            style="font-size: 14px; color: var(--text-color); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                            <%= song.title %>
+                                        </strong>
+                                        <span style="font-size: 11px; color: var(--secondary-text); display: block;">
+                                            <%= new Date(song.createdAt).toLocaleDateString() %>
+                                        </span>
+                                    </div>
+                                </a>
+                                <div style="display: flex; gap: 8px; flex-shrink: 0;">
+                                    <a href="/songs/edit/<%= song._id %>" class="action-icon-btn" title="Edit"
+                                        style="font-size: 14px;"><i class="ti-pencil"></i></a>
+                                </div>
+                            </li>
+                            <% }); %>
+                                <% } else { %>
+                                    <p
+                                        style="color: var(--secondary-text); font-size: 14px; text-align: center; padding: 24px 0;">
+                                        No recent uploads.</p>
+                                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>

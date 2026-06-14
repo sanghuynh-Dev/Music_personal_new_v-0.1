@@ -25,7 +25,7 @@ class SongService {
             _id: { $ne: currentSongId }
         })
         .populate('uploadedBy', 'username')
-        .limit(5)
+        .limit(2)
         .lean();
 
         // Check likes for queue songs
@@ -35,8 +35,8 @@ class SongService {
         }));
 
         // If less than 5, fill with random songs from other uploaders
-        if (queue.length < 5) {
-            const need = 5 - queue.length;
+        if (queue.length < 10) {
+            const need = 10 - queue.length;
             const randomSongs = await Song.aggregate([
                 { $match: { uploadedBy: { $ne: currentSong.uploadedBy._id } } },
                 { $sample: { size: need } }
@@ -62,6 +62,11 @@ class SongService {
 
         // If logged in, save to listening history log (ListeningHistory collection)
         if (userId) {
+            const history = await ListeningHistory.findOne({ user: userId, song: songId });
+            if (history) {
+                await ListeningHistory.updateOne({ user: userId, song: songId }, { $set: { listenedAt: Date.now() } });
+                return;
+            }
             await ListeningHistory.create({
                 user: userId,
                 song: songId

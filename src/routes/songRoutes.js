@@ -28,12 +28,17 @@ router.post(
 // Player queue and song details
 router.get('/queue', songController.getQueue);
 router.get('/info/:id', songController.getSongInfo);
+router.get('/:id', songController.showSongDetail);
 router.post('/:id/play', songController.playMusic);
 
 // Social
 router.post('/:id/like', requireAuth, songController.toggleLike);
 router.post('/:id/comment', requireAuth, songController.addComment);
 router.get('/:id/comments', songController.getComments);
+
+// Edit song
+router.get('/edit/:id', requireAuth, requireRole(['artist', 'admin']), songController.showEditSong);
+router.post('/edit/:id', requireAuth, requireRole(['artist', 'admin']), songController.editSong);
 
 // Delete song
 router.delete('/:id', requireAuth, songController.deleteSong);

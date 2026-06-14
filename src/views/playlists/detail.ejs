@@ -1,6 +1,6 @@
 <%- include('../partials/header') %>
 
-<div class="playlist-detail-container">
+<div class="playlist-detail-container event-chang-icon-js">
     <div class="page-header-simple">
         <div class="header-icon-circle playlist-icon">
             <i class="ti-list"></i>
@@ -23,8 +23,13 @@
     <div class="profile-content">
         <% if (songs && songs.length > 0) { %>
             <div class="playlist-play-row">
-                <button class="btn-play-playlist" onclick="playPlaylist('<%= playlist._id %>')">
-                    <i class="ti-control-play"></i> Play
+                <button class="btn-play-playlist play-list-btn-js" data-id="<%= playlist._id %>" onclick="playPlaylist('<%= playlist._id %>')">
+                    <svg class="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"></path>
+                    </svg>
+                    <svg class="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                        <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
+                    </svg> Play
                 </button>
             </div>
         <% } %>
@@ -44,14 +49,19 @@
                         <div class="song-row" id="song-row-<%= song._id %>" data-id="<%= song._id %>">
                             <div class="col-index">
                                 <span class="row-num"><%= index + 1 %></span>
-                                <button class="row-play-btn" onclick="playSong('<%= song._id %>')" title="Play">
-                                    <i class="ti-control-play"></i>
+                                <button class="row-play-btn play-btn-js" data-id="<%= song._id %>" onclick="playSong('<%= song._id %>')" title="Play">
+                                    <svg class="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M0 5v14l11-7z"></path>
+                                    </svg>
+                                    <svg class="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                                        <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
+                                    </svg>
                                 </button>
                             </div>
                             <div class="col-title">
                                 <img src="<%= song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png' %>" alt="<%= song.title %>" class="song-row-img">
                                 <div class="song-row-info">
-                                    <div class="song-row-title"><%= song.title %></div>
+                                    <a href="/songs/<%= song._id %>" class="song-row-title"><%= song.title %></a>
                                     <a href="/profile/<%= song.uploadedBy._id %>" class="song-row-artist"><%= song.artist %></a>
                                 </div>
                             </div>
@@ -59,7 +69,7 @@
                             <div class="col-plays"><%= song.playCount || 0 %></div>
                             <div class="col-actions">
                                 <% if (userID) { %>
-                                    <button class="action-icon-btn like-btn <%= song.liked ? 'liked' : '' %>" onclick="toggleLike('<%= song._id %>', this)" title="Like">
+                                    <button class="action-icon-btn like-btn <%= song.liked ? 'liked' : '' %>" data-id="<%= song._id %>" onclick="toggleLike('<%= song._id %>', this)" title="Like">
                                         <i class="ti-heart"></i>
                                     </button>
                                     
@@ -152,7 +162,30 @@
         const songIds = Array.from(rows).map(row => row.getAttribute('data-id'));
         
         // Pass playlist ids to play
-        playSong(firstSongId, songIds);
+        playSong(firstSongId, songIds, false, true);
+        updatePlayListButtonUI(playlistId, true);
+    }
+
+    window.updatePlayListButtonUI = function (playListID = null ,isPlaying) {
+        const eventChangeIcon = document.querySelector('.event-chang-icon-js');
+        if(!eventChangeIcon) return;
+
+        const playBtn = eventChangeIcon?.querySelector(`.play-list-btn-js`);
+        
+        if (playListID && isPlaying) {
+            const playIcon = playBtn.querySelector('.icon-play');
+            const pauseIcon = playBtn.querySelector('.icon-pause');
+
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+        } else {
+            const playIcon = playBtn.querySelector('.icon-play');
+            const pauseIcon = playBtn.querySelector('.icon-pause');
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+        }
+
+
     }
 </script>
 

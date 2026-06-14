@@ -1,6 +1,6 @@
 <%- include('../partials/header') %>
 
-<div class="favorites-container">
+<div class="favorites-container event-chang-icon-js">
     <div class="page-header-simple">
         <div class="header-icon-circle">
             <i class="ti-heart"></i>
@@ -28,21 +28,26 @@
                         <div class="song-row" id="song-row-<%= song._id %>" data-id="<%= song._id %>">
                             <div class="col-index">
                                 <span class="row-num"><%= index + 1 %></span>
-                                <button class="row-play-btn" onclick="playSong('<%= song._id %>')" title="Play">
-                                    <i class="ti-control-play"></i>
+                                <button class="row-play-btn play-btn-js" data-id="<%= song._id %>" onclick="playSong('<%= song._id %>')" title="Play">
+                                    <svg class="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M0 5v14l11-7z"></path>
+                                    </svg>
+                                    <svg class="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                                        <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
+                                    </svg>
                                 </button>
                             </div>
                             <div class="col-title">
                                 <img src="<%= song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png' %>" alt="<%= song.title %>" class="song-row-img">
                                 <div class="song-row-info">
-                                    <div class="song-row-title"><%= song.title %></div>
+                                    <a href="/songs/<%= song._id %>" class="song-row-title"><%= song.title %></a>
                                     <a href="/profile/<%= song.uploadedBy._id %>" class="song-row-artist"><%= song.artist %></a>
                                 </div>
                             </div>
                             <div class="col-genre"><%= song.genre || 'Unknown' %></div>
                             <div class="col-plays"><%= song.playCount || 0 %></div>
                             <div class="col-actions">
-                                <button class="action-icon-btn like-btn liked" onclick="toggleLike('<%= song._id %>', this)" title="Unlike">
+                                <button class="action-icon-btn like-btn liked" data-id="<%= song._id %>" onclick="toggleLike('<%= song._id %>', this)" title="Unlike">
                                     <i class="ti-heart"></i>
                                 </button>
                                 <button class="action-icon-btn opt-btn" onclick="showAddToPlaylistMenu(event, '<%= song._id %>')" title="Add to Playlist">

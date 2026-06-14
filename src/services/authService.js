@@ -33,6 +33,10 @@ class AuthService {
             throw new Error('Password is not correct!');
         }
 
+        if (user.status === 'banned') {
+            throw new Error('This account has been banned by the administrator.');
+        }
+
         return user;
     }
 

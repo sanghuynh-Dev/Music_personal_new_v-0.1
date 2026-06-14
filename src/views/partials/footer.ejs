@@ -3,32 +3,40 @@
     </div> <!-- Close app-container -->
 
     <!-- Persistent Music Player Bar -->
-    <footer id="player-bar">
+    <footer id="player-bar" style="display: none;">
         <div class="player-bar-container">
+            <div class="volume-container">
+                <button class="control-btn" id="player-btn-volume" title="Volume"><i class="ti-volume"></i></button>
+                <input type="range" class="volume-slider" id="player-volume-slider" min="0" max="1" step="0.01" value="0.8">
+            </div>
             <div class="player-controls">
-                <button class="control-btn" id="player-btn-prev" title="Previous"><i class="ti-control-skip-backward"></i></button>
-                <button class="control-btn play-btn" id="player-btn-play" title="Play/Pause">
-                    <i class="ti-control-play" id="play-icon"></i>
-                    <i class="ti-control-pause" id="pause-icon" style="display: none;"></i>
-                </button>
-                <button class="control-btn" id="player-btn-next" title="Next"><i class="ti-control-skip-forward"></i></button>
-                <button class="control-btn" id="player-btn-shuffle" title="Shuffle"><i class="ti-control-shuffle"></i></button>
-                <button class="control-btn" id="player-btn-loop" title="Repeat"><i class="ti-loop"></i></button>
-                
-                <span class="player-time" id="player-time-current">0:00</span>
-                <div class="player-timeline" id="player-timeline-slider">
-                    <div class="player-progress" id="player-progress-bar"></div>
+                <div class="player-control-btns">
+                    <button class="control-btn" id="player-btn-shuffle" title="Shuffle"><i class="ti-control-shuffle"></i></button>
+                    <button class="control-btn" id="player-btn-prev" title="Previous"><i class="ti-control-skip-backward"></i></button>
+                    <button class="control-btn play-btn" id="player-btn-play" title="Play/Pause">
+                        <svg class="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z"></path>
+                        </svg>
+                        <svg class="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                            <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
+                        </svg>
+                        <!-- <i class="ti-control-play" id="play-icon"></i>
+                        <i class="ti-control-pause" id="pause-icon" style="display: none;"></i> -->
+                    </button>
+                    <button class="control-btn" id="player-btn-next" title="Next"><i class="ti-control-skip-forward"></i></button>
+                    <button class="control-btn" id="player-btn-loop" title="Repeat"><i class="ti-loop"></i></button>
                 </div>
-                <span class="player-time" id="player-time-duration">0:00</span>
-                
-                <div class="volume-container">
-                    <button class="control-btn" id="player-btn-volume" title="Volume"><i class="ti-volume"></i></button>
-                    <input type="range" class="volume-slider" id="player-volume-slider" min="0" max="1" step="0.01" value="0.8">
+                <div class="player-control-timeline">
+                    <span class="player-time" id="player-time-current">0:00</span>
+                    <div class="player-timeline" id="player-timeline-slider">
+                        <div class="player-progress" id="player-progress-bar"></div>
+                    </div>
+                    <span class="player-time" id="player-time-duration">0:00</span>
                 </div>
             </div>
 
             <!-- Current Song Info -->
-            <div class="current-song-details" id="player-song-details" style="display: none;">
+            <div class="current-song-details" id="player-song-details" >
                 <img src="" alt="" class="player-song-img" id="player-song-thumbnail">
                 <div class="player-song-meta">
                     <span class="player-song-title" id="player-song-title">Song Name</span>

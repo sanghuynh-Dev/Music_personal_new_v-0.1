@@ -18,6 +18,11 @@ const userSchema = new Schema({
         enum: ['user', 'artist', 'admin'],
         default: 'user'
     },
+    status: {
+        type: String,
+        enum: ['active', 'banned'],
+        default: 'active'
+    },
     favoriteSongs: [{ type: Schema.Types.ObjectId, ref: 'Song' }],
     followingArtists: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 }, {

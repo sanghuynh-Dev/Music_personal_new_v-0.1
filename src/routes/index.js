@@ -3,6 +3,8 @@ const songRoutes = require('./songRoutes');
 const userRoutes = require('./userRoutes');
 const playlistRoutes = require('./playlistRoutes');
 const searchRoutes = require('./searchRoutes');
+const artistRoutes = require('./artistRoutes');
+const adminRoutes = require('./adminRoutes');
 const homeController = require('../controllers/homeController');
 
 function route(app) {
@@ -23,6 +25,12 @@ function route(app) {
 
     // Search
     app.use('/search', searchRoutes);
+
+    // Artist Dashboard
+    app.use('/artist', artistRoutes);
+
+    // Admin Panel
+    app.use('/admin', adminRoutes);
 
     // User Profile, Favorites, History, Follows
     app.use('/', userRoutes);

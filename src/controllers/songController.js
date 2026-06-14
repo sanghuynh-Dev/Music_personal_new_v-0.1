@@ -7,7 +7,34 @@ const { cloudinary } = require('../config/cloudinary');
 class SongController {
     async showUpload(req, res) {
         // User must be authenticated, which is checked by middleware.
-        res.render('songs/upload', { title: 'Upload Song' });
+        const user = await User.findById(req.session.userID);
+        res.render('songs/upload', { 
+            title: 'Upload Song',
+            user
+         });
+    }
+
+    async showSongDetail(req, res) {
+        try {
+            const songId = req.params.id;
+            const userId = req.session.userID;
+
+            const song = await songService.getSongById(songId, userId);
+            if (!song) {
+                return res.status(404).render('errors/404', { title: '404 - Not Found' });
+            }
+
+            res.render('songs/detail', {
+                title: `${song.title} - Song Details`,
+                song
+            });
+        } catch (error) {
+            console.error('Show song detail error:', error);
+            res.status(500).render('errors/500', {
+                title: '500 - Server Error',
+                message: error.message
+            });
+        }
     }
 
     async uploadSong(req, res) {
@@ -97,8 +124,12 @@ class SongController {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
 
-            const result = await songService.toggleLike(songId, userId);
-            res.json(result);
+            const resultLike = await songService.toggleLike(songId, userId);
+            const resultFavorite = await songService.toggleFavorite(songId, userId);
+            res.json({
+                ...resultLike,
+                ...resultFavorite
+            });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -172,6 +203,68 @@ class SongController {
             res.json({ success: true });
         } catch (error) {
             res.status(500).json({ error: error.message });
+        }
+    }
+
+    async showEditSong(req, res) {
+        try {
+            const songId = req.params.id;
+            const userId = req.session.userID;
+            const userRole = res.locals.user?.role;
+
+            const song = await Song.findById(songId);
+            if (!song) {
+                return res.status(404).render('errors/404', { title: '404 - Not Found' });
+            }
+
+            // Check permissions
+            if (song.uploadedBy.toString() !== userId.toString() && userRole !== 'admin') {
+                return res.status(403).render('errors/403', {
+                    title: 'Forbidden',
+                    message: 'You do not have permission to edit this song.'
+                });
+            }
+
+            res.render('songs/edit', {
+                title: `Edit Song - ${song.title}`,
+                song
+            });
+        } catch (error) {
+            console.error('Show edit song error:', error);
+            res.status(500).render('errors/500', {
+                title: '500 - Server Error',
+                message: error.message
+            });
+        }
+    }
+
+    async editSong(req, res) {
+        try {
+            const songId = req.params.id;
+            const userId = req.session.userID;
+            const userRole = res.locals.user?.role;
+            const { title, artist, genre, description } = req.body;
+
+            const song = await Song.findById(songId);
+            if (!song) {
+                return res.status(404).send('Song not found');
+            }
+
+            // Check permissions
+            if (song.uploadedBy.toString() !== userId.toString() && userRole !== 'admin') {
+                return res.status(403).send('Permission denied');
+            }
+
+            song.title = title || song.title;
+            song.artist = artist || song.artist;
+            song.genre = genre || song.genre;
+            song.description = description || song.description;
+
+            await song.save();
+            res.redirect(`/songs/${songId}`);
+        } catch (error) {
+            console.error('Edit song error:', error);
+            res.status(500).send('Edit failed: ' + error.message);
         }
     }
 }

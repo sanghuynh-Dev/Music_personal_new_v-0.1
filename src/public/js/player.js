@@ -9,6 +9,7 @@ let isRepeat = false;
 
 // UI Elements
 const playerBar = document.getElementById('player-bar');
+const appContainer = document.querySelector('.app-container');
 const playBtn = document.getElementById('player-btn-play');
 const playIcon = document.getElementById('play-icon');
 const pauseIcon = document.getElementById('pause-icon');
@@ -23,7 +24,7 @@ const timelineSlider = document.getElementById('player-timeline-slider');
 const volumeSlider = document.getElementById('player-volume-slider');
 
 // Song Meta Elements
-const songDetails = document.getElementById('player-song-details');
+// const playerBar = document.getElementById('player-bar');
 const songImg = document.getElementById('player-song-thumbnail');
 const songTitle = document.getElementById('player-song-title');
 const songArtist = document.getElementById('player-song-artist');
@@ -75,7 +76,7 @@ if (queueBtn) {
     queueBtn.addEventListener('click', () => {
         queueDropdown.classList.toggle('active');
         if (queueDropdown.classList.contains('active')) {
-            renderQueueUI();
+            // renderQueueUI();
         }
     });
 }
@@ -87,8 +88,14 @@ if (closeQueueBtn) {
 }
 
 // Global play function accessible from view scripts
-window.playSong = async function(songId, customQueue = null) {
+window.playSong = async function(songId, customQueue = null, isQueue = false, isPLayList = false) {
+    if (currentSong && songId === currentSong?._id) {
+        togglePlayback();
+        return;
+    }
     try {
+        // change icon old song
+        if (currentSong && songId !== currentSong?._id) togglePlayback();
         // Fetch song info
         const res = await fetch(`/songs/info/${songId}`);
         const song = await res.json();
@@ -101,7 +108,10 @@ window.playSong = async function(songId, customQueue = null) {
         currentSong = song;
         
         // Show player details section
-        if (songDetails) songDetails.style.display = 'flex';
+        if (playerBar){
+            playerBar.style.display = 'block';
+            appContainer.style.height = 'calc(100vh - 90px)';
+        } 
 
         // Set song metadata
         if (songImg) songImg.src = song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png';
@@ -128,7 +138,8 @@ window.playSong = async function(songId, customQueue = null) {
         // Play audio
         audio.play().then(() => {
             isPlaying = true;
-            updatePlayButtonUI();
+            updatePlayButtonUI(song._id);
+            if(!isQueue && !isPLayList) updatePlayListButtonUI(false);
             registerPlayEvent(song._id);
         }).catch(err => {
             console.error('Audio play error:', err);
@@ -138,12 +149,14 @@ window.playSong = async function(songId, customQueue = null) {
         if (customQueue && customQueue.length > 0) {
             playbackQueue = customQueue;
             queueIndex = playbackQueue.indexOf(songId);
+            if(!isQueue) renderQueueUI(); 
         } else {
             // Get recommendations based on this song
             const queueRes = await fetch(`/songs/queue?currentSongId=${songId}`);
             const fullQueue = await queueRes.json();
             playbackQueue = fullQueue.map(item => item._id);
             queueIndex = 0;
+            if(!isQueue) renderQueueUI();  
         }
 
     } catch (err) {
@@ -175,19 +188,43 @@ function togglePlayback() {
         audio.play();
         isPlaying = true;
     }
-    updatePlayButtonUI();
+    updatePlayButtonUI(currentSong._id);
 }
 
-function updatePlayButtonUI() {
+function updatePlayButtonUI(songID) {
+    const eventChangeIcon = document.querySelector('.event-chang-icon-js');
+    if(!eventChangeIcon) return;
+
+    const playBtns = eventChangeIcon?.querySelectorAll(`.play-btn-js[data-id="${songID}"]`);
     if (isPlaying) {
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'block';
+        playBtns.forEach(item => {
+            const playIcon = item.querySelector('.icon-play');
+            const pauseIcon = item.querySelector('.icon-pause');
+            console.log(playIcon);
+
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+        })
     } else {
-        playIcon.style.display = 'block';
-        pauseIcon.style.display = 'none';
+        playBtns.forEach(item => {
+            const playIcon = item.querySelector('.icon-play');
+            const pauseIcon = item.querySelector('.icon-pause');
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+        })
     }
 }
 
+function updateLikeButtonUI(songID,liked) {
+    const eventChangeIcon = document.querySelector('.event-chang-icon-js');
+    if(!eventChangeIcon) return;
+    const likeBtns = eventChangeIcon?.querySelectorAll(`.like-btn[data-id="${songID}"]`);
+    likeBtns.forEach(item => {
+        if (item) {
+           item.classList.toggle('liked', liked);
+        }
+    })
+}
 function playPrevious() {
     if (playbackQueue.length === 0) return;
     
@@ -195,7 +232,7 @@ function playPrevious() {
     if (queueIndex < 0) {
         queueIndex = playbackQueue.length - 1;
     }
-    window.playSong(playbackQueue[queueIndex], playbackQueue);
+    window.playSong(playbackQueue[queueIndex], playbackQueue, true, true);
 }
 
 function playNext() {
@@ -209,7 +246,7 @@ function playNext() {
             queueIndex = 0;
         }
     }
-    window.playSong(playbackQueue[queueIndex], playbackQueue);
+    window.playSong(playbackQueue[queueIndex], playbackQueue, true, true);
 }
 
 function onSongEnded() {
@@ -217,6 +254,7 @@ function onSongEnded() {
         audio.currentTime = 0;
         audio.play();
     } else {
+        // isPlaying = false;
         playNext();
     }
 }
@@ -254,19 +292,19 @@ async function renderQueueUI() {
     queueListItems.innerHTML = '';
 
     const remainingSongIds = playbackQueue.slice(queueIndex + 1);
-    if (remainingSongIds.length === 0) {
+    if (playbackQueue.length === 0) {
         queueListItems.innerHTML = '<li class="empty-playlists-msg">Queue is empty</li>';
         return;
     }
 
-    for (const songId of remainingSongIds) {
+    for (const songId of playbackQueue) {
         try {
             const res = await fetch(`/songs/info/${songId}`);
             const song = await res.json();
             
             const li = document.createElement('li');
             li.className = 'queue-item';
-            li.onclick = () => window.playSong(song._id, playbackQueue);
+            li.onclick = () => window.playSong(song._id, playbackQueue,isQueue = true);
             li.innerHTML = `
                 <img src="${song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png'}">
                 <div class="queue-item-meta">
@@ -318,7 +356,7 @@ window.toggleLike = async function(songId, buttonElement = null) {
         }
 
         if (buttonElement) {
-            buttonElement.classList.toggle('liked', data.liked);
+            updateLikeButtonUI(songId, data.liked);
         }
         
         // Sync with player heart if playing the same song

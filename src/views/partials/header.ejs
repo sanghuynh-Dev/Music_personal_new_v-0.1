@@ -49,9 +49,23 @@
                         </li>
                         <% if (user && (user.role === 'artist' || user.role === 'admin')) { %>
                             <li>
+                                <a href="/artist/dashboard" class="<%= typeof title !== 'undefined' && title === 'Artist Dashboard' ? 'active' : '' %>">
+                                    <i class="ti-layout-grid2"></i>
+                                    <span>Artist Dashboard</span>
+                                </a>
+                            </li>
+                            <li>
                                 <a href="/songs/upload" class="<%= typeof title !== 'undefined' && title === 'Upload Song' ? 'active' : '' %>">
                                     <i class="ti-upload"></i>
                                     <span>Upload Track</span>
+                                </a>
+                            </li>
+                        <% } %>
+                        <% if (user && user.role === 'admin') { %>
+                            <li>
+                                <a href="/admin/dashboard" class="<%= typeof title !== 'undefined' && title.startsWith('Admin') ? 'active' : '' %>">
+                                    <i class="ti-settings"></i>
+                                    <span>Admin Panel</span>
                                 </a>
                             </li>
                         <% } %>
@@ -96,12 +110,12 @@
             <!-- Top Navbar -->
             <header class="top-nav">
                 <div class="nav-left">
-                    <button class="nav-arrow-btn" onclick="history.back()" title="Go Back">
+                    <!-- <button class="nav-arrow-btn" onclick="history.back()" title="Go Back">
                         <i class="ti-angle-left"></i>
                     </button>
                     <button class="nav-arrow-btn" onclick="history.forward()" title="Go Forward">
                         <i class="ti-angle-right"></i>
-                    </button>
+                    </button> -->
                     
                     <form action="/search" method="GET" class="search-bar-form">
                         <div class="search-input-wrapper">
@@ -115,7 +129,7 @@
                     <% if (userID && user) { %>
                         <div class="user-profile-menu">
                             <a href="/profile/<%= userID %>" class="user-badge">
-                                <img src="<%= user.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-avatar.png' %>" alt="<%= user.username %>" class="user-avatar-small">
+                                <img src="<%= user.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1781293476/955c965a3e831375a9fc2ed4e7599882_zlbj68.jpg' %>" alt="<%= user.username %>" class="user-avatar-small">
                                 <span><%= user.username %></span>
                             </a>
                             <a href="/logout" class="btn-logout" title="Sign Out">

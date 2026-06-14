@@ -10,16 +10,57 @@ class HomeController {
             const userId = req.session.userID;
 
             // Fetch a pool of songs for the home screen (e.g., up to 16)
-            const songs = await Song.find()
-                .populate('uploadedBy', 'username')
-                .limit(16)
-                .lean();
-
+            const songs = await Song.aggregate([
+                { $sample: { size: 16 } }
+            ]);
             // Map liked state
             const formattedSongs = songs.map(song => ({
                 ...song,
                 liked: userId ? song.likes.some(id => id.toString() === userId.toString()) : false
             }));
+
+            // Fetch Top Songs sorted by playCount
+            const topSongs = await Song.find()
+                .populate('uploadedBy', 'username')
+                .sort({ playCount: -1 })
+                .limit(5)
+                .lean();
+
+            const formattedTopSongs = topSongs.map(song => ({
+                ...song,
+                liked: userId ? song.likes.some(id => id.toString() === userId.toString()) : false
+            }));
+
+            // Fetch New Releases
+            const newReleases = await songService.getNewReleases(userId);
+            const formattedNewReleases = newReleases.slice(0, 6);
+
+            // Fetch Top Artists (by follower count)
+            const topFollows = await Follow.aggregate([
+                { $group: { _id: '$artist', followerCount: { $sum: 1 } } },
+                { $sort: { followerCount: -1 } },
+                { $limit: 5 }
+            ]);
+            const topArtistIds = topFollows.map(f => f._id);
+            let topArtists = await User.find({ _id: { $in: topArtistIds } }).lean();
+            topArtists = topArtists.map(artist => {
+                const followObj = topFollows.find(f => f._id.toString() === artist._id.toString());
+                return {
+                    ...artist,
+                    followerCount: followObj ? followObj.followerCount : 0
+                };
+            }).sort((a, b) => b.followerCount - a.followerCount);
+
+            if (topArtists.length < 5) {
+                const existingIds = topArtists.map(a => a._id.toString());
+                const extraArtists = await User.find({
+                    role: 'artist',
+                    _id: { $nin: existingIds }
+                }).limit(5 - topArtists.length).lean();
+                
+                const extraWithCount = extraArtists.map(a => ({ ...a, followerCount: 0 }));
+                topArtists = [...topArtists, ...extraWithCount];
+            }
 
             // Suggest artists (up to 5 random users with role 'user' or 'artist' that the current user isn't already following)
             let suggestedArtists = [];
@@ -48,6 +89,9 @@ class HomeController {
             res.render('home/index', {
                 title: 'Home',
                 songs: formattedSongs,
+                topSongs: formattedTopSongs,
+                newReleases: formattedNewReleases,
+                topArtists,
                 suggestedArtists,
                 recentlyPlayed
             });

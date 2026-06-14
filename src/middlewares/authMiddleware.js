@@ -8,7 +8,13 @@ const setUserLocal = async (req, res, next) => {
         try {
             const user = await User.findById(req.session.userID).lean();
             if (user) {
-                res.locals.user = user;
+                if (user.status === 'banned') {
+                    req.session.destroy();
+                    res.locals.userID = null;
+                    res.locals.user = null;
+                } else {
+                    res.locals.user = user;
+                }
             } else {
                 // Session contains invalid ID
                 req.session.destroy();

@@ -26,6 +26,9 @@ class UserService {
         // Get uploader tracks count
         const tracksCount = formattedTracks.length;
 
+        // Calculate total play counts
+        const totalPlays = formattedTracks.reduce((sum, track) => sum + (track.playCount || 0), 0);
+
         // Check if current user is following target user
         let isFollowing = false;
         if (currentUserId && currentUserId.toString() !== targetUserId.toString()) {
@@ -39,6 +42,7 @@ class UserService {
             tracksCount,
             followerCount,
             followingCount,
+            totalPlays,
             isFollowing
         };
     }

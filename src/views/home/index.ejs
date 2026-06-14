@@ -1,20 +1,52 @@
 <%- include('../partials/header') %>
 
-<div class="home-container">
+<div class="home-container event-chang-icon-js">
     <% if (userID && recentlyPlayed && recentlyPlayed.length > 0) { %>
         <section class="home-section recently-played-section">
             <h2 class="section-title">Recently Played</h2>
             <div class="recently-played-grid">
                 <% recentlyPlayed.forEach(function(historyItem) { %>
                     <% const song = historyItem.song; %>
-                    <div class="recent-song-card cursor-pointer" onclick="playSong('<%= song._id %>')">
+                    <div class="recent-song-card cursor-pointer">
                         <img src="<%= song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png' %>" alt="<%= song.title %>">
                         <div class="recent-meta">
                             <h4><%= song.title %></h4>
                             <p><%= song.artist %></p>
                         </div>
-                        <button class="recent-play-btn" title="Play">
-                            <i class="ti-control-play"></i>
+                        <button class="recent-play-btn play-btn-js" title="Play" data-id="<%= song._id %>" onclick="playSong('<%= song._id %>')">
+                            <svg class="icon-play" id="play-icon" width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z"></path>
+                            </svg>
+                            <svg class="icon-pause" id="pause-icon" width="40" height="40" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                                <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                <% }); %>
+            </div>
+        </section>
+    <% } %>
+
+    <% if (newReleases && newReleases.length > 0) { %>
+        <section class="home-section new-releases-section">
+            <h2 class="section-title">New Releases</h2>
+            <div class="recently-played-grid">
+                <% newReleases.forEach(function(song) { %>
+                    <div class="recent-song-card cursor-pointer" >
+                        <img src="<%= song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png' %>" alt="<%= song.title %>">
+                        <div class="recent-meta">
+                            <a href="/songs/<%= song._id %>" onclick="event.stopPropagation()" style="display: block;">
+                                <h4><%= song.title %></h4>
+                            </a>
+                            <p><%= song.artist %></p>
+                        </div>
+                        <button class="recent-play-btn play-btn-js" title="Play" data-id="<%= song._id %>" onclick="playSong('<%= song._id %>')">
+                            <svg class="icon-play" id="play-icon" width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z"></path>
+                            </svg>
+                            <svg class="icon-pause" id="pause-icon" width="40" height="40" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                                <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
+                            </svg>
                         </button>
                     </div>
                 <% }); %>
@@ -24,8 +56,59 @@
 
     <div class="home-content-split">
         <section class="home-section main-songs-feed">
+            <h2 class="section-title">Top Songs</h2>
+            <div class="songs-list-container" style="margin-bottom: 32px;">
+                <% if (topSongs && topSongs.length > 0) { %>
+                    <div class="songs-table">
+                        <div class="songs-table-header">
+                            <div class="col-index">#</div>
+                            <div class="col-title">Title</div>
+                            <div class="col-genre">Genre</div>
+                            <div class="col-plays"><i class="ti-headphone"></i></div>
+                            <div class="col-actions"></div>
+                        </div>
+                        
+                        <% topSongs.forEach(function(song, index) { %>
+                            <div class="song-row" data-id="<%= song._id %>">
+                                <div class="col-index">
+                                    <span class="row-num"><%= index + 1 %></span>
+                                    <button class="row-play-btn play-btn-js" data-id="<%= song._id %>" onclick="playSong('<%= song._id %>')" title="Play">
+                                        <svg class="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 5v14l11-7z"></path>
+                                        </svg>
+                                        <svg class="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                                            <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="col-title">
+                                    <img src="<%= song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png' %>" alt="<%= song.title %>" class="song-row-img">
+                                    <div class="song-row-info">
+                                        <a href="/songs/<%= song._id %>" class="song-row-title"><%= song.title %></a>
+                                        <a href="/profile/<%= song.uploadedBy._id || song.uploadedBy %>" class="song-row-artist"><%= song.artist %></a>
+                                    </div>
+                                </div>
+                                <div class="col-genre"><%= song.genre || 'Unknown' %></div>
+                                <div class="col-plays"><%= song.playCount || 0 %></div>
+                                <div class="col-actions">
+                                    <% if (userID) { %>
+                                        <button class="action-icon-btn like-btn <%= song.liked ? 'liked' : '' %>" data-id="<%= song._id %>" onclick="toggleLike('<%= song._id %>', this)" title="Like">
+                                            <i class="ti-heart"></i>
+                                        </button>
+                                        <button class="action-icon-btn opt-btn" onclick="showAddToPlaylistMenu(event, '<%= song._id %>')" title="Add to Playlist">
+                                            <i class="ti-more-alt"></i>
+                                        </button>
+                                    <% } %>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <p class="empty-feed">No tracks available.</p>
+                <% } %>
+            </div>
+
             <h2 class="section-title">Explore Music</h2>
-            
             <div class="songs-list-container">
                 <% if (songs && songs.length > 0) { %>
                     <div class="songs-table">
@@ -41,14 +124,19 @@
                             <div class="song-row" data-id="<%= song._id %>">
                                 <div class="col-index">
                                     <span class="row-num"><%= index + 1 %></span>
-                                    <button class="row-play-btn" onclick="playSong('<%= song._id %>')" title="Play">
-                                        <i class="ti-control-play"></i>
+                                    <button class="row-play-btn play-btn-js" data-id="<%= song._id %>" onclick="playSong('<%= song._id %>')" title="Play">
+                                        <svg class="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M0 5v14l11-7z"></path>
+                                        </svg>
+                                        <svg class="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                                            <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
+                                        </svg>
                                     </button>
                                 </div>
                                 <div class="col-title">
                                     <img src="<%= song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png' %>" alt="<%= song.title %>" class="song-row-img">
                                     <div class="song-row-info">
-                                        <div class="song-row-title"><%= song.title %></div>
+                                        <a href="/songs/<%= song._id %>" class="song-row-title"><%= song.title %></a>
                                         <a href="/profile/<%= song.uploadedBy._id %>" class="song-row-artist"><%= song.artist %></a>
                                     </div>
                                 </div>
@@ -56,8 +144,8 @@
                                 <div class="col-plays"><%= song.playCount || 0 %></div>
                                 <div class="col-actions">
                                     <% if (userID) { %>
-                                        <button class="action-icon-btn like-btn <%= song.liked ? 'liked' : '' %>" onclick="toggleLike('<%= song._id %>', this)" title="Like">
-                                            <i class="<%= song.liked ? 'ti-heart' : 'ti-heart' %>"></i>
+                                        <button class="action-icon-btn like-btn <%= song.liked ? 'liked' : '' %>" data-id="<%= song._id %>" onclick="toggleLike('<%= song._id %>', this)" title="Like">
+                                            <i class="ti-heart"></i>
                                         </button>
                                         <button class="action-icon-btn opt-btn" onclick="showAddToPlaylistMenu(event, '<%= song._id %>')" title="Add to Playlist">
                                             <i class="ti-more-alt"></i>
@@ -78,28 +166,51 @@
 
         <!-- Sidebar recommendations -->
         <aside class="home-suggestions">
-            <h2 class="section-title">Who to follow</h2>
-            <div class="suggestions-list">
-                <% if (suggestedArtists && suggestedArtists.length > 0) { %>
-                    <% suggestedArtists.forEach(function(artist) { %>
-                        <div class="suggestion-card">
-                            <a href="/profile/<%= artist._id %>" class="suggestion-info">
-                                <img src="<%= artist.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-avatar.png' %>" alt="<%= artist.username %>" class="suggestion-img">
-                                <div class="suggestion-meta">
-                                    <span class="suggestion-name"><%= artist.username %></span>
-                                    <span class="suggestion-role"><%= artist.role %></span>
-                                </div>
-                            </a>
-                            <% if (userID) { %>
-                                <button class="btn-follow-action follow" onclick="toggleFollow('<%= artist._id %>', this)">Follow</button>
-                            <% } else { %>
-                                <a href="/login" class="btn-follow-action">Follow</a>
-                            <% } %>
-                        </div>
-                    <% }); %>
-                <% } else { %>
-                    <p class="empty-suggestions">No new artists to suggest.</p>
-                <% } %>
+            <div class="suggestions-section" style="margin-bottom: 32px;">
+                <h2 class="section-title" style="margin-bottom: 12px; font-size: 18px;">Top Artists</h2>
+                <div class="suggestions-list">
+                    <% if (topArtists && topArtists.length > 0) { %>
+                        <% topArtists.forEach(function(artist) { %>
+                            <div class="suggestion-card">
+                                <a href="/profile/<%= artist._id %>" class="suggestion-info">
+                                    <img src="<%= artist.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1781293476/955c965a3e831375a9fc2ed4e7599882_zlbj68.jpg' %>" alt="<%= artist.username %>" class="suggestion-img">
+                                    <div class="suggestion-meta">
+                                        <span class="suggestion-name"><%= artist.username %></span>
+                                        <span class="suggestion-role"><%= artist.followerCount || 0 %> Followers</span>
+                                    </div>
+                                </a>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="empty-suggestions">No top artists to display.</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="suggestions-section">
+                <h2 class="section-title" style="margin-bottom: 12px; font-size: 18px;">Who to follow</h2>
+                <div class="suggestions-list">
+                    <% if (suggestedArtists && suggestedArtists.length > 0) { %>
+                        <% suggestedArtists.forEach(function(artist) { %>
+                            <div class="suggestion-card">
+                                <a href="/profile/<%= artist._id %>" class="suggestion-info">
+                                    <img src="<%= artist.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1781293476/955c965a3e831375a9fc2ed4e7599882_zlbj68.jpg' %>" alt="<%= artist.username %>" class="suggestion-img">
+                                    <div class="suggestion-meta">
+                                        <span class="suggestion-name"><%= artist.username %></span>
+                                        <span class="suggestion-role"><%= artist.role %></span>
+                                    </div>
+                                </a>
+                                <% if (userID) { %>
+                                    <button class="btn-follow-action follow" onclick="toggleFollow('<%= artist._id %>', this)">Follow</button>
+                                <% } else { %>
+                                    <a href="/login" class="btn-follow-action">Follow</a>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="empty-suggestions">No new artists to suggest.</p>
+                    <% } %>
+                </div>
             </div>
         </aside>
     </div>

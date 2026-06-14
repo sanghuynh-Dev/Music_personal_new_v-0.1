@@ -1,6 +1,6 @@
 <%- include('../partials/header') %>
 
-<div class="profile-container">
+<div class="profile-container event-chang-icon-js">
     <!-- Header Background Cover -->
     <div class="profile-header-banner" style="background-image: url('<%= profileUser.background?.url || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1974&auto=format&fit=crop' %>')">
         <% if (isOwnProfile) { %>
@@ -14,7 +14,7 @@
         
         <div class="profile-header-info">
             <div class="profile-avatar-wrapper">
-                <img src="<%= profileUser.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-avatar.png' %>" alt="<%= profileUser.username %>" class="profile-avatar">
+                <img src="<%= profileUser.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-avatar.png' %>" alt=">" class="profile-avatar">
                 
                 <% if (isOwnProfile) { %>
                     <form action="/profile/avatar" method="POST" enctype="multipart/form-data" class="avatar-upload-form" id="avatar-form">
@@ -32,6 +32,9 @@
                 
                 <div class="profile-stats">
                     <span id="stat-tracks"><strong><%= profileUser.tracksCount || 0 %></strong> Tracks</span>
+                    <% if (profileUser.role === 'artist' || profileUser.role === 'admin') { %>
+                        <span id="stat-plays"><strong><%= profileUser.totalPlays || 0 %></strong> Plays</span>
+                    <% } %>
                     <span id="stat-followers"><strong><%= profileUser.followerCount || 0 %></strong> Followers</span>
                     <span id="stat-following"><strong><%= profileUser.followingCount || 0 %></strong> Following</span>
                 </div>
@@ -66,14 +69,19 @@
                         <div class="song-row" id="song-row-<%= song._id %>" data-id="<%= song._id %>">
                             <div class="col-index">
                                 <span class="row-num"><%= index + 1 %></span>
-                                <button class="row-play-btn" onclick="playSong('<%= song._id %>')" title="Play">
-                                    <i class="ti-control-play"></i>
+                                <button class="row-play-btn play-btn-js" data-id="<%= song._id %>" onclick="playSong('<%= song._id %>')" title="Play">
+                                    <svg class="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M0 5v14l11-7z"></path>
+                                    </svg>
+                                    <svg class="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                                        <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
+                                    </svg>
                                 </button>
                             </div>
                             <div class="col-title">
                                 <img src="<%= song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png' %>" alt="<%= song.title %>" class="song-row-img">
                                 <div class="song-row-info">
-                                    <div class="song-row-title"><%= song.title %></div>
+                                    <a href="/songs/<%= song._id %>" class="song-row-title"><%= song.title %></a>
                                     <span class="song-row-artist"><%= song.artist %></span>
                                 </div>
                             </div>
@@ -81,7 +89,7 @@
                             <div class="col-plays"><%= song.playCount || 0 %></div>
                             <div class="col-actions">
                                 <% if (userID) { %>
-                                    <button class="action-icon-btn like-btn <%= song.liked ? 'liked' : '' %>" onclick="toggleLike('<%= song._id %>', this)" title="Like">
+                                    <button class="action-icon-btn like-btn <%= song.liked ? 'liked' : '' %>" data-id="<%= song._id %>" onclick="toggleLike('<%= song._id %>', this)" title="Like">
                                         <i class="ti-heart"></i>
                                     </button>
                                     <button class="action-icon-btn opt-btn" onclick="showAddToPlaylistMenu(event, '<%= song._id %>')" title="Add to Playlist">
@@ -98,7 +106,7 @@
                         </div>
                     <% }); %>
                 </div>
-            <% else { %>
+            <% } else { %>
                 <div class="empty-profile-tracks">
                     <i class="ti-music-alt"></i>
                     <p>No tracks uploaded yet.</p>
