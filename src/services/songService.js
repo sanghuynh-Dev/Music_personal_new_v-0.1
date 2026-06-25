@@ -59,7 +59,7 @@ class SongService {
     async registerPlay(songId, userId = null) {
         // Increment play count on the Song model
         await Song.updateOne({ _id: songId }, { $inc: { playCount: 1 } });
-
+        // console.log(userId);
         // If logged in, save to listening history log (ListeningHistory collection)
         if (userId) {
             const history = await ListeningHistory.findOne({ user: userId, song: songId });

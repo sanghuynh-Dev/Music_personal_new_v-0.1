@@ -13,6 +13,7 @@ function route(app) {
 
     // Home Page
     app.get('/', homeController.index);
+    app.get('/test', homeController.test);
     app.get('/home', (req, res) => res.redirect('/'));
 
     // Songs & Streaming

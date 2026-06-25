@@ -1,0 +1,137 @@
+.profileHeaderBanner {
+    height: 280px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    padding: 32px;
+    display: flex;
+    align-items: flex-end;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.profileHeaderBanner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    z-index: 1;
+}
+
+.headerUploadForm {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+}
+
+.btnChangeHeader {
+    background-color: rgba(0,0,0,0.6);
+    border: 1px solid var(--secondary-text);
+    padding: 6px 14px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.profileHeaderInfo {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.profileAvatarWrapper {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+
+.profileAvatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatarUploadOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.profileAvatarWrapper:hover .avatarUploadOverlay {
+    opacity: 1;
+}
+
+.profileMeta {
+    flex-grow: 1;
+}
+
+.profileRole {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.profileUsername {
+    font-size: 48px;
+    font-weight: 800;
+    margin: 8px 0;
+}
+
+.profileStats {
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+    color: var(--secondary-text);
+}
+
+.profileStats strong {
+    color: var(--text-color);
+}
+
+.btnProfileFollow {
+    padding: 10px 24px;
+    border-radius: 500px;
+    font-weight: 700;
+    transition: transform 0.2s;
+}
+
+.btnProfileFollow.follow {
+    background-color: transparent;
+    border: 1px solid var(--text-color);
+}
+
+.btnProfileFollow.following {
+    background-color: var(--primary-color);
+    color: #000;
+}
+
+.profileContent {
+    margin-top: 32px;
+}
+
+.contentTitle {
+    font-size: 20px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}

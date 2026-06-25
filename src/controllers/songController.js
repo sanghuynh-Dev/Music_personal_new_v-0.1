@@ -8,7 +8,7 @@ class SongController {
     async showUpload(req, res) {
         // User must be authenticated, which is checked by middleware.
         const user = await User.findById(req.session.userID);
-        res.render('songs/upload', { 
+        res.json({ 
             title: 'Upload Song',
             user
          });
@@ -24,7 +24,7 @@ class SongController {
                 return res.status(404).render('errors/404', { title: '404 - Not Found' });
             }
 
-            res.render('songs/detail', {
+            res.json({
                 title: `${song.title} - Song Details`,
                 song
             });
@@ -40,10 +40,11 @@ class SongController {
     async uploadSong(req, res) {
         try {
             const userId = req.session.userID;
-            const { title, artist, genre, description } = req.body;
+            const { title, artist, genre, description} = req.body;
 
             const audioFile = req.files?.file?.[0];
             const imageFile = req.files?.image?.[0];
+            console.log(req.body);
 
             if (!audioFile || !imageFile) {
                 return res.status(400).send('Missing files for upload. Audio and Image are required.');
@@ -72,7 +73,7 @@ class SongController {
             // Optionally update user's tracks count if keeping that field
             // user.tracksCount = ... (we can also compute tracksCount dynamically from DB)
 
-            res.redirect('/');
+            res.json({ success: true });
         } catch (error) {
             console.error('Upload controller error:', error);
             res.status(500).send('Upload failed: ' + error.message);
@@ -97,7 +98,6 @@ class SongController {
             if (!currentSongId) {
                 return res.status(400).json({ error: 'Missing currentSongId parameter' });
             }
-
             const queue = await songService.getSongQueue(currentSongId, req.session.userID);
             res.json(queue);
         } catch (error) {
@@ -225,7 +225,7 @@ class SongController {
                 });
             }
 
-            res.render('songs/edit', {
+            res.json({
                 title: `Edit Song - ${song.title}`,
                 song
             });
@@ -243,7 +243,8 @@ class SongController {
             const songId = req.params.id;
             const userId = req.session.userID;
             const userRole = res.locals.user?.role;
-            const { title, artist, genre, description } = req.body;
+            const { title, genre, description } = req.body;
+            console.log(req.body);
 
             const song = await Song.findById(songId);
             if (!song) {
@@ -256,12 +257,11 @@ class SongController {
             }
 
             song.title = title || song.title;
-            song.artist = artist || song.artist;
             song.genre = genre || song.genre;
             song.description = description || song.description;
 
             await song.save();
-            res.redirect(`/songs/${songId}`);
+            res.json({ success: true });
         } catch (error) {
             console.error('Edit song error:', error);
             res.status(500).send('Edit failed: ' + error.message);

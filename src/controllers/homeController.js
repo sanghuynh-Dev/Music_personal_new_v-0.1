@@ -8,6 +8,7 @@ class HomeController {
     async index(req, res) {
         try {
             const userId = req.session.userID;
+            const user = await User.findById(userId);
 
             // Fetch a pool of songs for the home screen (e.g., up to 16)
             const songs = await Song.aggregate([
@@ -76,7 +77,15 @@ class HomeController {
                 }
             }
 
+            const followingSet = new Set(
+                (user?.followingArtists || []).map(id => id.toString())
+            );
+
             suggestedArtists = await User.find(query).limit(5).lean();
+            const newSuggestedArtists = suggestedArtists.map(artist => ({
+                ...artist,
+                isFollowing: userId ? followingSet.has(artist._id.toString()) : false
+            }));
 
             // Get recently played songs for the logged-in user
             let recentlyPlayed = [];
@@ -86,19 +95,23 @@ class HomeController {
                 recentlyPlayed = recentlyPlayed.slice(0, 6);
             }
 
-            res.render('home/index', {
+            res.json({
                 title: 'Home',
                 songs: formattedSongs,
                 topSongs: formattedTopSongs,
                 newReleases: formattedNewReleases,
                 topArtists,
-                suggestedArtists,
+                newSuggestedArtists,
                 recentlyPlayed
             });
         } catch (error) {
             console.error('Home controller error:', error);
             res.status(500).send(error.message);
         }
+    }
+
+    test(req, res) {
+        res.json( {massage: 'Hello World!'} );
     }
 }
 

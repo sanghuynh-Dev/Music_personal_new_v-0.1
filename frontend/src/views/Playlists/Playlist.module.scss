@@ -1,0 +1,19 @@
+.btnDeletePlaylist {
+    background-color: transparent;
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btnDeletePlaylist:hover {
+    background-color: #e74c3c;
+    color: var(--text-color);
+}
+
+.playlistPlayRow {
+    margin-bottom: 24px;
+}

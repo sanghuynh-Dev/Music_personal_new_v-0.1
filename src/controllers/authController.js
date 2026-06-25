@@ -5,7 +5,7 @@ class AuthController {
         if (req.session.userID) {
             return res.redirect('/');
         }
-        res.render('auth/login', { title: 'Sign In' });
+        res.json({ title: 'Sign In' });
     }
 
     showRegister(req, res) {
@@ -27,8 +27,10 @@ class AuthController {
                 email: user.email,
                 role: user.role
             };
-
-            res.json({ success: true });
+            res.json({ 
+                success: true,
+                user: user
+            });
         } catch (error) {
             const errField = error.message.includes('Email') ? 'email' : 'password';
             res.json({
@@ -71,7 +73,7 @@ class AuthController {
             if (err) {
                 console.error('Logout session destroy error:', err);
             }
-            res.redirect('/login');
+            // res.redirect('/login');
         });
     }
 }

@@ -5,12 +5,12 @@ class SearchController {
         try {
             const query = req.query.q || '';
             const userId = req.session.userID;
-
+            console.log(query);
             if (query.trim() === '') {
                 if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
                     return res.json({ songs: [] });
                 }
-                return res.render('search/results', { title: 'Search', songs: [], query });
+                return res.json({ title: 'Search', songs: [], query });
             }
 
             const songs = await songService.searchSongs(query, userId);
@@ -19,7 +19,8 @@ class SearchController {
                 return res.json({ songs });
             }
 
-            res.render('search/results', {
+            res.json({
+                success: true,
                 title: `Search Results for "${query}"`,
                 songs,
                 query

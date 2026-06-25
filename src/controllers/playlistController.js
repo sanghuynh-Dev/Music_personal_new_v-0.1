@@ -16,7 +16,7 @@ class PlaylistController {
             if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
                 return res.json({ success: true, playlist });
             }
-            res.redirect(`/playlists/${playlist._id}`);
+            // res.redirect(`/playlists/${playlist._id}`);
         } catch (error) {
             console.error('Create playlist error:', error);
             if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
@@ -38,7 +38,7 @@ class PlaylistController {
 
             const isOwner = userId && playlist.user._id.toString() === userId.toString();
 
-            res.render('playlists/detail', {
+            res.json({
                 title: playlist.name,
                 playlist,
                 isOwner,
@@ -98,7 +98,7 @@ class PlaylistController {
             if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
                 return res.json({ success: true });
             }
-            res.redirect('/');
+            // res.redirect('/');
         } catch (error) {
             res.status(400).json({ error: error.message });
         }

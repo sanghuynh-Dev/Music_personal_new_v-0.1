@@ -1,0 +1,36 @@
+:root {
+    --primary-color: #1DB954;
+    --background-color: #121212;
+    --secondary-bg: #181818;
+    --sidebar-bg: #000000;
+    --text-color: #FFFFFF;
+    --secondary-text: #B3B3B3;
+    --hover-bg: #282828;
+    --card-bg: #181818;
+    --border-color: #282828;
+}
+
+
+.sidebar {
+    width: 240px;
+    background-color: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 12px;
+    flex-shrink: 0;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary-color);
+    padding: 0 12px;
+    margin-bottom: 24px;
+}
+
+.sidebar-logo i {
+    font-size: 24px;
+}

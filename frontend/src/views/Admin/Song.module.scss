@@ -1,0 +1,65 @@
+.gridSongTable {
+    grid-template-columns: 50px 3fr 2fr 1.5fr 1fr 1fr; 
+    display: grid; 
+    align-items: center;
+}
+
+.gridSongRow {
+    grid-template-columns: 50px 3fr 2fr 1.5fr 1fr 1fr; 
+    display: grid; 
+    align-items: center; 
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.songInfo {
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    overflow: hidden;
+}
+
+.songRowImg {
+    border-radius: 4px; 
+    width: 36px; 
+    height: 36px; 
+    object-fit: cover;
+}
+
+.songLink {
+    font-weight: 700; 
+    color: var(--text-color); 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+
+.songUploaderProfile {
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+}
+
+.uploaderLink { 
+    font-weight: 600;
+}
+
+.uploaderLink,
+.songCountPlays,
+.songGenre {
+    font-size: 13px; 
+    color: var(--secondary-text);
+}
+
+.songActions  {
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center;
+}
+
+.songActions button {
+    background: none;
+    border: none; 
+    color: var(--secondary-text); 
+    cursor: pointer;
+}

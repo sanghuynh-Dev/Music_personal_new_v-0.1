@@ -28,7 +28,7 @@ class ArtistController {
                 .limit(5)
                 .lean();
 
-            res.render('artists/dashboard', {
+            res.json({
                 title: 'Artist Dashboard',
                 stats: {
                     totalSongs,

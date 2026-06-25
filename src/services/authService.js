@@ -24,6 +24,7 @@ class AuthService {
     }
 
     async login(email, password) {
+        
         const user = await User.findOne({ email });
         if (!user) {
             throw new Error('Email does not exist!');

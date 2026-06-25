@@ -76,7 +76,7 @@ if (queueBtn) {
     queueBtn.addEventListener('click', () => {
         queueDropdown.classList.toggle('active');
         if (queueDropdown.classList.contains('active')) {
-            // renderQueueUI();
+            renderQueueUI();
         }
     });
 }

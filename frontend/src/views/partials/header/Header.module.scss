@@ -1,0 +1,264 @@
+:root {
+    --primary-color: #1DB954;
+    --background-color: #121212;
+    --secondary-bg: #181818;
+    --sidebar-bg: #000000;
+    --text-color: #FFFFFF;
+    --secondary-text: #B3B3B3;
+    --hover-bg: #282828;
+    --card-bg: #181818;
+    --border-color: #282828;
+}
+
+
+.sidebar {
+    width: 240px;
+    background-color: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 12px;
+    flex-shrink: 0;
+}
+
+.sidebarLogo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary-color);
+    padding: 0 12px;
+    margin-bottom: 24px;
+}
+
+.sidebarLogo i {
+    font-size: 24px;
+}
+
+.sidebarNav ul {
+    list-style: none;
+}
+
+.sidebarNav li {
+    margin-bottom: 8px;
+}
+
+.sidebarNav a {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 16px;
+    border-radius: 4px;
+    color: var(--secondary-text);
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.sidebarNav a:hover, 
+.sidebarNav a.active {
+    color: var(--text-color);
+    background-color: var(--hover-bg);
+}
+
+.sidebarNav a i {
+    font-size: 18px;
+}
+
+.sidebarPlaylists {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.playlistsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    margin-bottom: 12px;
+}
+
+.playlistsHeader h3 {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    color: var(--secondary-text);
+}
+
+.playlistsHeader button {
+    color: var(--secondary-text);
+    transition: color 0.2s;
+}
+
+.playlistsHeader button:hover {
+    color: var(--text-color);
+}
+
+.playlists {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.playlists a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: var(--secondary-text);
+    border-radius: 4px;
+    transition: color 0.2s;
+}
+
+.playlists a:hover,
+.playlists a.active {
+    color: var(--text-color);
+    background-color: var(--hover-bg);
+}
+
+.emptyPlaylistsMsg,
+.playlistsLoginPrompt {
+    font-size: 13px;
+    color: var(--secondary-text);
+    padding: 8px 16px;
+}
+
+.playlistsLoginPrompt a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.topNav {
+    background-color: rgba(18, 18, 18, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.navLeft {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-grow: 1;
+}
+
+.searchBarForm {
+    max-width: 380px;
+    width: 100%;
+}
+
+.searchInputWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.searchInputWrapper i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-text);
+}
+
+.searchInputWrapper input {
+    width: 100%;
+    padding: 8px 16px 8px 40px;
+    background-color: var(--hover-bg);
+    border: 1px solid transparent;
+    border-radius: 500px;
+    color: var(--text-color);
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.searchInputWrapper input:focus {
+    border-color: var(--secondary-text);
+    background-color: var(--secondary-bg);
+}
+
+.navRight {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.userProfileMenu {
+    display: flex;
+}
+
+.userBadge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px 4px 4px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 500px;
+    font-size: 14px;
+    font-weight: 700;
+    transition: background-color 0.2s;
+}
+
+.userBadge:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.btnLogout {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: var(--secondary-text);
+    transition: color 0.2s;
+    cursor: pointer;
+}
+
+.btnLogout:hover {
+    color: #e74c3c;
+}
+
+.authButtons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.btnRegister {
+    color: var(--secondary-text);
+    font-weight: 700;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.btnRegister:hover {
+    color: var(--text-color);
+    transform: scale(1.05);
+}
+
+.btnLogin {
+    background-color: var(--text-color);
+    color: var(--sidebar-bg);
+    padding: 10px 24px;
+    border-radius: 500px;
+    font-weight: 700;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btnLogin:hover {
+    filter: brightness(0.7);
+    transform: scale(1.05);
+}
+
+.userAvatarSmall {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}

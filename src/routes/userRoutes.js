@@ -34,4 +34,8 @@ router.get('/history', requireAuth, userController.showHistory);
 router.post('/artists/:id/follow', requireAuth, userController.followArtist);
 router.post('/artists/:id/unfollow', requireAuth, userController.unfollowArtist);
 
+
+// get user
+router.get('/user', userController.getUser);
+router.get('/user/playlists', userController.getUserPlayList);
 module.exports = router;

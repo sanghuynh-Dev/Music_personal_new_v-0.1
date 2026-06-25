@@ -7,6 +7,7 @@ const db = require('./config/db');
 const { setUserLocal } = require('./middlewares/authMiddleware');
 const playlistService = require('./services/playlistService');
 const route = require('./routes');
+const cors = require('cors');
 
 // Connect to MongoDB
 db.connect();
@@ -53,6 +54,11 @@ app.use(async (req, res, next) => {
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
+
 // Wiring routes
 route(app);
 
@@ -69,6 +75,8 @@ app.use((err, req, res, next) => {
         message: err.message || 'An unexpected error occurred.'
     });
 });
+
+
 
 // Listen on Port
 app.listen(PORT, () => {

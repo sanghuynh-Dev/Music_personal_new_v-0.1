@@ -26,7 +26,7 @@ class AdminController {
                 .limit(5)
                 .lean();
 
-            res.render('admin/dashboard', {
+            res.json({
                 title: 'Admin Dashboard',
                 stats: {
                     totalUsers,
@@ -80,7 +80,7 @@ class AdminController {
                 };
             }));
 
-            res.render('admin/artists', {
+            res.json({
                 title: 'Artist Management',
                 artists: artistsWithStats
             });
@@ -97,7 +97,7 @@ class AdminController {
                 .sort({ createdAt: -1 })
                 .lean();
 
-            res.render('admin/songs', {
+            res.json({
                 title: 'Song Management',
                 songs
             });

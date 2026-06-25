@@ -1,0 +1,404 @@
+
+
+/* Upload Track View styling */
+.uploadContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.formWrapper {
+    background-color: var(--secondary-bg);
+    padding: 32px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.formTitle {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.formSubtitle {
+    font-size: 14px;
+    color: var(--secondary-text);
+    margin-bottom: 24px;
+}
+
+.formGrid {
+    display: flex;
+    gap: 32px;
+}
+
+.formLeftCol {
+    flex-grow: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.formFieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.formFieldGroup label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--secondary-text);
+}
+
+.formFieldGroup input,
+.formFieldGroup textarea {
+    background-color: var(--hover-bg);
+    border: 1px solid transparent;
+    padding: 10px 14px;
+    border-radius: 4px;
+    color: var(--text-color);
+}
+
+.formRightCol {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.fileUploadBox {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fileUploadBox label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--secondary-text);
+}
+
+.fileDropZone {
+    border: 2px dashed var(--border-color);
+    background-color: var(--hover-bg);
+    border-radius: 6px;
+    padding: 32px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s;
+}
+
+.fileDropZone:hover {
+    border-color: var(--secondary-text);
+}
+
+.fileDropZone i {
+    font-size: 28px;
+    color: var(--secondary-text);
+}
+
+.fileZoneText {
+    font-size: 12px;
+    color: var(--secondary-text);
+    text-align: center;
+}
+
+.fileDropZone input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.selectedFilename {
+    font-size: 11px;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.formSubmitWrapper {
+    margin-top: 32px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btnSubmitTrack {
+    background-color: var(--primary-color);
+    color: #000;
+    font-weight: 800;
+    padding: 12px 36px;
+    border-radius: 4px;
+    font-size: 15px;
+    transition: transform 0.2s;
+}
+
+.btnSubmitTrack:hover {
+    transform: scale(1.02);
+}
+
+/* Song Details Page */
+.songDetailContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.songDetailHeader {
+    display: flex;
+    align-items: flex-end;
+    gap: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.songDetailThumbnailWrapper {
+    width: 220px;
+    height: 220px;
+    flex-shrink: 0;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+
+.songDetailThumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.songDetailMeta {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.detailLabel {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--secondary-text);
+    margin-bottom: 8px;
+}
+
+.detailTitle {
+    font-size: 42px;
+    font-weight: 800;
+    margin: 0 0 16px 0;
+    line-height: 1.1;
+}
+
+.detailSubtext {
+    font-size: 14px;
+    color: var(--secondary-text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.detailArtistLink a {
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+.detailArtistLink a:hover {
+    text-decoration: underline;
+}
+
+.detailActions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.btnPlaySongLarge {
+    background-color: var(--primary-color);
+    color: #000;
+    font-weight: 800;
+    font-size: 16px;
+    padding: 12px 36px;
+    border-radius: 500px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btnPlaySongLarge:hover {
+    transform: scale(1.05);
+    background-color: #1ed760;
+}
+
+.detailActionBtn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    color: var(--secondary-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.2s;
+}
+
+.detailActionBtn:hover {
+    color: var(--text-color);
+    border-color: var(--text-color);
+    transform: scale(1.05);
+}
+
+.liked {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    background-color: rgba(29, 185, 84, 0.1);
+}
+
+/* Song Detail Body */
+.songDetailBody {
+    display: flex;
+    gap: 48px;
+}
+
+@media (max-width: 992px) {
+    .songDetailBody {
+        flex-direction: column;
+        gap: 32px;
+    }
+}
+
+.songInfoPanel {
+    flex: 1;
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+    padding: 24px;
+    align-self: flex-start;
+}
+
+.panelTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text-color);
+}
+
+.songDescription {
+    font-size: 14px;
+    color: var(--secondary-text);
+    line-height: 1.6;
+}
+
+.songCommentsPanel {
+    flex: 2;
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.commentInputForm {
+    margin: 20px 0 32px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.commentInputWrapper {
+    display: flex;
+    gap: 16px;
+}
+
+.commentUserAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.commentInputWrapper textarea {
+    flex-grow: 1;
+    height: 80px;
+    background-color: var(--hover-bg);
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--text-color);
+    padding: 12px;
+    font-size: 14px;
+    resize: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.commentInputWrapper textarea:focus {
+    border-color: var(--secondary-text);
+}
+
+.commentFormActions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btnSubmitComment {
+    background-color: var(--text-color);
+    color: var(--sidebar-bg);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 8px 20px;
+    border-radius: 500px;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btnSubmitComment:hover {
+    transform: scale(1.05);
+    background-color: #f2f2f2;
+}
+
+.loginToCommentMsg {
+    padding: 16px;
+    background-color: var(--hover-bg);
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--secondary-text);
+    margin: 16px 0;
+}
+
+.loginToCommentMsg a {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.loginToCommentMsg a:hover {
+    text-decoration: underline;
+}
+
+.commentsList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.btnCancel {
+    display: inline-block; 
+    padding: 12px 24px; 
+    text-align: center;
+    border-radius: 4px; 
+    margin-right: 16px;
+    color: var(--secondary-text);
+}
+
+.btnCancel:hover {
+    color: var(--text-color);
+}

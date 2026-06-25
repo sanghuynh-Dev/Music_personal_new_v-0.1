@@ -1,0 +1,140 @@
+.dashboardHeaderSimple {
+    margin-bottom: 32px;
+}
+
+.titleLabel {
+    font-size: 36px; 
+    font-weight: 800;
+}
+
+.adminTabs {
+    display: flex; 
+    gap: 16px; 
+    margin-top: 20px; 
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+}
+
+.dashboardSplit {
+    display: flex; 
+    gap: 32px;
+}
+
+.dashboardCard {
+    flex: 1;
+    background-color: var(--secondary-bg); 
+    border-radius: 8px; 
+    padding: 24px; 
+    border: 1px solid var(--border-color);
+}
+
+.dashboardList {
+    list-style: none; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 16px;
+}
+
+.dashboardItem {
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    justify-content: space-between;
+}
+
+.dashboardLink {
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    text-decoration: none; 
+    overflow: hidden; 
+    flex-grow: 1;
+}
+
+.dashboardImage {
+    width: 36px; 
+    height: 36px; 
+    border-radius: 50%; 
+    object-fit: cover;
+}
+
+.dashboardPrimaryText {
+    font-size: 14px; 
+    color: var(--text-color);
+}
+
+.dashboardSecondaryText {
+    font-size: 11px; 
+    color: var(--secondary-text); 
+    display: block;
+}
+
+.detailLabel {
+    font-size: 9px; 
+    padding: 2px 6px; 
+    border: 1px solid var(--border-color); 
+    border-radius: 4px;
+}
+
+.emptyMessage {
+    color: var(--secondary-text); 
+    font-size: 14px; 
+    text-align: center;
+}
+
+.gridSongsTableHeader {
+    grid-template-columns: 50px 2.5fr 2fr 1.2fr 1.2fr 1.2fr; 
+    display: grid; 
+    align-items: center;
+}
+
+.gridSongRow {
+    grid-template-columns: 50px 2.5fr 2fr 1.2fr 1.2fr 1.2fr; 
+    display: grid; 
+    align-items: center; 
+    padding: 12px 16px; 
+    border-bottom: 1px solid var(--border-color);
+}
+
+.artistInfo {
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    overflow: hidden;
+}
+
+.userRowImg {
+    border-radius: 50%; 
+    width: 36px; 
+    height: 36px; 
+    object-fit: cover;
+}
+
+.userLink,
+.artistLink {
+    font-weight: 700; 
+    color: var(--text-color); 
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+
+.userEmail,
+.artistEmail {
+    font-size: 13px; 
+    color: var(--secondary-text); 
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+
+.artistCount {
+    font-size: 14px; 
+    font-weight: 600; 
+    color: var(--text-color);
+}
+
+.colActions {
+    text-align: right; 
+    padding-right: 16px;
+}

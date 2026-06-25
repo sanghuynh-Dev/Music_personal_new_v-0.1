@@ -1,0 +1,53 @@
+.gridSongsTableHeader {
+    grid-template-columns: 50px 2.5fr 2fr 1fr 1fr 2fr; 
+    display: grid; 
+    align-items: center;
+}
+
+.gridUserRow {
+    grid-template-columns: 50px 2.5fr 2fr 1fr 1fr 2fr; 
+    display: grid; 
+    align-items: center; 
+    padding: 12px 16px; 
+    border-bottom: 1px solid var(--border-color);
+}
+
+.userInfo {
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    overflow: hidden;
+}
+
+.roleLabel {
+    font-size: 10px; 
+    padding: 2px 8px; 
+    border: 1px solid var(--border-color); 
+    border-radius: 4px; 
+    display: inline-block;
+}
+
+.statusLabel {
+    font-size: 10px; 
+    padding: 2px 8px; 
+    border-radius: 4px; 
+    display: inline-block;
+}
+
+.colActions {
+    display: flex; 
+    justify-content: flex-end;
+    gap: 12px; 
+    align-items: center;
+}
+
+.promoteBtn {
+    font-size: 11px; 
+    padding: 4px 12px; 
+    margin: 0; 
+}
+
+.banBtn {
+    font-size: 11px; 
+    padding: 4px 12px;
+}

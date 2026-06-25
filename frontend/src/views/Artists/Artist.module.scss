@@ -1,0 +1,159 @@
+
+.dashboardHeaderSimple {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.dashboardTitle {
+    font-size: 36px;
+    font-weight: 800;
+}
+
+.dashboardDescription {
+    font-size: 14px;
+    color: var(--secondary-text);
+}
+
+.mainContentSplit {
+    display: flex; 
+    gap: 32px; 
+    margin-bottom: 32px;
+}
+
+.chartSection {
+    flex: 1.5;
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+}
+
+.panelTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.barChartContainer {
+    display: flex; 
+    flex-direction: column; 
+    gap: 16px;
+}
+
+.chartRow {
+    display: flex; 
+    flex-direction: column; 
+    gap: 6px;
+}
+
+.chartHeader {
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 13px;
+}
+
+.chartHeader a {
+    font-weight: 700; 
+    color: var(--text-color);
+    display: block; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    max-width: 215px;
+}
+
+.playCount {
+    color: var(--secondary-text); 
+    font-weight: 600;
+}
+
+.progressTrack {
+    width: 100%; 
+    height: 8px; 
+    background-color: var(--hover-bg); 
+    border-radius: 4px; 
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%; 
+    background: linear-gradient(90deg, var(--primary-color), #2ecc71); 
+    border-radius: 4px;
+}
+
+.emptyMessage {
+    color: var(--secondary-text); 
+    font-size: 14px; 
+    text-align: center; 
+    padding: 24px 0;
+}
+
+.recentUploadsListSection {
+    flex: 1;
+    background-color: var(--secondary-bg);
+    border-radius: 8px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+}
+
+.uploadList {
+    list-style: none; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 16px;
+}
+
+.uploadItem {
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    justify-content: space-between;
+}
+
+.songLink {
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    text-decoration: none; 
+    overflow: hidden; 
+    flex-grow: 1;
+}
+
+.songThumbnail {
+    width: 40px; 
+    height: 40px; 
+    border-radius: 4px;
+    object-fit: cover; 
+    flex-shrink: 0;
+}
+
+.songInfo {
+    overflow: hidden;
+}
+
+.songTitle {
+    font-size: 14px; 
+    color: var(--text-color); 
+    display: block; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+
+.uploadDate {
+    font-size: 11px; 
+    color: var(--secondary-text); 
+    display: block;
+}
+
+.actionGroup {
+    display: flex; 
+    gap: 8px; 
+    flex-shrink: 0;
+}
+
+
+

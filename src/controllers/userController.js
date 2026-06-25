@@ -1,5 +1,6 @@
 const userService = require('../services/userService');
 const songService = require('../services/songService');
+const playlistService = require('../services/playlistService');
 const User = require('../models/User');
 const { cloudinary } = require('../config/cloudinary');
 
@@ -18,9 +19,9 @@ class UserController {
                 return res.status(404).send('User not found');
             }
 
-            const isOwnProfile = targetUserId.toString() === currentUserId?.toString();
+            const isOwnProfile = targetUserId.toString() !== currentUserId?.toString();
 
-            res.render('users/profile', {
+            res.json({
                 title: `${profileData.username}'s Profile`,
                 profileUser: profileData,
                 isOwnProfile,
@@ -52,7 +53,7 @@ class UserController {
             };
 
             await user.save();
-            res.redirect(`/profile/${userId}`);
+            res.json({ user: user });
         } catch (error) {
             console.error('Update avatar error:', error);
             res.status(500).send(error.message);
@@ -79,7 +80,7 @@ class UserController {
             };
 
             await user.save();
-            res.redirect(`/profile/${userId}`);
+            res.json({ user: user });
         } catch (error) {
             console.error('Update header error:', error);
             res.status(500).send(error.message);
@@ -92,7 +93,7 @@ class UserController {
             if (!userId) return res.redirect('/login');
 
             const favoriteSongs = await songService.getFavoriteSongs(userId);
-            res.render('users/favorites', {
+            res.json({
                 title: 'Favorite Songs',
                 songs: favoriteSongs
             });
@@ -122,7 +123,7 @@ class UserController {
             if (!userId) return res.redirect('/login');
 
             const history = await userService.getListeningHistory(userId);
-            res.render('users/history', {
+            res.json({
                 title: 'Listening History',
                 history
             });
@@ -158,6 +159,34 @@ class UserController {
 
             const result = await userService.toggleFollow(userId, targetArtistId, 'unfollow');
             res.json(result);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getUser(req, res) {
+        try {
+            const userId = req.session?.userID;
+
+            if (!userId) {
+                return res.json(null);
+            }
+            const user = await User.findById(userId).populate('followingArtists');
+            res.json(user);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getUserPlayList(req, res) {
+        try {
+            const userId = req.session?.userID;
+
+            if (!userId) {
+                return res.json([]);
+            }
+            const playlist = await playlistService.getUserPlaylists(userId);
+            res.json(playlist);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
