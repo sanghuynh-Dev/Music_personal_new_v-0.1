@@ -18,6 +18,8 @@ const usePlayerStore = create((set, get) => ({
         set({ audioRef: ref });
     },
 
+    setCurrentSong: (song = null) => set({ currentSong: song }),
+
     playSong: async (songId, customQueue = null) => {
         const { currentSong, audioRef, isShuffle,queueIndex,originalQueue,queue } = get();
         // same song => toggle  

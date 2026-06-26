@@ -1,5 +1,6 @@
 
 import { NavLink } from 'react-router-dom';
+import clsx from 'clsx';
 
 import styles from './Admin.module.scss'
 
@@ -21,18 +22,19 @@ function Artists({ artists }) {
                         </div>
                         
                         { artists.map((artist, index) => (
-                            <div className={clsx("song-row", styles.gridSongRow)}>
+                            <div key={artist._id} className={clsx("song-row", styles.gridSongRow)}>
                                 <div className="col-index">
                                     <span className="row-num">{index + 1}</span>
                                 </div>
                                 
                                 {/* <!-- Artist info (links to profile) --> */}
                                 <div className={styles.artistInfo}>
-                                    <img 
-                                        src={ artist.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-avatar.png'} 
+                                    <NavLink to={`/profile/${artist._id}`} style={{display: "flex"}}><img 
+                                        src={ artist.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1781293476/955c965a3e831375a9fc2ed4e7599882_zlbj68.jpg'} 
                                         alt={ artist.username } 
                                         className={styles.userRowImg} 
                                     />
+                                    </NavLink>
                                     <NavLink to={`/profile/${artist._id}`} className={styles.artistLink}>{ artist.username }</NavLink>
                                 </div>
                                 

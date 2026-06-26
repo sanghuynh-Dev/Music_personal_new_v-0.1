@@ -17,6 +17,7 @@
 
 .dashboardSplit {
     display: flex; 
+    flex-wrap: wrap;
     gap: 32px;
 }
 
@@ -84,15 +85,15 @@
 
 .gridSongsTableHeader {
     grid-template-columns: 50px 2.5fr 2fr 1.2fr 1.2fr 1.2fr; 
-    display: grid; 
+    display: grid !important; 
     align-items: center;
 }
 
 .gridSongRow {
     grid-template-columns: 50px 2.5fr 2fr 1.2fr 1.2fr 1.2fr; 
-    display: grid; 
-    align-items: center; 
-    padding: 12px 16px; 
+    display: grid !important; 
+    align-items: center !important; 
+    padding: 12px 16px !important; 
     border-bottom: 1px solid var(--border-color);
 }
 

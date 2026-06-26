@@ -54,7 +54,7 @@ function SideBar({styles}) {
                                 </li>
                             </>
                         )}
-                        { user && !user.role === 'admin' && (
+                        { user && user.role === 'admin' && (
                             <>
                                 <li>
                                     <NavLink to="/admin/dashboard" className={({ isActive }) => isActive ? styles.active : ''}>

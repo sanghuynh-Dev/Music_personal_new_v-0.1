@@ -28,6 +28,7 @@
     border-radius: 8px;
     padding: 24px;
     border: 1px solid var(--border-color);
+    max-width: 330px;
 }
 
 .panelTitle {
@@ -62,7 +63,7 @@
     white-space: nowrap; 
     overflow: hidden; 
     text-overflow: ellipsis;
-    max-width: 215px;
+    max-width: 225px;
 }
 
 .playCount {

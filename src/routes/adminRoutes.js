@@ -12,9 +12,9 @@ router.get('/users', adminController.showUsers);
 router.get('/artists', adminController.showArtists);
 router.get('/songs', adminController.showSongs);
 
-router.post('/user/:id/promote', adminController.promoteUser);
-router.post('/user/:id/ban', adminController.toggleBanUser);
-router.post('/song/:id/delete', adminController.deleteSong);
+router.patch('/user/:id/promote', adminController.promoteUser);
+router.patch('/user/:id/ban', adminController.toggleBanUser);
+router.delete('/song/:id', adminController.deleteSong);
 
 router.get('/', adminController.showDashboard);
 

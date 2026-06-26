@@ -19,6 +19,7 @@ import PlaylistDetail from './views/Playlists/Detail.jsx';
 import PlaylisOption from "./views/partials/footer/PLaylistOption.jsx";
 import CreatePlaylistModal from "./views/partials/footer/CreatePlaylistModal.jsx";
 
+import useSongStore from './stores/songStore.js';
 import usePLaylistStore from './stores/playlistStore.js';
 import usePlayerStore from "./stores/playerStore";
 import appRoute from './routes/appRoute.js';
@@ -31,7 +32,8 @@ function App() {
   const { user } = useAuth();
   const pageRef = useRef(null);
   const [homeData, setHomeData] = useState({});
-  const currentSong = usePlayerStore(s => s.currentSong);
+  const { currentSong } = usePlayerStore();
+  const { reload } = useSongStore();
 
   const setPageRef = usePLaylistStore(s => s.setPageRef);
 
@@ -39,7 +41,7 @@ function App() {
       appRoute.homeRoute().then((data) => {
           setHomeData(data);
       });
-  }, [currentSong]);
+  }, [currentSong, reload]);
 
   useEffect(() => {
       setPageRef(pageRef.current);

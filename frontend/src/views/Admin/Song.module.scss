@@ -1,14 +1,14 @@
 .gridSongTable {
     grid-template-columns: 50px 3fr 2fr 1.5fr 1fr 1fr; 
-    display: grid; 
+    display: grid !important; 
     align-items: center;
 }
 
 .gridSongRow {
     grid-template-columns: 50px 3fr 2fr 1.5fr 1fr 1fr; 
-    display: grid; 
-    align-items: center; 
-    padding: 12px 16px;
+    display: grid !important; 
+    align-items: center !important; 
+    padding: 12px 16px !important;
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -21,8 +21,8 @@
 
 .songRowImg {
     border-radius: 4px; 
-    width: 36px; 
-    height: 36px; 
+    width: 36px !important; 
+    height: 36px !important; 
     object-fit: cover;
 }
 
@@ -32,6 +32,7 @@
     white-space: nowrap; 
     overflow: hidden; 
     text-overflow: ellipsis;
+    max-width: 325px;
 }
 
 .songUploaderProfile {

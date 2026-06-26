@@ -2,11 +2,40 @@
 import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
+import usePlayerStore from '../../stores/playerStore';
+import useSongStore from '../../stores/songStore';
 import stylesAdmin from './Admin.module.scss'
 import stylesSong from './Song.module.scss'
 
 function Songs({ songs }) {
+    const {
+        currentSong,
+        setCurrentSong,
+        isPlaying,
+        playSong,
+        pauseSong,
+        resumeSong,
+    } = usePlayerStore();
 
+    const { deleteSong } = useSongStore();
+    const isCurrentSong = (song) => song._id === currentSong?._id;
+
+    function handleClick(song) {
+        if (isCurrentSong(song)) {
+            if (isPlaying) pauseSong();
+            else resumeSong();
+        } else {
+            playSong(song._id);
+        }
+    }
+
+    function handleDeleteSong(song) {
+        if (isCurrentSong(song)){
+            pauseSong();
+            setCurrentSong(null);
+        } 
+        deleteSong(song._id);
+    }
     return (
        <div className="profile-content">
             <div className="songs-list-container">
@@ -19,20 +48,26 @@ function Songs({ songs }) {
                             <div>Uploader</div>
                             <div>Genre</div>
                             <div>Plays</div>
-                            <div className={stylesAdmin.colActions}>Action</div>
+                            <div className={stylesAdmin.colActions}></div>
                         </div>
                         
                         {songs.map((song, index) => (
-                            <div className={clsx("song-row", stylesSong.gridSongRow)} id={`song-row-${song._id}`}>
+                            <div key={song._id} className={clsx("song-row", stylesSong.gridSongRow)}>
                                 <div className="col-index">
                                     <span className="row-num">{index + 1}</span>
-                                    <button className="row-play-btn play-btn-js" data-id={song._id} onclick="playSong('<%= s._id %>')" title="Play">
-                                        <svg className="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M0 5v14l11-7z"></path>
-                                        </svg>
-                                        <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style={{display: 'none'}}>
-                                            <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
-                                        </svg>
+                                    <button 
+                                        className="row-play-btn play-btn-js" 
+                                        onClick={() => handleClick(song)}
+                                        title="Play">
+                                        { isCurrentSong(song) && isPlaying ? (
+                                            <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
+                                            </svg>
+                                        ): (
+                                            <svg className="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M0 5v14l11-7z"></path>
+                                            </svg>
+                                        )}
                                     </button>
                                 </div>
                                 
@@ -58,7 +93,10 @@ function Songs({ songs }) {
                                 
                                 {/* <!-- Delete action --> */}
                                 <div className={stylesSong.songActions}>
-                                    <button className="action-icon-btn delete-btn" onclick="deleteSongAdmin('<%= s._id %>')" title="Delete track">
+                                    <button 
+                                        className="action-icon-btn delete-btn" 
+                                        onClick={() => handleDeleteSong(song)}
+                                        title="Delete track">
                                         <i className="ti-trash"></i>
                                     </button>
                                 </div>

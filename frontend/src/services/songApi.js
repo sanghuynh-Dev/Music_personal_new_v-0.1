@@ -32,8 +32,20 @@ export const uploadSong = async (data) => {
     return await res.json();
 }
 
+export const deleteSong = async (songId) => {
+    const res = await fetch(`http://localhost:3000/admin/song/${songId}`, {
+        method: "DELETE",
+        headers: {
+            'Accept': 'application/json'
+        },
+        credentials: 'include',
+    });
+    return await res.json();
+}
+
 export default {
   toggleLikeApi,
   editSong,
-  uploadSong
+  uploadSong,
+  deleteSong
 };

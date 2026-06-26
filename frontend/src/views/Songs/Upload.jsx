@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import imageCompression from "browser-image-compression";
 
-import songApi from '../../services/songApi';
+import useSongStore from '../../stores/songStore';
 import { useAuth } from '../../contexts/AuthContext'
 import styles from './Songs.module.scss'
 function Upload() {
@@ -14,6 +14,7 @@ function Upload() {
 
     const [file, setFile] = useState(null)
     const [image, setImage] = useState(null)
+    const { uploadSong } = useSongStore();
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -30,9 +31,8 @@ function Upload() {
         formData.append("image", compressed);
         formData.append("file", file);
 
-        const res = await songApi.uploadSong(formData);
-        console.log(res);
-        if (res.success) navigate('/');
+        const data = await uploadSong(formData);
+        if (data.success) navigate('/');
     }
 
     return (

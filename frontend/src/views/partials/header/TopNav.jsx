@@ -12,6 +12,7 @@ function TopNav() {
     function handleLogout() {
         appRoute.logout();
         setUser(null);
+        navigate('/login');
     }
 
     async function handleSearch(e) {

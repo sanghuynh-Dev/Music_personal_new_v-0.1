@@ -34,7 +34,7 @@ function Overview({ stats, recentUsers, recentSongs }) {
                     </div>
                     <div>
                         <span className="stat-label" style={{fontSize: '11px'}}>TRACKS</span>
-                        <strong className="stat-value">{ stats?.totalTracks }</strong>
+                        <strong className="stat-value">{ stats?.totalSongs }</strong>
                     </div>
                 </div>
 
@@ -57,9 +57,9 @@ function Overview({ stats, recentUsers, recentSongs }) {
                     <ul className={styles.dashboardList}>
                         { recentUsers && recentUsers.length > 0 ?(
                             recentUsers.map((user) => (
-                                <li className={styles.dashboardItem}>
+                                <li key={user._id} className={styles.dashboardItem}>
                                     <NavLink to={`/profile/${user._id}`} className={styles.dashboardLink}>
-                                        <img src={user.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-avatar.png'} alt={user.username} className={styles.dashboardImage}/>
+                                        <img src={user.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1781293476/955c965a3e831375a9fc2ed4e7599882_zlbj68.jpg'} alt={user.username} className={styles.dashboardImage}/>
                                         <div>
                                             <strong className={styles.dashboardPrimaryText}>{user.username}</strong>
                                             <span className={styles.dashboardSecondaryText}>{user.email}</span>
@@ -75,12 +75,12 @@ function Overview({ stats, recentUsers, recentSongs }) {
                 </div>
 
                 {/* <!-- Right: Recent Uploads --> */}
-                <div className={styles.dashboardCard}>
+                <div className={styles.dashboardCard} style={{ flex: "2"}}>
                     <h3 className="panel-title" style={{marginBottom: '20px'}}>Recently Uploaded Tracks</h3>
                     <ul className={styles.dashboardList}>
                         { recentSongs && recentSongs.length > 0 ?(
                             recentSongs.map((song) => (
-                                <li className={styles.dashboardItem}>
+                                <li key={song._id} className={styles.dashboardItem}>
                                     <NavLink to={`/songs/${song._id}`} className={styles.dashboardLink}>
                                         <img src={song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png'} alt={song.title} className={styles.dashboardImage} style={{borderRadius: '4px' }}/>
                                         <div>

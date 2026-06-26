@@ -29,7 +29,7 @@ function PlaylisOption() {
             <div className={styles.playlistModal}>
                 <div className={styles.playlistModalHeader}>
                     <h3>Create Playlist</h3>
-                    <button className="modal-close-btn">&times;</button>
+                    <button className="modal-close-btn" onClick={toggleModal}>&times;</button>
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className={styles.modalFormGroup}>

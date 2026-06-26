@@ -49,7 +49,7 @@ class AdminController {
                 .sort({ createdAt: -1 })
                 .lean();
 
-            res.render('admin/users', {
+            res.json({
                 title: 'User Management',
                 users
             });
@@ -121,7 +121,7 @@ class AdminController {
             if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
                 return res.json({ success: true, user });
             }
-            res.redirect('/admin/users');
+            // res.redirect('/admin/users');
         } catch (error) {
             console.error('Promote user error:', error);
             if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
@@ -149,7 +149,7 @@ class AdminController {
             if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
                 return res.json({ success: true, user });
             }
-            res.redirect('/admin/users');
+            // res.redirect('/admin/users');
         } catch (error) {
             console.error('Toggle ban error:', error);
             if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
@@ -180,7 +180,7 @@ class AdminController {
             if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
                 return res.json({ success: true });
             }
-            res.redirect('/admin/songs');
+            // res.redirect('/admin/songs');
         } catch (error) {
             console.error('Admin delete song error:', error);
             if (req.xhr || req.headers.accept?.indexOf('json') > -1) {

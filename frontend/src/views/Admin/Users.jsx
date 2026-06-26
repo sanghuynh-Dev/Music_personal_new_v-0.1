@@ -1,11 +1,19 @@
 
 import { NavLink } from 'react-router-dom';
+import clsx from 'clsx';
 
+
+import useAdminStore from '../../stores/adminStore';
 import stylesAdmin from './Admin.module.scss'
 import stylesUser from './User.module.scss'
 
 function Users({ users }) {
+    const { toggleBan, promoteToArtist } = useAdminStore();
 
+    function handleBanUser(userId, status) {
+        const actionText = status === 'banned' ? 'unban' : 'ban';
+        toggleBan(userId, actionText);
+    }
     return (
        <div className="profile-content">
             <div className="songs-list-container">
@@ -18,22 +26,23 @@ function Users({ users }) {
                             <div>Email</div>
                             <div>Role</div>
                             <div>Status</div>
-                            <div className={stylesAdmin.colActions}>Actions</div>
+                            <div className={stylesAdmin.colActions}></div>
                         </div>
                         
                         { users.map((user, index) => (
-                            <div className={clsx("song-row", stylesUser.gridUserRow)} id={`user-row-${user._id}`}>
+                            <div key={user._id} className={clsx("song-row", stylesUser.gridUserRow)}>
                                 <div className="col-index">
                                     <span className="row-num">{ index + 1 }</span>
                                 </div>
                                 
                                 {/* <!-- User Name/Avatar click link --> */}
                                 <div className={stylesUser.userInfo}>
-                                    <img 
-                                        src={user.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-avatar.png' } 
+                                    <NavLink to={`/profile/${user._id}`} style={{display: "flex"}}><img 
+                                        src={user.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1781293476/955c965a3e831375a9fc2ed4e7599882_zlbj68.jpg' } 
                                         alt={user.username} 
                                         className={stylesAdmin.userRowImg} 
                                     />
+                                    </NavLink>
                                     <NavLink to={`/profile/${user._id}`} className={stylesAdmin.userLink}>{user.username}</NavLink>
                                 </div>
                                 
@@ -43,8 +52,7 @@ function Users({ users }) {
                                 {/* <!-- Role Badge --> */}
                                 <div>
                                     <span 
-                                        className={clsx("detail-label role-label", stylesAdmin.roleLabel)} 
-                                        id={`role-badge-${user._id}`}>
+                                        className={clsx("detail-label", stylesUser.roleLabel)}>
                                         {user.role.toUpperCase()}
                                     </span>
                                 </div>
@@ -53,11 +61,10 @@ function Users({ users }) {
                                 <div>
                                     <span 
                                         className={clsx(
-                                            "detail-label status-label", 
-                                            stylesAdmin.statusLabel,
+                                            "detail-label", 
+                                            stylesUser.statusLabel,
                                             user.status === 'banned' ? 'banned' : 'normal'
-                                        )}  
-                                        id={`status-badge-${user._id}`}>
+                                        )}>
                                         {user.status.toUpperCase()}
                                     </span>
                                 </div>
@@ -67,11 +74,10 @@ function Users({ users }) {
                                     {/* <!-- Promote to Artist button --> */}
                                     <button 
                                         className={clsx(
-                                            "btn-follow-action promote-btn", 
+                                            "btn-follow-action", 
                                             stylesUser.promoteBtn
-                                        )} 
-                                        id={`promote-btn-${user._id}`} 
-                                        onclick="promoteToArtist('<%= u._id %>')" 
+                                        )}
+                                        onClick={() => promoteToArtist(user._id)} 
                                         style={{display: `${user.role === 'user' ? 'inline-block' : 'none'}`}}>
                                         Promote
                                     </button>
@@ -83,8 +89,7 @@ function Users({ users }) {
                                             stylesUser.banBtn,
                                             user.status === 'banned' ? 'banned' : 'normal'
                                         )} 
-                                        id={`ban-btn-${user._id}`} 
-                                        onclick="toggleBan('<%= u._id %>')" >
+                                        onClick={() => handleBanUser(user._id, user.status)}>
                                         {user.status === 'banned' ? 'Unban' : 'Ban'}
                                     </button>
                                 </div>

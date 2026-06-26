@@ -121,6 +121,10 @@
     font-size: 11px;
     color: var(--primary-color);
     text-align: center;
+    // white-space: nowrap; 
+    // overflow: hidden; 
+    // text-overflow: ellipsis;
+    // max-width: 250px;
 }
 
 .formSubmitWrapper {
