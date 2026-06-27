@@ -15,6 +15,7 @@ function PlaylisOption() {
         playlistPosition,
         addSongToPlaylist,
         closeMenu,
+        reloadPlaylist,
         pageRef,
         toggleModal
     } = usePlaylistStore();
@@ -23,7 +24,7 @@ function PlaylisOption() {
         apiUser.getUserPlayList().then((userPlayLists) => {
             setUserPlayLists(userPlayLists);
         });
-    }, []);
+    }, [reloadPlaylist]);
     // close dropdown when click outside
     useEffect(() => {
         if (!isMenuOpen) return;

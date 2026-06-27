@@ -356,3 +356,13 @@
     font-size: 14px;
     padding: 24px 0;
 }
+
+.empty-feed,
+.empty-profile-tracks,
+.empty-favorites,
+.empty-history {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}

@@ -5,7 +5,7 @@ export const usePLaylistStore = create((set, get) => ({
     isMenuOpen: false,
     activeSongId: null,
     isModalOpen: false,
-    reload: false,
+    reloadPlaylist: false,
     pageRef: null,
     playlistPosition: { x: 0, y: 0 },
 
@@ -38,7 +38,6 @@ export const usePLaylistStore = create((set, get) => ({
 
     addSongToPlaylist: async (playlistId, songId) => {
         const data = await playlistApi.addSongToPlaylist(playlistId, songId);
-        console.log(data)
         if (data.success) {
             alert('Added to playlist!');
         } else {
@@ -51,9 +50,11 @@ export const usePLaylistStore = create((set, get) => ({
 
     removeSongToPlaylist: async (playlistId, songId) => {
         const data = await playlistApi.removeSongToPlaylist(playlistId, songId);
-        console.log(data)
         if (data.success) {
             alert('song removed!');
+            set({
+                reloadPlaylist: !get().reloadPlaylist
+            })
         } else {
             alert(data.error || 'Failed to remove song');
         }
@@ -61,12 +62,11 @@ export const usePLaylistStore = create((set, get) => ({
 
     createPlaylist: async (name) => {
         const data = await playlistApi.createPlaylist(name);
-        console.log(data)
         if (data.success) {
             alert('Playlist created!');
             set({
                 isModalOpen: false,
-                reload: !get().reload
+                reloadPlaylist: !get().reloadPlaylist
             })
         } else {
             alert(data.error || 'Failed to create playlist');
@@ -78,11 +78,10 @@ export const usePLaylistStore = create((set, get) => ({
             return;
         }
         const data = await playlistApi.deletePlaylist(playlistId);
-        console.log(data)
         if (data.success) {
             alert('Playlist deleted!');
             set({
-                reload: !get().reload
+                reloadPlaylist: !get().reloadPlaylist
             })
         } else {
             alert(data.error || 'Failed to delete playlist');

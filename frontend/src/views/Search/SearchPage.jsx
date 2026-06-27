@@ -4,6 +4,7 @@ import clsx from "clsx";
 
 import useSongStore from "../../stores/songStore";
 import usePlayerStore from "../../stores/playerStore";
+import usePlaylistStore from "../../stores/playlistStore";
 import { useAuth } from "../../contexts/AuthContext.jsx";
 import appRoute from '../../routes/appRoute.js';
 import styles from './SearchPage.module.scss'
@@ -24,6 +25,8 @@ function SearchPage() {
     const setSongs = useSongStore(s => s.setSongs);
     const songsData = useSongStore(s => s.songs);
 
+    const { openMenu } = usePlaylistStore();
+
     const isCurrentSong = (song) => song._id === currentSong?._id;
 
     function handleClick(song) {
@@ -34,6 +37,14 @@ function SearchPage() {
             playSong(song._id);
         }
     }
+    function handleShowPlaylist (song,e) {
+        e.stopPropagation();
+        const rect = e.currentTarget.getBoundingClientRect();
+        openMenu(song._id, {
+            x: rect.left - 200,
+            y: rect.bottom 
+        });
+    };
           
     async function handleLike(song) {
         toggleLikeLocal(song._id);
@@ -109,7 +120,10 @@ function SearchPage() {
                                                     title="Like">
                                                     <i className="ti-heart"></i>
                                                 </button>
-                                                <button className="action-icon-btn opt-btn" onclick="showAddToPlaylistMenu(event, '<%= song._id %>')" title="Add to Playlist">
+                                                <button 
+                                                    className="action-icon-btn opt-btn" 
+                                                    onClick={(e) => handleShowPlaylist(song,e)}
+                                                    title="Add to Playlist">
                                                     <i className="ti-more-alt"></i>
                                                 </button>
                                             </>

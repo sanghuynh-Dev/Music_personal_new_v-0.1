@@ -19,6 +19,11 @@ import PlaylistDetail from './views/Playlists/Detail.jsx';
 import PlaylisOption from "./views/partials/footer/PLaylistOption.jsx";
 import CreatePlaylistModal from "./views/partials/footer/CreatePlaylistModal.jsx";
 
+// components/modals
+import ConfirmModal from "./components/modals/ConfirmDialog.jsx";
+import Alert from "./components/modals/AlertDialog.jsx";
+import UploadProgress from "./components/modals/UploadProgressPanel.jsx";
+
 import useSongStore from './stores/songStore.js';
 import usePLaylistStore from './stores/playlistStore.js';
 import usePlayerStore from "./stores/playerStore";
@@ -84,6 +89,9 @@ function App() {
       <Footer />
       <PlaylisOption />
       <CreatePlaylistModal />
+      <ConfirmModal />
+      <Alert />
+      <UploadProgress />
     </>
   )
 };

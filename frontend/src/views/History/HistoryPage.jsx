@@ -4,6 +4,7 @@ import clsx from "clsx";
 
 import usePlayerStore from "../../stores/playerStore";
 import useSongStore from "../../stores/songStore";
+import usePlaylistStore from "../../stores/playlistStore";
 import appRoute from '../../routes/appRoute.js';
 function HistoryPage() {
     const [historyData, setHistoryData] = useState({});
@@ -16,6 +17,8 @@ function HistoryPage() {
     const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
     const setSongs = useSongStore(s => s.setSongs);
     const songsData = useSongStore(s => s.songs);
+
+    const { openMenu } = usePlaylistStore();
 
     const isCurrentSong = (song) => song._id === currentSong?._id;
 
@@ -30,6 +33,15 @@ function HistoryPage() {
     async function handleLike(song) {
         toggleLikeLocal(song._id);
     } 
+
+    function handleShowPlaylist (song,e) {
+        e.stopPropagation();
+        const rect = e.currentTarget.getBoundingClientRect();
+        openMenu(song._id, {
+            x: rect.left - 200,
+            y: rect.bottom 
+        });
+    };
 
     useEffect(() => {
         const historySong = historyData.history?.map(item => ({
@@ -107,7 +119,10 @@ function HistoryPage() {
                                                 title="Like">
                                                 <i className="ti-heart"></i>
                                             </button>
-                                            <button className="action-icon-btn opt-btn" onclick="showAddToPlaylistMenu(event, '<%= song._id %>')" title="Add to Playlist">
+                                            <button 
+                                                className="action-icon-btn opt-btn" 
+                                                onClick={(e) => handleShowPlaylist(song,e)}
+                                                title="Add to Playlist">
                                                 <i className="ti-more-alt"></i>
                                             </button>
                                         </div>

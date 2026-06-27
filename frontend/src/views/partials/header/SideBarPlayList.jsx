@@ -9,7 +9,7 @@ function SideBarPlayList({styles}) {
 
     const {
         toggleModal,
-        reload
+        reloadPlaylist
     } = usePLaylistStore();
     
     useEffect(() => {
@@ -22,7 +22,7 @@ function SideBarPlayList({styles}) {
         apiUser.getUserPlayList().then((userPlayLists) => {
             setUserPlayLists(userPlayLists);
         });
-    }, [reload]);
+    }, [reloadPlaylist]);
 
     return (
        <div className={styles.sidebarPlaylists}>

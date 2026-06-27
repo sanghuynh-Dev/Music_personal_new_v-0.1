@@ -4,7 +4,7 @@ function StatsCardsRow({ stats }) {
     return (
         <div className="stats-cards-grid">
             <div className="stat-card">
-                <div className="stat-icon-circle" style={{ backgroundColor: "rgba(29, 185, 84, 0.1)"}, { color: "var(--primary-color)"}}>
+                <div className="stat-icon-circle" style={{ backgroundColor: "rgba(29, 185, 84, 0.1)", color: "var(--primary-color)"}}>
                     <i className="ti-music-alt"></i>
                 </div>
                 <div>
@@ -16,7 +16,7 @@ function StatsCardsRow({ stats }) {
             </div>
 
             <div className="stat-card">
-                <div className="stat-icon-circle" style={{ backgroundColor:"rgba(52, 152, 219, 0.1)"}, {color:" #3498db"}}>
+                <div className="stat-icon-circle" style={{ backgroundColor:"rgba(52, 152, 219, 0.1)",color:" #3498db"}}>
                     <i className="ti-headphone"></i>
                 </div>
                 <div>
@@ -28,7 +28,7 @@ function StatsCardsRow({ stats }) {
             </div>
 
             <div className="stat-card">
-                <div className="stat-icon-circle" style={{ backgroundColor: "rgba(241, 196, 15, 0.1)"},{ color:" #f1c40f"}}>
+                <div className="stat-icon-circle" style={{ backgroundColor: "rgba(241, 196, 15, 0.1)", color:" #f1c40f"}}>
                     <i className="ti-heart"></i>
                 </div>
                 <div>

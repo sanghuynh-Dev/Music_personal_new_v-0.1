@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { useAuth } from "../../contexts/AuthContext";
 import useSongStore from "../../stores/songStore";
 import usePlayerStore from "../../stores/playerStore";
+import usePlaylistStore from "../../stores/playlistStore";
 import { updateAvatarUser, updateBannerUser } from "../../services/userApi";
 import appRoute from "../../routes/appRoute"
 import styles from './User.module.scss'
@@ -21,10 +22,17 @@ function Profile() {
     const playSong = usePlayerStore(s => s.playSong);
     const pauseSong = usePlayerStore(s => s.pauseSong);
     const resumeSong = usePlayerStore(s => s.resumeSong);
+    const setCurrentSong = usePlayerStore(s => s.setCurrentSong);
 
-    const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
-    const setSongs = useSongStore(s => s.setSongs);
-    const songsData = useSongStore(s => s.songs);
+    const { 
+        deleteSong, 
+        songs, 
+        setSongs, 
+        toggleLikeLocal,
+        reload 
+    } = useSongStore();
+
+    const { openMenu } = usePlaylistStore();
 
     const isCurrentSong = (song) => song._id === currentSong?._id;
 
@@ -36,6 +44,15 @@ function Profile() {
             playSong(song._id);
         }
     }   
+
+    function handleShowPlaylist (song,e) {
+        e.stopPropagation();
+        const rect = e.currentTarget.getBoundingClientRect();
+        openMenu(song._id, {
+            x: rect.left - 200,
+            y: rect.bottom 
+        });
+    };
     async function handleLike(song) {
         toggleLikeLocal(song._id);
     } 
@@ -64,6 +81,14 @@ function Profile() {
             setUser(data.user);
             URL.revokeObjectURL(preview);
         })
+    }
+
+    function handleDeleteSong(song) {
+        if (isCurrentSong(song)){
+            pauseSong();
+            setCurrentSong(null);
+        } 
+        deleteSong(song._id);
     }
 
     async function handleChangeBanner(e) {
@@ -99,9 +124,8 @@ function Profile() {
     useEffect(() => {
         appRoute.getProfileUser(id).then(data => {
             setProfileData(data);
-            console.log(data)
         });
-    }, [id]);
+    }, [id, reload]);
     return (
         <div className="profile-container event-chang-icon-js">
             {/* <!-- Header Background Cover --> */}
@@ -112,7 +136,7 @@ function Profile() {
                         : `url(${profileData.profileUser?.background?.url || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1974&auto=format&fit=crop'})` 
                         }}>
                 { !profileData.isOwnProfile && (
-                    <form action="/profile/header" method="POST" encType="multipart/form-data" className={styles.headerUploadForm} id="header-form">
+                    <form encType="multipart/form-data" className={styles.headerUploadForm} id="header-form">
                         <label htmlFor="header-file-input" className={styles.btnChangeHeader} title="Change Banner">
                             <i className="ti-camera"></i> Update Banner
                         </label>
@@ -174,7 +198,7 @@ function Profile() {
                                 <div className="col-actions"></div>
                             </div>
                             
-                            { songsData?.map((song, index) => (
+                            { songs?.map((song, index) => (
                                 <div key={song._id} className="song-row" id={`song-row-${song._id}`} data-id={song._id}>
                                     <div className="col-index">
                                         <span className="row-num">{index + 1}</span>
@@ -211,11 +235,17 @@ function Profile() {
                                                     title="Like">
                                                     <i className="ti-heart"></i>
                                                 </button>
-                                                <button className="action-icon-btn opt-btn" onclick="showAddToPlaylistMenu(event, '<%= song._id %>')" title="Add to Playlist">
+                                                <button 
+                                                    className="action-icon-btn opt-btn" 
+                                                    onClick={(e) => handleShowPlaylist(song,e)}
+                                                    title="Add to Playlist">
                                                     <i className="ti-more-alt"></i>
                                                 </button>
                                                 { !profileData.isOwnProfile  || (user && user.role === 'admin') && (
-                                                    <button className="action-icon-btn delete-btn" onclick="deleteSong('<%= song._id %>')" title="Delete Song">
+                                                    <button 
+                                                        className="action-icon-btn delete-btn" 
+                                                        onClick={() => handleDeleteSong(song)} 
+                                                        title="Delete Song">
                                                         <i className="ti-trash"></i>
                                                     </button>
                                                 )}

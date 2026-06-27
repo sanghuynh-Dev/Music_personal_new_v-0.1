@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import useSongStore from "../../stores/songStore";
 import usePlayerStore from "../../stores/playerStore";
+import usePlaylistStore from "../../stores/playlistStore";
 import { useAuth } from '../../contexts/AuthContext'
 import appRoute from '../../routes/appRoute'
 import styles from './Songs.module.scss'
@@ -10,16 +11,22 @@ function Detail() {
     const { id } = useParams();
     const { user } = useAuth();
     const [songData, setSongData] = useState({});
+    // player
     const currentSong = usePlayerStore(s => s.currentSong);
     const isPlaying = usePlayerStore(s => s.isPlaying);
     const playSong = usePlayerStore(s => s.playSong);
     const pauseSong = usePlayerStore(s => s.pauseSong);
     const resumeSong = usePlayerStore(s => s.resumeSong);
 
+    // song
     const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
     const setSongDetail = useSongStore(s => s.setSongDetail);
     const songsData = useSongStore(s => s.songDetail);
     const isCurrentSong = (song) => song._id === currentSong?._id;
+
+    // playlist
+    const { openMenu } = usePlaylistStore();
+
 
     function handleClick(song) {
         if (isCurrentSong(song)) {
@@ -30,6 +37,14 @@ function Detail() {
         }
     }
 
+    function handleShowPlaylist (song,e) {
+        e.stopPropagation();
+        const rect = e.currentTarget.getBoundingClientRect();
+        openMenu(song._id, {
+            x: rect.left - 200,
+            y: rect.bottom 
+        });
+    };
     async function handleLike(song) {
         toggleLikeLocal(song._id);
     } 
@@ -93,7 +108,10 @@ function Detail() {
                                     title="Like">
                                     <i className="ti-heart"></i>
                                 </button>
-                                <button className={clsx(styles.detailActionBtn, "opt-btn")} onclick="showAddToPlaylistMenu(event, '<%= songData._id %>')" title="Add to Playlist">
+                                <button 
+                                    className={clsx(styles.detailActionBtn, "opt-btn")} 
+                                    onClick={(e) => handleShowPlaylist(songData,e)} 
+                                    title="Add to Playlist">
                                     <i className="ti-more-alt"></i>
                                 </button>
                                 { songData.uploadedBy?._id.toString() === user._id.toString() || (user && user.role === 'admin') && (
@@ -126,7 +144,7 @@ function Detail() {
                         <form id="comment-form" className={styles.commentInputForm}>
                             <div className={styles.commentInputWrapper}>
                                 <img 
-                                    src={user?.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-avatar.png'} 
+                                    src={user?.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1781293476/955c965a3e831375a9fc2ed4e7599882_zlbj68.jpg'} 
                                     alt="My avatar" 
                                     className={styles.commentUserAvatar}/>
                                 <textarea id="comment-textarea" placeholder="Add a comment..." required></textarea>

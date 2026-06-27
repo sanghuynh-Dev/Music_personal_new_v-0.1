@@ -181,7 +181,10 @@ function MainSongFeed({ topSongs, songs }) {
                                                 title="Like">
                                                 <i className="ti-heart"></i>
                                             </button>
-                                            <button className="action-icon-btn opt-btn" onclick="showAddToPlaylistMenu(event, '<%= song._id %>')" title="Add to Playlist">
+                                            <button 
+                                                className="action-icon-btn opt-btn" 
+                                                onClick={(e) => handleShowPlaylist(song,e)} 
+                                                title="Add to Playlist">
                                                 <i className="ti-more-alt"></i>
                                             </button>
                                         </>

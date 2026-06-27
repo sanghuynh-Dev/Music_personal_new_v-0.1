@@ -1,3 +1,6 @@
+import axios from 'axios';
+
+
 export const toggleLikeApi = async (songId) => {
     const res = await fetch(`http://localhost:3000/songs/${songId}/like`, {
         method: "POST",
@@ -20,17 +23,27 @@ export const editSong = async (songId,data) => {
     return await res.json();
 }
 
-export const uploadSong = async (data) => {
-    const res = await fetch(`http://localhost:3000/songs/upload`, {
-        method: "POST",
-        headers: {
-            'Accept': 'application/json'
-        },
-        credentials: 'include',
-        body: data,
-    });
-    return await res.json();
-}
+export const uploadSong = async (data, onProgress) => {
+    const res = await axios.post(
+        "http://localhost:3000/songs/upload",
+        data,
+        {
+            withCredentials: true,
+            headers: {
+                Accept: "application/json"
+            },
+            onUploadProgress: (event) => {
+                const percent = Math.round(
+                    (event.loaded * 100) / event.total
+                );
+
+                onProgress?.(percent);
+            }
+        }
+    );
+
+    return res.data;
+};
 
 export const deleteSong = async (songId) => {
     const res = await fetch(`http://localhost:3000/admin/song/${songId}`, {

@@ -2,12 +2,18 @@
 import { create } from "zustand";
 import songApi from "../services/songApi";
 import usePlayerStore from "./playerStore";
+import useConfirmStore from "./confirmStore";
+import useAlertStore from "./alertStore";
 
 export const useSongStore = create((set, get) => ({
     topSongs: [],
     songs: [],
     reload: false,
     songDetail: null,
+
+    progress: 0,
+    uploading: false,
+    uploadStatus: "",
 
     setTopSongs: (songs) => set({ topSongs: songs }),
     setSongDetail: (song) => set({ songDetail: song }),
@@ -46,32 +52,78 @@ export const useSongStore = create((set, get) => ({
     },
 
     deleteSong: async (songId) => {
-        if (!confirm('Are you sure you want to delete this track? This action cannot be undone.')) {
+        const confirmed  = await useConfirmStore.getState().openModal('Delete this song?', 'This action cannot be undone.');
+        if (!confirmed ) {
             return;
         }
         const data = await songApi.deleteSong(songId);
 
         if (data.success) {
-            alert('Song deleted successfully!');
             set({
                 reload: !get().reload
             })
+            useAlertStore.getState().openModal('Success','Song deleted successfully.');
+            setTimeout(() => {
+                useAlertStore.getState().closeModal();
+            }, 3000);
         } else {
             alert(data.error || 'Failed to delete song');
         }
     },
 
     uploadSong: async (formData) => {
-        const data = await songApi.uploadSong(formData);
-        if (data.success) {
-            alert('Song uploaded successfully!');
+        try {
             set({
-                reload: !get().reload
-            })
-            return data;
-        } else {
-            alert(data.error || 'Failed to upload song');
-            return null;
+                uploading: true,
+                progress: 0,
+                uploadStatus: "Uploading track..."
+            });
+
+            const data = await songApi.uploadSong(
+                formData,
+                (percent) => {
+                    if (percent < 95) {
+                        set({ progress: percent });
+                    } else {
+                        set({
+                            progress: 95,
+                            uploadStatus: "Processing upload..."
+                        });
+                    }
+                }
+            );
+
+            if (data.success) {
+                set({
+                    progress: 100,
+                    uploadStatus: "Completed!"
+                });
+
+                useAlertStore.getState().openModal("Success","Song uploaded successfully.");
+
+                set({
+                    reload: !get().reload
+                });
+
+                setTimeout(() => {
+                    set({
+                        uploading: false,
+                        progress: 0
+                    });
+
+                    useAlertStore.getState().closeModal();
+                }, 1500);
+
+                return data;
+            }
+        } catch (err) {
+            set({
+                uploading: false,
+                progress: 0
+            });
+
+            alert("Upload failed");
+            console.log(err);
         }
     }
 }));

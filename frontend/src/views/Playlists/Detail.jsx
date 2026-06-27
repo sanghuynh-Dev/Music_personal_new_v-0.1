@@ -33,6 +33,7 @@ function Detail() {
     const {
         removeSongToPlaylist,
         deletePlaylist,
+        reloadPlaylist
     } = usePLaylistStore();
     const isCurrentPlaylist = activePlaylistId === id;
 
@@ -56,6 +57,15 @@ function Detail() {
         }
     }
 
+    function handleShowPlaylist (song,e) {
+        e.stopPropagation();
+        const rect = e.currentTarget.getBoundingClientRect();
+        openMenu(song._id, {
+            x: rect.left - 200,
+            y: rect.bottom 
+        });
+    };
+
     function handleDeletePlaylist() {
         deletePlaylist(id);
         navigate('/')
@@ -74,7 +84,8 @@ function Detail() {
 
     useEffect(() => {
         appRoute.playlistRoute(id).then(data => setPlaylistData(data))
-    },[])
+        console.log("playlistData")
+    },[reloadPlaylist,id]);
 
     return (
         <div className="playlist-detail-container event-chang-icon-js">
@@ -180,7 +191,7 @@ function Detail() {
                             ))}
                         </div>
                     ): (
-                        <div className="empty-playlist">
+                        <div className={styles.emptyPlaylist}>
                             <i className="ti-music-alt"></i>
                             <p>This playlist has no songs yet. Go check out the <NavLink to="/">explore</NavLink> page to add some!</p>
                         </div>
