@@ -56,9 +56,35 @@ export const deleteSong = async (songId) => {
     return await res.json();
 }
 
+export const loadComments = async (songId) => {
+    const res = await fetch(`http://localhost:3000/songs/${songId}/comments`, {
+        method: "GET",
+        headers: {
+            'Accept': 'application/json'
+        },
+        credentials: 'include',
+    });
+    return await res.json();
+}
+
+export const addComment = async (songId, data) => {
+    const res = await fetch(`http://localhost:3000/songs/${songId}/comment`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({content: data}),
+    });
+    return await res.json();
+}
+
 export default {
   toggleLikeApi,
   editSong,
   uploadSong,
-  deleteSong
+  deleteSong,
+  loadComments,
+  addComment
 };

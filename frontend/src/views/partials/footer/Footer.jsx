@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink } from 'react-router-dom';
 import { useAuth } from "../../../contexts/AuthContext.jsx";
 import usePlayerStore from "../../../stores/playerStore";
+import useSongStore from "../../../stores/songStore";
 import RenderQueue from "./RenderQueue.jsx";
 import ControlBtn from "./ControlBtn.jsx";
 import styles from './Footer.module.scss'
@@ -20,6 +21,9 @@ function Footer() {
     const setAudioRef = usePlayerStore(s => s.setAudioRef);
     const nextSong = usePlayerStore(s => s.nextSong);
     const repeatMode = usePlayerStore(s => s.repeatMode);
+
+    const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
+
     useEffect(() => {
         setAudioRef(audioRef.current);
     }, [currentSong]);
@@ -33,7 +37,7 @@ function Footer() {
             audioRef.current.play();
         };
         audioRef.current.play();
-        console.log("count");
+        console.log(currentSong);
     }, [currentSong]);
 
     useEffect(() => {
@@ -106,7 +110,9 @@ function Footer() {
                                 
                                 { user && (
                                     <div className={styles.playerSongActions}>
-                                        <button className="action-btn" id="player-btn-like" data-id="">
+                                        <button 
+                                            className={clsx("action-btn", currentSong?.liked && "liked")} 
+                                            onClick={() => toggleLikeLocal(currentSong._id)}>
                                             <i className="ti-heart"></i>
                                         </button>
                                         

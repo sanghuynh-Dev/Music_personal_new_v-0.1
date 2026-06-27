@@ -348,6 +348,15 @@
     color: var(--text-color);
 }
 
+
+.action-btn.liked {
+    color: var(--primary-color);
+}
+
+.action-btn.liked:hover {
+    transform: scale(1.1);
+}
+
 .comments-loading,
 .comment-error,
 .no-comments-msg {

@@ -37,6 +37,10 @@
     cursor: pointer;
 }
 
+.btnChangeHeader:hover {
+    filter: brightness(0.7);
+}
+
 .profileHeaderInfo {
     display: flex;
     align-items: center;

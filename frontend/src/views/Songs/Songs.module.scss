@@ -406,3 +406,57 @@ textarea::-webkit-scrollbar {
 .btnCancel:hover {
     color: var(--text-color);
 }
+
+// comment
+.commentItem {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.commentItem:last-child {
+    border-bottom: none;
+}
+
+.commentItemAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.commentItemContent {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
+}
+
+.commentItemHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.commentUsername {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.commentUsername:hover {
+    text-decoration: underline;
+}
+
+.commentTime {
+    font-size: 11px;
+    color: var(--secondary-text);
+}
+
+.commentText {
+    font-size: 13px;
+    color: var(--secondary-text);
+    line-height: 1.5;
+    white-space: pre-line;
+}

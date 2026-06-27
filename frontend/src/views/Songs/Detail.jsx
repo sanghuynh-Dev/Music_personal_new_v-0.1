@@ -6,6 +6,8 @@ import usePlayerStore from "../../stores/playerStore";
 import usePlaylistStore from "../../stores/playlistStore";
 import { useAuth } from '../../contexts/AuthContext'
 import appRoute from '../../routes/appRoute'
+
+import CommentsSection from './CommentsSection';
 import styles from './Songs.module.scss'
 function Detail() {
     const { id } = useParams();
@@ -51,7 +53,6 @@ function Detail() {
     useEffect(() => {
         appRoute.songDetailRoute(id).then((data) => {
             setSongData(data.song);
-            console.log(data);
         });
     }, []);
 
@@ -137,32 +138,7 @@ function Detail() {
                 </div>
                 
                 {/* <!-- Comments Section --> */}
-                <div className={styles.songCommentsPanel}>
-                    <h3 className={styles.panelTitle}>Comments (<span id="comment-count-label">0</span>)</h3>
-                    
-                    { user ? (
-                        <form id="comment-form" className={styles.commentInputForm}>
-                            <div className={styles.commentInputWrapper}>
-                                <img 
-                                    src={user?.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1781293476/955c965a3e831375a9fc2ed4e7599882_zlbj68.jpg'} 
-                                    alt="My avatar" 
-                                    className={styles.commentUserAvatar}/>
-                                <textarea id="comment-textarea" placeholder="Add a comment..." required></textarea>
-                            </div>
-                            <div className={styles.commentFormActions}>
-                                <button type="submit" className={styles.btnSubmitComment}>Comment</button>
-                            </div>
-                        </form>
-                    ) : (
-                        <div className={styles.loginToCommentMsg}>
-                            <p><NavLink to="/login">Log in</NavLink> to join the conversation.</p>
-                        </div>
-                    )}
-                    <ul className={styles.commentsList} id="comments-list-items">
-                        {/* <!-- Dynamically populated via AJAX --> */}
-                        <li className="comments-loading">Loading comments...</li>
-                    </ul>
-                </div>
+                <CommentsSection songId={id} />
             </div>
         </div>
     )
