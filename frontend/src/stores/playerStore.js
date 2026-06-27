@@ -38,7 +38,7 @@ const usePlayerStore = create((set, get) => ({
         }
         
         try {
-            const res = await fetch(`http://localhost:3000/songs/info/${songId}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/songs/info/${songId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ const usePlayerStore = create((set, get) => ({
                 isPlaying: true
             });
             // save history
-            await fetch(`http://localhost:3000/songs/${songId}/play`, {
+            await fetch(`${import.meta.env.VITE_API_URL}/songs/${songId}/play`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json'
@@ -71,7 +71,7 @@ const usePlayerStore = create((set, get) => ({
                     queueIndex: isShuffle ? queue.indexOf(songId) : originalQueue.indexOf(songId)
                 });
             } else {
-                const queueRes = await fetch(`http://localhost:3000/songs/queue?currentSongId=${songId}`, {
+                const queueRes = await fetch(`${import.meta.env.VITE_API_URL}/songs/queue?currentSongId=${songId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ const usePlayerStore = create((set, get) => ({
     },
 
     playPlaylist: async (playlistId) => {
-        const res = await fetch(`http://localhost:3000/playlists/${playlistId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/playlists/${playlistId}`);
         const playlist = await res.json();
 
         set({
