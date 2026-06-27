@@ -1,5 +1,5 @@
 export const addSongToPlaylist = async (playlistId, songId) => {
-    const response = await fetch(`http://localhost:3000/playlists/${playlistId}/add-song`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/playlists/${playlistId}/add-song`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -12,7 +12,7 @@ export const addSongToPlaylist = async (playlistId, songId) => {
 }
 
 export const removeSongToPlaylist = async (playlistId, songId) => {
-    const response = await fetch(`http://localhost:3000/playlists/${playlistId}/remove-song`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/playlists/${playlistId}/remove-song`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export const removeSongToPlaylist = async (playlistId, songId) => {
 }
 
 export const createPlaylist = async (name) => {
-    const response = await fetch(`http://localhost:3000/playlists/create`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/playlists/create`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ export const createPlaylist = async (name) => {
 }
 
 export const deletePlaylist = async (playlistId) => {
-    const response = await fetch(`http://localhost:3000/playlists/${playlistId}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/playlists/${playlistId}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',

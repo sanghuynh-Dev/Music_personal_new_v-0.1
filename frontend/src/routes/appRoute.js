@@ -1,5 +1,5 @@
 export const homeRoute = async () => {
-    const data = await fetch('http://localhost:3000/', {
+    const data = await fetch(import.meta.env.VITE_API_URL, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -11,7 +11,7 @@ export const homeRoute = async () => {
 }
 
 export const searchRoute = async (q) => {
-    const data = await fetch(`http://localhost:3000/search?q=${q}`, {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/search?q=${q}`, {
         method: 'GET',
         credentials: 'include'
     }).then(res => res.json());
@@ -19,7 +19,7 @@ export const searchRoute = async (q) => {
 }
 
 export const favoritesRoute = async () => {
-    const data = await fetch('http://localhost:3000/favorites', {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/favorites`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -30,7 +30,7 @@ export const favoritesRoute = async () => {
 }
 
 export const historyRoute = async () => {
-    const data = await fetch('http://localhost:3000/history', {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/history`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -41,7 +41,7 @@ export const historyRoute = async () => {
 }
 
 export const dashboardArtistRoute = async () => {
-    const data = await fetch('http://localhost:3000/artist/dashboard', {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/artist/dashboard`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -52,7 +52,7 @@ export const dashboardArtistRoute = async () => {
 }
 
 export const dashboardAdminRoute = async () => {
-    const data = await fetch('http://localhost:3000/admin/dashboard', {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/admin/dashboard`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -63,7 +63,7 @@ export const dashboardAdminRoute = async () => {
 }
 
 export const dashboardAdminGetArtistRoute = async () => {
-    const data = await fetch('http://localhost:3000/admin/artists', {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/admin/artists`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -74,7 +74,7 @@ export const dashboardAdminGetArtistRoute = async () => {
 }
 
 export const dashboardAdminGetUserRoute = async () => {
-    const data = await fetch('http://localhost:3000/admin/users', {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/admin/users`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -85,7 +85,7 @@ export const dashboardAdminGetUserRoute = async () => {
 }
 
 export const dashboardAdminGetSongRoute = async () => {
-    const data = await fetch('http://localhost:3000/admin/songs', {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/admin/songs`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -96,7 +96,7 @@ export const dashboardAdminGetSongRoute = async () => {
 }
 
 export const songDetailRoute = async (songID) => {
-    const data = await fetch(`http://localhost:3000/songs/${songID}`, {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/songs/${songID}`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -107,7 +107,7 @@ export const songDetailRoute = async (songID) => {
 }
 
 export const getSongInfo = async (songID) => {
-    const data = await fetch(`http://localhost:3000/songs/info/${songID}`, {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/songs/info/${songID}`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -118,7 +118,7 @@ export const getSongInfo = async (songID) => {
 }
 
 export const getProfileUser = async (userID) => {
-    const data = await fetch(`http://localhost:3000/profile/${userID}`, {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/profile/${userID}`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -129,7 +129,7 @@ export const getProfileUser = async (userID) => {
 }
 
 export const playlistRoute = async (playlistID) => {
-    const data = await fetch(`http://localhost:3000/playlists/${playlistID}`, {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/playlists/${playlistID}`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -140,7 +140,7 @@ export const playlistRoute = async (playlistID) => {
 }
 
 export const postLogin = async (email, password) => {
-    const data = await fetch(`http://localhost:3000/login`, {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -153,7 +153,7 @@ export const postLogin = async (email, password) => {
 }
 
 export const logout = async () => {
-    const data = await fetch(`http://localhost:3000/logout`, {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/logout`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

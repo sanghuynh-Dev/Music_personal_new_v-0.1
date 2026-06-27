@@ -55,7 +55,11 @@ app.use(async (req, res, next) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: [
+        'http://localhost:5173',
+        "https://music-personal-new-v-0-1.vercel.app"
+    ],
+
     credentials: true
 }));
 

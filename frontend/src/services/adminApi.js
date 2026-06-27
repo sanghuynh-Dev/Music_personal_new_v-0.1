@@ -1,6 +1,6 @@
 
 export const toggleBanUser =  async (userId) => {
-    const data = await fetch(`http://localhost:3000/admin/user/${userId}/ban`, {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/admin/user/${userId}/ban`, {
         method: 'PATCH',
         headers: {
             'Accept': 'application/json'
@@ -12,7 +12,7 @@ export const toggleBanUser =  async (userId) => {
 }
 
 export const promoteToArtist =  async (userId) => {
-    const data = await fetch(`http://localhost:3000/admin/user/${userId}/promote`, {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/admin/user/${userId}/promote`, {
         method: 'PATCH',
         headers: {
             'Accept': 'application/json'

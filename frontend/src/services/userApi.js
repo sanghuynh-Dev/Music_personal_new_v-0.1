@@ -1,6 +1,6 @@
 
 export const getUser =  async () => {
-    const data = await fetch('http://localhost:3000/user', {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/user`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -12,7 +12,7 @@ export const getUser =  async () => {
 }
 
 export const  getUserPlayList = async () => {
-    const data = await fetch('http://localhost:3000/user/playlists', {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/user/playlists`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json'
@@ -24,7 +24,7 @@ export const  getUserPlayList = async () => {
 }
 
 export const updateAvatarUser = async (avatar) => {
-    const data = await fetch('http://localhost:3000/profile/avatar', {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/profile/avatar`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json'
@@ -37,7 +37,7 @@ export const updateAvatarUser = async (avatar) => {
 }
 
 export const updateBannerUser = async (banner) => {
-    const data = await fetch('http://localhost:3000/profile/header', {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/profile/header`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json'
@@ -50,7 +50,7 @@ export const updateBannerUser = async (banner) => {
 }
 
 export const toggleFollowApi = async (artistId,isFollowing) => {
-    const data = await fetch(`http://localhost:3000/artists/${artistId}/${isFollowing ? "unfollow" : "follow"}`, {
+    const data = await fetch(`${import.meta.env.VITE_API_URL}/artists/${artistId}/${isFollowing ? "unfollow" : "follow"}`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json'
