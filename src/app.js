@@ -30,8 +30,11 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     rolling: true,
-    cookie: { sameSite: "none",
-              secure: true } // false for local HTTP dev
+    cookie: { 
+        secure: true,
+        sameSite: "none",
+        httpOnly: true 
+    } // false for local HTTP dev
 }));
 
 // Set session global variables
