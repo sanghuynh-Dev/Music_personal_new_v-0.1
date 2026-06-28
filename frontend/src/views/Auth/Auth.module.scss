@@ -38,6 +38,7 @@
 }
 
 .authFormGroup {
+    position: relative;
     margin-bottom: 20px;
 }
 
@@ -87,4 +88,12 @@
 .authSwitchPrompt a {
     color: var(--primary-color);
     text-decoration: underline;
+}
+
+.passwordVisibilityBtn {
+    font-size: 16px;
+    position: absolute;
+    top: 50%;
+    left: 93%;
+    transform: translate(-50%, -50%);
 }

@@ -1,6 +1,7 @@
 
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { Eye, EyeOff } from "lucide-react";
 
 import useAlert from '../../stores/alertStore'
 import authApi from '../../services/authApi'
@@ -13,6 +14,7 @@ function Register() {
     const [emailError, setEmailError] = useState("");
     const [usernameError, setUsernameError] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const [type, setType] = useState('password');
 
     const [timeoutID, setTimeoutID] = useState(null);
 
@@ -42,7 +44,9 @@ function Register() {
             console.error("Error checking email:", err);
         }
     }
-
+    function togglePasswordVisibility() {
+        setType(type === 'password' ? 'text' : 'password');
+    }
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -121,12 +125,17 @@ function Register() {
                         <input 
                             onChange={(e) => setPassword(e.target.value)}
                             value={password}
-                            type="password" 
+                            type={type} 
                             id="password"
                             name="password" 
                             placeholder="Password" 
                             required/>
                         <div className={styles.errorMsg}>{ passwordError }</div>
+                        <button type="button" className={styles.passwordVisibilityBtn} onClick={togglePasswordVisibility}>
+                            { password && (
+                                type === 'password' ? <Eye size={20} /> : <EyeOff size={20}/>
+                            )}
+                        </button>
                     </div>
                     
                     <button type="submit" className={styles.authSubmitBtn}>Register</button>
