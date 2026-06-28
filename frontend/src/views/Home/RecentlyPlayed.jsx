@@ -38,7 +38,7 @@ function RecentlyPlayed({ recentlyPlayed }) {
                             const song = historyItem.song;
                             return (
                                 <div key={song._id} className={styles.recentSongCard}>
-                                    <img src= {song.imageUrl?.url || "https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png"} alt={song.title}/>
+                                    <img src= {song.imageUrl?.url} alt={song.title}/>
                                     <div className={styles.recentMeta}>
                                         <NavLink to={`/songs/${song._id}`}><h4>{song.title}</h4></NavLink>
                                         <NavLink to={`/profile/${song.uploadedBy?._id}`}><p>{song.artist}</p></NavLink>

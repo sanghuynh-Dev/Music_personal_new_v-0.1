@@ -82,7 +82,7 @@ function Overview({ stats, recentUsers, recentSongs }) {
                             recentSongs.map((song) => (
                                 <li key={song._id} className={styles.dashboardItem}>
                                     <NavLink to={`/songs/${song._id}`} className={styles.dashboardLink}>
-                                        <img src={song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png'} alt={song.title} className={styles.dashboardImage} style={{borderRadius: '4px' }}/>
+                                        <img src={song.imageUrl?.url} alt={song.title} className={styles.dashboardImage} style={{borderRadius: '4px' }}/>
                                         <div>
                                             <strong className={clsx(styles.dashboardPrimaryText, "text-dot")}>{song.title}</strong>
                                             <span className= {styles.dashboardSecondaryText}>by {song.artist}</span>

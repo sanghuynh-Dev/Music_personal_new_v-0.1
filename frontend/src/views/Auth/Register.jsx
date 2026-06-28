@@ -43,6 +43,7 @@ function Register() {
         }
     }
 
+
     async function handleSubmit(e) {
         e.preventDefault();
         console.log("Registering...");
@@ -85,7 +86,7 @@ function Register() {
             <div className={styles.authCard}>
                 <div className={styles.authLogo}>
                     <i className="ti-music-alt"></i>
-                    <h1>Antigravity Music</h1>
+                    <h1>Soundora</h1>
                 </div>
                 
                 <h2>Create an account</h2>

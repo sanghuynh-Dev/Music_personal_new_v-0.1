@@ -159,7 +159,7 @@ function Detail() {
                                         </button>
                                     </div>
                                     <div className="col-title">
-                                        <img src={song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png'} alt={song.title} className="song-row-img"/>
+                                        <img src={song.imageUrl?.url || ''} alt={song.title} className="song-row-img"/>
                                         <div className="song-row-info">
                                             <NavLink to={`/songs/${song._id}`} className="song-row-title">{song.title}</NavLink>
                                             <NavLink to={`/profile/${song.uploadedBy._id}`} className="song-row-artist">{song.artist}</NavLink>

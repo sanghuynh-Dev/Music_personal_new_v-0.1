@@ -48,7 +48,7 @@ function MainContentSplit({ topSongs, recentSongs }) {
                         recentSongs.map(song => (
                             <li key={song._id} className={styles.uploadItem}>
                                 <NavLink className={styles.songLink} to={`/songs/${song._id}`}>
-                                    <img src={song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png'}
+                                    <img src={song.imageUrl?.url}
                                         alt={song.title}
                                         className={styles.songThumbnail}/>
                                     <div className={styles.songInfo}>

@@ -30,7 +30,7 @@ function NewReleases({ newReleases }) {
                     <div className={styles["recentlyPlayedGrid"]}>
                         {newReleases.map((song) => (
                             <div key={song._id} className={styles["recentSongCard"]}>
-                                <img src= {song.imageUrl?.url || "https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png"} alt={song.title}/>
+                                <img src= {song.imageUrl?.url} alt={song.title}/>
                                 <div className={styles["recentMeta"]}>
                                     <NavLink to={`/songs/${song._id}`} style={{ display: "block" }}>
                                         <h4>{song.title}</h4>

@@ -63,7 +63,7 @@ function Detail() {
             <div className={styles.songDetailHeader}>
                 <div className={styles.songDetailThumbnailWrapper}>
                     <img 
-                        src={songData.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png'} 
+                        src={songData.imageUrl?.url || ''} 
                         alt={songData.title} 
                         className={styles.songDetailThumbnail}/>
                 </div>

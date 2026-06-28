@@ -74,7 +74,7 @@ function Songs({ songs }) {
                                 {/* <!-- Track Title / Album art click details link --> */}
                                 <div className={stylesSong.songInfo}>
                                     <img 
-                                        src={song.imageUrl?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1717904033/resources/images/default-thumbnail.png'} 
+                                        src={song.imageUrl?.url} 
                                         alt={song.title} 
                                         className={clsx("song-row-img", stylesSong.songRowImg)}></img>
                                     <NavLink to={`/songs/${song._id}`} className={stylesSong.songLink}>{song.title}</NavLink>
