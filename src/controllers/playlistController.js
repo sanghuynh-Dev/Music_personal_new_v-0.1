@@ -33,7 +33,7 @@ class PlaylistController {
 
             const playlist = await playlistService.getPlaylistById(playlistId, userId);
             if (!playlist) {
-                return res.status(404).send('Playlist not found');
+                return res.json({error: "Playlist not found"});
             }
 
             const isOwner = userId && playlist.user._id.toString() === userId.toString();
@@ -46,7 +46,7 @@ class PlaylistController {
             });
         } catch (error) {
             console.error('Show playlist error:', error);
-            res.status(500).send(error.message);
+            res.status(500).json({error:error.message});
         }
     }
 

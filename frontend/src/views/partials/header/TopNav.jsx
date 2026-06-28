@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useEffect, useContext, useState } from "react";
+import { LogOut } from "lucide-react";
 import { useAuth } from "../../../contexts/AuthContext.jsx";
 import appRoute from '../../../routes/appRoute.js';
 import styles from './Header.module.scss'
@@ -50,7 +51,7 @@ function TopNav() {
                             <span>{user.username}</span>
                         </NavLink>
                         <div className={styles.btnLogout} onClick={handleLogout} title="Sign Out">
-                            <i className="ti-power-off"></i>
+                            <LogOut size={16} />
                         </div>
                     </div>
                 ) : (

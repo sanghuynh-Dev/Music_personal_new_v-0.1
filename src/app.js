@@ -24,18 +24,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
-app.set('trust proxy', 1);
+// app.set('trust proxy', 1);
 
 // Session configuration
 app.use(session({
     secret: process.env.SESSION_SECRET || 'fallback_secret_123',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     rolling: true,
     cookie: { 
-        secure: true,
-        sameSite: "none",
-        httpOnly: true 
+        secure: false,
+        // sameSite: "none",
+        // httpOnly: true 
     } // false for local HTTP dev
 }));
 

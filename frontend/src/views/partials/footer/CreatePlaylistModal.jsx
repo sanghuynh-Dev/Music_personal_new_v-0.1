@@ -21,6 +21,7 @@ function PlaylisOption() {
     function handleSubmit (e) {
         e.preventDefault();
         createPlaylist(name);
+        setName('');
         navigate('/');
     }
 

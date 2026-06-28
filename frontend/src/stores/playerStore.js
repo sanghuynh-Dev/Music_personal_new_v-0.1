@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import useSongStore from "./songStore";
 
 const usePlayerStore = create((set, get) => ({
     currentSong: null,
@@ -53,6 +54,7 @@ const usePlayerStore = create((set, get) => ({
                 return;
             }
             
+            useSongStore.getState().setSongDetail(song);
             set({
                 currentSong: song,
                 isPlaying: true

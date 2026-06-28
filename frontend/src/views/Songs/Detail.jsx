@@ -24,6 +24,7 @@ function Detail() {
     const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
     const setSongDetail = useSongStore(s => s.setSongDetail);
     const songsData = useSongStore(s => s.songDetail);
+    const { reload } = useSongStore();
     const isCurrentSong = (song) => song._id === currentSong?._id;
 
     // playlist
@@ -54,11 +55,8 @@ function Detail() {
         appRoute.songDetailRoute(id).then((data) => {
             setSongData(data.song);
         });
-    }, []);
+    }, [id,reload]);
 
-    useEffect(() => {
-        setSongDetail(songData);
-    }, [songData]);
     return (
         <div className={styles.songDetailContainer}>
             {/* <!-- Song Header Banner --> */}
@@ -104,7 +102,7 @@ function Detail() {
                         { user ? (
                             <>
                                 <button 
-                                    className={clsx(styles.detailActionBtn, songsData?.liked && styles.liked)} 
+                                    className={clsx(styles.detailActionBtn, songData?.liked && styles.liked)} 
                                     onClick={() => handleLike(songData)} 
                                     title="Like">
                                     <i className="ti-heart"></i>

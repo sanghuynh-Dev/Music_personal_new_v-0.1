@@ -119,6 +119,10 @@
     transition: transform 0.2s;
 }
 
+.btnProfileFollow:hover {
+    transform: scale(1.05);
+}
+
 .btnProfileFollow.follow {
     background-color: transparent;
     border: 1px solid var(--text-color);

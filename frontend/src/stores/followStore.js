@@ -3,6 +3,7 @@ import { toggleFollowApi } from "../services/userApi";
 
 const useFollowStore = create((set, get) => ({
     artists: [],
+    reloadFollow: false,
 
     setArtists: (artists) => set({ artists }),
 
@@ -25,10 +26,20 @@ const useFollowStore = create((set, get) => ({
         }));
 
         try {
-            await toggleFollowApi(artistId, isFollowing);
+           const data = await toggleFollowApi(artistId, isFollowing);
+           if (data.success) {
+               set({ reloadFollow: !get().reloadFollow });
+           }
         } catch (err) {
             console.error(err);
         }
+    },
+
+    toggleFollowSingle: async (artistId, isFollowing) => {
+        const data = await toggleFollowApi(artistId, isFollowing);
+        if (data.success) {
+            set({ reloadFollow: !get().reloadFollow });
+        } 
     },
 }));
 

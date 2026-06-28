@@ -20,11 +20,10 @@ import PlaylisOption from "./views/partials/footer/PLaylistOption.jsx";
 import CreatePlaylistModal from "./views/partials/footer/CreatePlaylistModal.jsx";
 
 // components/modals
-import ConfirmModal from "./components/modals/ConfirmDialog.jsx";
-import Alert from "./components/modals/AlertDialog.jsx";
-import UploadProgress from "./components/modals/UploadProgressPanel.jsx";
+
 
 import useSongStore from './stores/songStore.js';
+import useFollowStore from './stores/followStore.js';
 import usePLaylistStore from './stores/playlistStore.js';
 import usePlayerStore from "./stores/playerStore";
 import appRoute from './routes/appRoute.js';
@@ -39,6 +38,8 @@ function App() {
   const [homeData, setHomeData] = useState({});
   const { currentSong } = usePlayerStore();
   const { reload } = useSongStore();
+  const { reloadFollow } = useFollowStore();
+
 
   const setPageRef = usePLaylistStore(s => s.setPageRef);
 
@@ -46,7 +47,7 @@ function App() {
       appRoute.homeRoute().then((data) => {
           setHomeData(data);
       });
-  }, [currentSong, reload]);
+  }, [currentSong, reload,reloadFollow]);
 
   useEffect(() => {
       setPageRef(pageRef.current);
@@ -89,9 +90,7 @@ function App() {
       <Footer />
       <PlaylisOption />
       <CreatePlaylistModal />
-      <ConfirmModal />
-      <Alert />
-      <UploadProgress />
+      
     </>
   )
 };

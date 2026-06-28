@@ -12,6 +12,7 @@ function Suggestions({ topArtists, newSuggestedArtists }) {
     const artistsData = useFollowStore(s => s.artists);
     const toggleFollow = useFollowStore(s => s.toggleFollow);
 
+
     useEffect(() => {
         setArtists(newSuggestedArtists);
     }, [newSuggestedArtists]);

@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import playlistApi from "../services/playlistApi";
+import useAlertStore from "./alertStore";
+import useConfirmStore from "./confirmStore";
 
+let timeoutId = null;
 export const usePLaylistStore = create((set, get) => ({
     isMenuOpen: false,
     activeSongId: null,
@@ -49,40 +52,54 @@ export const usePLaylistStore = create((set, get) => ({
     },
 
     removeSongToPlaylist: async (playlistId, songId) => {
+        if (timeoutId) clearTimeout(timeoutId);
         const data = await playlistApi.removeSongToPlaylist(playlistId, songId);
         if (data.success) {
-            alert('song removed!');
+            useAlertStore.getState().openModal('Success','Song removed from playlist.');
             set({
                 reloadPlaylist: !get().reloadPlaylist
             })
+            timeoutId =setTimeout(() => {
+                useAlertStore.getState().closeModal();
+            }, 3000)
         } else {
             alert(data.error || 'Failed to remove song');
         }
     },
 
     createPlaylist: async (name) => {
+        if (timeoutId) clearTimeout(timeoutId);
         const data = await playlistApi.createPlaylist(name);
         if (data.success) {
-            alert('Playlist created!');
+            useAlertStore.getState().openModal('Success','Playlist created successfully.');
             set({
                 isModalOpen: false,
                 reloadPlaylist: !get().reloadPlaylist
             })
+            timeoutId =setTimeout(() => {
+                useAlertStore.getState().closeModal();
+            }, 3000)
         } else {
             alert(data.error || 'Failed to create playlist');
         }
     },
 
     deletePlaylist: async (playlistId) => {
-        if (!confirm('Are you sure you want to delete this playlist? This action cannot be undone.')) {
+        if (timeoutId) clearTimeout(timeoutId);
+        const confirmed  = await useConfirmStore.getState().openModal('Delete this playlist?', 'This action cannot be undone.');
+        if (!confirmed) {
             return;
         }
         const data = await playlistApi.deletePlaylist(playlistId);
         if (data.success) {
-            alert('Playlist deleted!');
+            useAlertStore.getState().openModal('Success','Playlist deleted successfully.');
             set({
                 reloadPlaylist: !get().reloadPlaylist
             })
+            timeoutId =setTimeout(() => {
+                useAlertStore.getState().closeModal();
+            }, 3000)
+            return data;
         } else {
             alert(data.error || 'Failed to delete playlist');
         }

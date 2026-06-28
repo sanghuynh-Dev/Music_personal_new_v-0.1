@@ -5,6 +5,8 @@ import usePlayerStore from "./playerStore";
 import useConfirmStore from "./confirmStore";
 import useAlertStore from "./alertStore";
 
+let timeoutId = null;
+
 export const useSongStore = create((set, get) => ({
     topSongs: [],
     songs: [],
@@ -14,6 +16,7 @@ export const useSongStore = create((set, get) => ({
     progress: 0,
     uploading: false,
     uploadStatus: "",
+
 
     setTopSongs: (songs) => set({ topSongs: songs }),
     setSongDetail: (song) => set({ songDetail: song }),
@@ -40,32 +43,32 @@ export const useSongStore = create((set, get) => ({
 
             songDetail: state.songDetail?._id === songId
                 ? { ...state.songDetail, liked: data.liked }
-                : state.songDetail
-        }));
+                : state.songDetail,
 
-        // usePlayerStore.setState((state) => ({
-        //     currentSong:
-        //         state.currentSong?._id === songId
-        //             ? { ...state.currentSong, liked: data.liked }
-        //             : state.currentSong
-        // }));
+            reload: !get().reload
+        }));
     },
 
     deleteSong: async (songId) => {
+        if (timeoutId) clearTimeout(timeoutId);
+
         const confirmed  = await useConfirmStore.getState().openModal('Delete this song?', 'This action cannot be undone.');
         if (!confirmed ) {
             return;
         }
         const data = await songApi.deleteSong(songId);
+        console.log(data);
 
         if (data.success) {
             set({
                 reload: !get().reload
             })
             useAlertStore.getState().openModal('Success','Song deleted successfully.');
-            setTimeout(() => {
+
+            timeoutId =setTimeout(() => {
                 useAlertStore.getState().closeModal();
-            }, 3000);
+            }, 3000)
+            
         } else {
             alert(data.error || 'Failed to delete song');
         }
@@ -73,6 +76,7 @@ export const useSongStore = create((set, get) => ({
 
     uploadSong: async (formData) => {
         try {
+            if (timeoutId) clearTimeout(timeoutId);
             set({
                 uploading: true,
                 progress: 0,
@@ -92,6 +96,7 @@ export const useSongStore = create((set, get) => ({
                     }
                 }
             );
+            console.log(data);
 
             if (data.success) {
                 set({
@@ -102,17 +107,17 @@ export const useSongStore = create((set, get) => ({
                 useAlertStore.getState().openModal("Success","Song uploaded successfully.");
 
                 set({
-                    reload: !get().reload
+                    reload: !get().reload,
                 });
-
-                setTimeout(() => {
+                
+                timeoutId = setTimeout(() => {
                     set({
                         uploading: false,
                         progress: 0
                     });
 
                     useAlertStore.getState().closeModal();
-                }, 1500);
+                }, 1500)
 
                 return data;
             }

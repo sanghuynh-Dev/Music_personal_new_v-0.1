@@ -66,9 +66,10 @@ function Detail() {
         });
     };
 
-    function handleDeletePlaylist() {
-        deletePlaylist(id);
-        navigate('/')
+    async function handleDeletePlaylist() {
+        const result = await deletePlaylist(id);
+        if (result.success) navigate('/');
+        
     }
     function removeSong(songID) {
         removeSongToPlaylist(id,songID);
@@ -84,7 +85,6 @@ function Detail() {
 
     useEffect(() => {
         appRoute.playlistRoute(id).then(data => setPlaylistData(data))
-        console.log("playlistData")
     },[reloadPlaylist,id]);
 
     return (

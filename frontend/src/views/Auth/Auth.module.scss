@@ -34,7 +34,7 @@
 }
 
 .authFormGroup {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .authFormGroup input {
@@ -51,9 +51,10 @@
 }
 
 .errorMsg {
+    position: absolute;
     color: #e74c3c;
     font-size: 12px;
-    margin-top: 4px;
+    margin-top: 2px;
 }
 
 .authSubmitBtn {

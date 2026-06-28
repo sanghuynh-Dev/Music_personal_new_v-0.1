@@ -6,6 +6,7 @@ import clsx from "clsx";
 
 import { useAuth } from "../../contexts/AuthContext";
 import useSongStore from "../../stores/songStore";
+import useFollowStore from "../../stores/followStore";
 import usePlayerStore from "../../stores/playerStore";
 import usePlaylistStore from "../../stores/playlistStore";
 import { updateAvatarUser, updateBannerUser } from "../../services/userApi";
@@ -23,6 +24,8 @@ function Profile() {
     const pauseSong = usePlayerStore(s => s.pauseSong);
     const resumeSong = usePlayerStore(s => s.resumeSong);
     const setCurrentSong = usePlayerStore(s => s.setCurrentSong);
+
+    const {toggleFollowSingle,reloadFollow} = useFollowStore();
 
     const { 
         deleteSong, 
@@ -44,6 +47,10 @@ function Profile() {
             playSong(song._id);
         }
     }   
+    function handleFollow(artistId,isFollowing) {
+        toggleFollowSingle(artistId,isFollowing);
+        console.log(profileData);
+    }
 
     function handleShowPlaylist (song,e) {
         e.stopPropagation();
@@ -125,7 +132,7 @@ function Profile() {
         appRoute.getProfileUser(id).then(data => {
             setProfileData(data);
         });
-    }, [id, reload]);
+    }, [id, reload, reloadFollow]);
     return (
         <div className="profile-container event-chang-icon-js">
             {/* <!-- Header Background Cover --> */}
@@ -175,7 +182,9 @@ function Profile() {
                     
                     { profileData.isOwnProfile && user && (
                         <div className="profile-actions">
-                            <button className={clsx(styles.btnProfileFollow, profileData.profileUser?.isFollowing ? "following" : "follow")} onclick="toggleFollow('<%= profileUser._id %>', this)">
+                            <button 
+                                className={clsx(styles.btnProfileFollow, profileData.profileUser?.isFollowing ? "following" : "follow")} 
+                                onClick={() => handleFollow(profileData.profileUser?._id, profileData.profileUser?.isFollowing)}>
                                 {profileData.profileUser?.isFollowing ? 'Following' : 'Follow'}
                             </button>
                         </div>
