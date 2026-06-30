@@ -40,9 +40,10 @@ export const usePLaylistStore = create((set, get) => ({
     },
 
     addSongToPlaylist: async (playlistId, songId) => {
+        if (timeoutId) clearTimeout(timeoutId);
         const data = await playlistApi.addSongToPlaylist(playlistId, songId);
         if (data.success) {
-            alert('Added to playlist!');
+            useAlertStore.getState().openModal('Success','Added to playlist!');
         } else {
             alert(data.error || 'Failed to add song');
         }

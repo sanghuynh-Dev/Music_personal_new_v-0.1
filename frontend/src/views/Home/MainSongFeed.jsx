@@ -66,7 +66,6 @@ function MainSongFeed({ topSongs, songs }) {
             <h2 className="section-title">Top Songs</h2>
             <div className="songs-list-container" style={{marginBottom: '32px'}}>
                 { topSongs && topSongs.length > 0 ? (
-                    // console.log("MainSongFeed"),
                     <div  className="songs-table">
                         <div className="songs-table-header">
                             <div className="col-index">#</div>

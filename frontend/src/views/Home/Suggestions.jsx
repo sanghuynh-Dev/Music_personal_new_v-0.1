@@ -27,7 +27,6 @@ function Suggestions({ topArtists, newSuggestedArtists }) {
                 <h2 className="section-title" style={{marginBottom: '12px', fontSize: '18px'}}>Top Artists</h2>
                 <div className={styles.suggestionsList}>
                     { topArtists && topArtists.length > 0  ? (
-                        // console.log("topArtists"),
                         topArtists.map((artist) => (
                             <div key={artist._id} className={styles.suggestionCard}>
                                 <NavLink to={`/profile/${artist._id}`} className={styles.suggestionInfo}>

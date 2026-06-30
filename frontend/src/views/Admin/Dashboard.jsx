@@ -41,14 +41,12 @@ function Dashboard() {
     useEffect(() => {
         appRoute.dashboardAdminGetArtistRoute().then((data) => {
             setDashboardArtistData(data);
-            console.log("artists", data);
         });
     }, []);
 
     useEffect(() => {
         appRoute.dashboardAdminGetUserRoute().then((data) => {
             setDashboardUserData(data);
-            console.log("users", data);
         });
     }, [reloadAdmin]);
 

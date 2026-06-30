@@ -57,7 +57,6 @@ export const useSongStore = create((set, get) => ({
             return;
         }
         const data = await songApi.deleteSong(songId);
-        console.log(data);
 
         if (data.success) {
             set({
@@ -96,7 +95,6 @@ export const useSongStore = create((set, get) => ({
                     }
                 }
             );
-            console.log(data);
 
             if (data.success) {
                 set({
@@ -128,7 +126,6 @@ export const useSongStore = create((set, get) => ({
             });
 
             alert("Upload failed");
-            console.log(err);
         }
     }
 }));

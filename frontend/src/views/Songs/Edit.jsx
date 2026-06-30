@@ -19,7 +19,6 @@ function Edit() {
         setTitle(song.title || "");
         setGenre(song.genre || "");
         setDescription(song.description || "");
-        console.log("edit");
     }, [song]);
 
     useEffect(() => {
@@ -35,7 +34,6 @@ function Edit() {
             description
         }
         const res = await songApi.editSong(id, data);
-        console.log(res);
         if(res.success) navigate(`/songs/${id}`);
     }
     return (

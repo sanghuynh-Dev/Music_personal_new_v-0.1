@@ -113,7 +113,7 @@ function Detail() {
                     <div className={styles.playlistPlayRow}>
                         <button 
                             className="btn-play-playlist play-list-btn-js" 
-                            onClick={() => handlePlaylistClick(id)}>
+                            onClick={() => handlePlaylistClick()}>
                              {isCurrentPlaylist && isPlaying ? (
                                 <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>

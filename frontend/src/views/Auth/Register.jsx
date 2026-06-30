@@ -50,7 +50,6 @@ function Register() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        console.log("Registering...");
 
         setEmailError("");
         setUsernameError("");
@@ -64,7 +63,6 @@ function Register() {
         try {
 
             const data = await authApi.register(email, username, password);
-            console.log(data);
 
             if (data.success) {
                 openModal("Success", "Registration successful! Please log in.");

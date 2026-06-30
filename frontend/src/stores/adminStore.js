@@ -9,7 +9,6 @@ export const useAdminStore = create((set, get) => ({
         }
 
         const data = await adminApi.toggleBanUser(userId);
-        console.log(data)
         if (data.success) {
             alert('User banned successfully!');
             set({
@@ -25,7 +24,6 @@ export const useAdminStore = create((set, get) => ({
             return;
         }
         const data = await adminApi.promoteToArtist(userId);
-        console.log(data)
         if (data.success) {
             alert('User promoted to Artist successfully!');
             set({

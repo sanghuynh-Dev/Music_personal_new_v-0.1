@@ -45,7 +45,6 @@ function PlaylisOption() {
         if (!isMenuOpen) return;
 
         pageRef.addEventListener("scroll", closeMenu);
-        console.log("isMenuOpen", isMenuOpen);
 
         return () => {
             pageRef.removeEventListener("scroll", closeMenu);

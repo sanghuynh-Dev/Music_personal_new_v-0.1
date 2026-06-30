@@ -30,7 +30,6 @@ function RecentlyPlayed({ recentlyPlayed }) {
     return (
         <>
             { user && recentlyPlayed?.length > 0 && (
-                // console.log("recentlyPlayed"),
                 <section className={clsx(styles.homeSection, "recently-played-section")}>
                     <h2 className={styles.sectionTitle}>Recently Played</h2>
                     <div className={styles.recentlyPlayedGrid}>

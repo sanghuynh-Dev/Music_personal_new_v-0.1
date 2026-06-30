@@ -21,6 +21,7 @@ function Footer() {
     const setAudioRef = usePlayerStore(s => s.setAudioRef);
     const nextSong = usePlayerStore(s => s.nextSong);
     const repeatMode = usePlayerStore(s => s.repeatMode);
+    const activePlaylistId = usePlayerStore(s => s.activePlaylistId);
 
     const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
     const { reload,songDetail } = useSongStore();
@@ -33,13 +34,11 @@ function Footer() {
     useEffect(() => {
         if (!audioRef.current || !currentSong) return;
 
-        console.log(songDetail);
         audioRef.current.src = currentSong.audioUrl.url;
         audioRef.current.load();
         audioRef.current.oncanplaythrough = () => {
             audioRef.current.play();
         };
-        audioRef.current.play();
     }, [currentSong]);
 
     useEffect(() => {

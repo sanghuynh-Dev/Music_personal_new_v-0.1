@@ -24,7 +24,6 @@ function NewReleases({ newReleases }) {
     return (
         <>
             { newReleases?.length > 0 && (
-                // console.log("newReleases"),
                 <section className={styles["homeSection"]}>
                     <h2 className={styles["sectionTitle"]}>New Releases</h2>
                     <div className={styles["recentlyPlayedGrid"]}>

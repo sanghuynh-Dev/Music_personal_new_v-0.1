@@ -49,9 +49,22 @@ export const deletePlaylist = async (playlistId) => {
    return await response.json();
 }
 
+export const getPlaylistById = async (playlistId) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/playlists/${playlistId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        credentials: 'include',
+    });
+   return await response.json();
+}
+
 export default {
   addSongToPlaylist,
   removeSongToPlaylist,
   createPlaylist,
-  deletePlaylist
+  deletePlaylist,
+  getPlaylistById
 };

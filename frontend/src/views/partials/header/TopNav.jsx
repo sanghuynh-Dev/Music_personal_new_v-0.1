@@ -19,7 +19,6 @@ function TopNav() {
     async function handleSearch(e) {
         e.preventDefault();
         const data = await appRoute.searchRoute(query);
-        console.log(data);
         if(data.success) {
             navigate(`/search?q=${query}`);
         } else if(data.error) {

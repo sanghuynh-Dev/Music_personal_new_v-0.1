@@ -80,11 +80,52 @@ export const addComment = async (songId, data) => {
     return await res.json();
 }
 
+export const renderQueue = async (songId) => {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/songs/queue?currentSongId=${songId}`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        credentials: 'include',
+    });
+    return await res.json();
+}
+
+export const saveHistory = async (songId) => {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/songs/${songId}/play`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        credentials: 'include',
+    });
+    return await res.json();
+}
+
+export const getSongInfo = async (songId) => {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/songs/info/${songId}`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        credentials: 'include',
+    });
+    return await res.json();
+}
+
+
+
 export default {
   toggleLikeApi,
   editSong,
   uploadSong,
   deleteSong,
   loadComments,
-  addComment
+  addComment,
+  renderQueue,
+  saveHistory,
+  getSongInfo
 };

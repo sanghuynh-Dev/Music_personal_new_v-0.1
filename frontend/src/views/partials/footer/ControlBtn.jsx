@@ -35,7 +35,6 @@ function ControlBtn({originalInfoQueue}) {
         }
     }
     return (
-        console.log("control"),
         <div className={styles.playerControlBtns}>
             <button 
                 onClick={() => toggleShuffle()}

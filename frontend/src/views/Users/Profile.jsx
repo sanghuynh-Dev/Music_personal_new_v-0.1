@@ -49,7 +49,6 @@ function Profile() {
     }   
     function handleFollow(artistId,isFollowing) {
         toggleFollowSingle(artistId,isFollowing);
-        console.log(profileData);
     }
 
     function handleShowPlaylist (song,e) {

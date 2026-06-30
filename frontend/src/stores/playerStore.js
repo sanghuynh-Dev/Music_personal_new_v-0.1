@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import useSongStore from "./songStore";
+import playlistApi from "./../services/playlistApi";
+import songApi from "../services/songApi";
 
 const usePlayerStore = create((set, get) => ({
     currentSong: null,
@@ -22,7 +24,12 @@ const usePlayerStore = create((set, get) => ({
     setCurrentSong: (song = null) => set({ currentSong: song }),
 
     playSong: async (songId, customQueue = null) => {
-        const { currentSong, audioRef, isShuffle,queueIndex,originalQueue,queue } = get();
+        const { currentSong, audioRef, isShuffle,queueIndex,originalQueue,queue,activePlaylistId } = get();
+        if(activePlaylistId && currentSong?._id === songId) {
+            const audio = audioRef;
+            if (!audio) return;
+            audio.currentTime = 0;
+        }
         // same song => toggle  
         if (currentSong && currentSong._id === songId) {
             const audio = audioRef.current;
@@ -39,15 +46,8 @@ const usePlayerStore = create((set, get) => ({
         }
         
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/songs/info/${songId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                credentials: 'include',
-            });
-            const song = await res.json();
+            const res = await songApi.getSongInfo(songId);
+            const song = await res;
             
             if (song.error) {
                 alert(song.error);
@@ -60,33 +60,20 @@ const usePlayerStore = create((set, get) => ({
                 isPlaying: true
             });
             // save history
-            await fetch(`${import.meta.env.VITE_API_URL}/songs/${songId}/play`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json'
-                },
-                credentials: 'include',
-            }); 
+            await songApi.saveHistory(songId);
 
             if (customQueue) {
                 set({
                     queueIndex: isShuffle ? queue.indexOf(songId) : originalQueue.indexOf(songId)
                 });
             } else {
-                const queueRes = await fetch(`${import.meta.env.VITE_API_URL}/songs/queue?currentSongId=${songId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    credentials: 'include',
-                });
-                const fullQueue = await queueRes.json();
+                const queueRes = await songApi.renderQueue(songId);
 
                 set({
-                    queue: fullQueue.map(item => item._id),
-                    originalQueue: fullQueue.map(item => item._id),
-                    originalInfoQueue: fullQueue,
+                    queue: queueRes.map(item => item._id),
+                    originalQueue: queueRes.map(item => item._id),
+                    originalInfoQueue: queueRes,
+                    activePlaylistId: null,
                     queueIndex: 0
                 });
             }
@@ -97,18 +84,19 @@ const usePlayerStore = create((set, get) => ({
     },
 
     playPlaylist: async (playlistId) => {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/playlists/${playlistId}`);
-        const playlist = await res.json();
+        const res = await playlistApi.getPlaylistById(playlistId);
+        const playlist = await res;
+
+        const newQueue = playlist.songs.map(item => item._id);
 
         set({
             activePlaylistId: playlistId,
-            queue: playlist.songs.map(item => item._id),
+            queue: newQueue,
             originalInfoQueue: playlist.songs,
-            originalQueue: playlist.songs.map(item => item._id),
+            originalQueue: newQueue,
             queueIndex: 0
         });
-
-        await get().playSong(queue[0], queue);
+        await get().playSong(newQueue[0], newQueue);
     },
 
     pauseSong: () => {

@@ -11,7 +11,6 @@ export const homeRoute = async () => {
 }
 
 export const searchRoute = async (q) => {
-    console.log("API URL =", import.meta.env.VITE_API_URL);
     const data = await fetch(`${import.meta.env.VITE_API_URL}/search?q=${q}`, {
         method: 'GET',
         credentials: 'include'
