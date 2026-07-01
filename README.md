@@ -27,6 +27,7 @@ Hệ thống hỗ trợ 3 vai trò người dùng:
 ### Quản trị viên (Admin)
 
 * Quản lý bài hát, album và nghệ sĩ
+* Nâng cấp tài khoản User thành Artist
 * Quản lý tài khoản người dùng
 * Theo dõi dữ liệu hệ thống
 
