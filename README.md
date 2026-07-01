@@ -17,12 +17,14 @@ Hệ thống hỗ trợ 3 vai trò người dùng:
 * Tìm kiếm bài hát, album, nghệ sĩ
 * Thêm bài hát vào playlist cá nhân
 * Yêu thích bài hát
+* Theo dõi (follow) nghệ sĩ yêu thích
+* Quản lý hồ sơ cá nhân (avatar, thông tin tài khoản)
 
 ### Nghệ sĩ (Artist)
 
 * Upload bài hát mới
 * Upload ảnh bìa
-* Quản lý bài hát và album
+* Chỉnh sửa / quản lý nội dung đã đăng
 
 ### Quản trị viên (Admin)
 
