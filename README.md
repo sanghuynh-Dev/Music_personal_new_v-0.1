@@ -33,7 +33,7 @@ Hệ thống hỗ trợ 3 vai trò người dùng:
 
 ## Công nghệ sử dụng
 
-* Frontend: React, JavaScript, Tailwind CSS
+* Frontend: React, JavaScript
 * Backend: Node.js, Express
 * Database: MongoDB
 * Authentication: Session-based Authentication, Cookie
