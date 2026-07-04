@@ -1,4 +1,4 @@
-import { useEffect, memo, useRef } from "react";
+import { useEffect, useState, memo, useRef } from "react";
 import { NavLink } from 'react-router-dom';
 import clsx from "clsx";
 
@@ -193,13 +193,14 @@ function MainSongFeed({ topSongs, songs }) {
                         ))}
                     </div>
                 ) : (
+
                     <div className="empty-feed">
                         <i className="ti-music-alt"></i>
                         <p>No songs found. Start by uploading some music!</p>
                     </div>
                 )}
             </div>
-        </section>
+        </section> 
     )
 }
 
