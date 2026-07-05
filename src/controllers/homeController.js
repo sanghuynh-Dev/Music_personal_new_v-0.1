@@ -97,6 +97,7 @@ class HomeController {
 
             res.json({
                 title: 'Home',
+                sussess: true,
                 songs: formattedSongs,
                 topSongs: formattedTopSongs,
                 newReleases: formattedNewReleases,
@@ -107,6 +108,7 @@ class HomeController {
         } catch (error) {
             console.error('Home controller error:', error);
             res.status(500).send(error.message);
+            
         }
     }
 
