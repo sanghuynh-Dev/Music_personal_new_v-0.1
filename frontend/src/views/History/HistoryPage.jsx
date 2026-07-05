@@ -5,7 +5,7 @@ import clsx from "clsx";
 import usePlayerStore from "../../stores/playerStore";
 import useSongStore from "../../stores/songStore";
 import usePlaylistStore from "../../stores/playlistStore";
-import Loading from "../../components/Loading/Loading.jsx";
+import Loading from "../../components/loading/Loading.jsx";
 import appRoute from '../../routes/appRoute.js';
 function HistoryPage() {
     const [historyData, setHistoryData] = useState({});

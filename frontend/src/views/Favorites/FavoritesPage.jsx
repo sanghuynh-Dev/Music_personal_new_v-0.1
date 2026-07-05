@@ -6,7 +6,7 @@ import appRoute from '../../routes/appRoute';
 import useSongStore from "../../stores/songStore";
 import usePlayerStore from "../../stores/playerStore";
 import usePlaylistStore from "../../stores/playlistStore";
-import Loading from "../../components/Loading/Loading.jsx";
+import Loading from "../../components/loading/Loading.jsx";
 
 function FavoritesPage() {
     const [favoritesData, setFavoritesData] = useState({});

@@ -5,7 +5,7 @@ import RecentlyPlayed from './RecentlyPlayed.jsx';
 import NewReleases from './NewReleases.jsx';
 import MainSongFeed from './MainSongFeed.jsx';
 import Suggestions from './Suggestions.jsx';
-import Loading from "../../components/Loading/Loading.jsx";
+import Loading from "../../components/loading/Loading.jsx";
 
 
 import styles from './HomePage.module.scss'

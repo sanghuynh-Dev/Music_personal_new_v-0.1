@@ -7,7 +7,7 @@ import useSongStore from "../../stores/songStore";
 import usePlaylistStore from "../../stores/playlistStore";
 import {toggleLikeApi} from "../../services/songApi.js";
 import { useAuth } from "../../contexts/AuthContext.jsx";
-import Loading from "../../components/Loading/Loading.jsx";
+import Loading from "../../components/loading/Loading.jsx";
 import styles from './HomePage.module.scss'
 
 function MainSongFeed({ topSongs, songs }) {
