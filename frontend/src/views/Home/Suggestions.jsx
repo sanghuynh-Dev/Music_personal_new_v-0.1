@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 import useFollowStore from "../../stores/followStore";
 import { useAuth } from "../../contexts/AuthContext.jsx";
-import Loading from "../../components/Loading/Loading.jsx";
+import Loading from "../../components/loading/Loading.jsx";
 import styles from './HomePage.module.scss'
 
 function Suggestions({ topArtists, newSuggestedArtists }) {
