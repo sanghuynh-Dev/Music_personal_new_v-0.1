@@ -390,6 +390,7 @@ textarea::-webkit-scrollbar {
 .commentsList {
     list-style: none;
     display: flex;
+    position: relative;
     flex-direction: column;
     gap: 20px;
 }
