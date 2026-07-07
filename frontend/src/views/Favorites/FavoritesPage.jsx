@@ -8,8 +8,7 @@ import usePlayerStore from "../../stores/playerStore";
 import usePlaylistStore from "../../stores/playlistStore";
 import Loading from "../../components/loading/Loading.jsx";
 
-function FavoritesPage() {
-    const [favoritesData, setFavoritesData] = useState({});
+function FavoritesPage({favoritesData}) {
 
     const currentSong = usePlayerStore(s => s.currentSong);
     const isPlaying = usePlayerStore(s => s.isPlaying);
@@ -20,6 +19,7 @@ function FavoritesPage() {
     const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
     const setSongs = useSongStore(s => s.setSongs);
     const songsData = useSongStore(s => s.songs);
+    const { reload } = useSongStore();
 
     const { openMenu } = usePlaylistStore();
 
@@ -53,15 +53,9 @@ function FavoritesPage() {
     async function handleLike(song) {
         toggleLikeLocal(song._id);
     } 
-    
-    useEffect(() => {
-        appRoute.favoritesRoute().then((data) => {
-            setFavoritesData(data);
-        });
-    }, []);
     useEffect(() => {
         setSongs(favoritesData.songs);
-    }, [favoritesData]);
+    }, [reload]);
     return (
         <>
             { !loading ?  (
@@ -137,10 +131,16 @@ function FavoritesPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="empty-favorites">
-                                <i className="ti-heart-broken"></i>
-                                <p>You haven't favorited any songs yet. Go check out the <a href="/">explore</a> page!</p>
-                            </div>
+                            <>
+                                { !loading ? (
+                                    <Loading />
+                                ) : (
+                                    <div className="empty-favorites">
+                                        <i className="ti-heart-broken"></i>
+                                        <p>You haven't favorited any songs yet. Go check out the <a href="/">explore</a> page!</p>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>

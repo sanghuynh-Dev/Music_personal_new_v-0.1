@@ -43,7 +43,6 @@ function MainSongFeed({ topSongs, songs }) {
     useEffect(() => {
         if (topSongs && songs) {
             setLoading(true);
-            console.log("topSongs");
         }
     }, [topSongs, songs]);
     function handleClick(song) {
@@ -179,7 +178,7 @@ function MainSongFeed({ topSongs, songs }) {
                                             <img src={song.imageUrl?.url} alt={song.title} className="song-row-img"/>
                                             <div className="song-row-info">
                                                 <NavLink to={`/songs/${song._id}`} className="song-row-title">{song.title}</NavLink>
-                                                <NavLink to={`/profile/${song.uploadedBy._id}`} className="song-row-artist">{song.artist}</NavLink>
+                                                <NavLink to={`/profile/${song.uploadedBy}`} className="song-row-artist">{song.artist}</NavLink>
                                             </div>
                                         </div>
                                         <div className="col-genre">{song.genre || 'Unknown'}</div>

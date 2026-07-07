@@ -63,7 +63,7 @@ function Detail() {
             <div className={styles.songDetailHeader}>
                 <div className={styles.songDetailThumbnailWrapper}>
                     <img 
-                        src={songData.imageUrl?.url || ''} 
+                        src={songData.imageUrl?.url || null} 
                         alt={songData.title} 
                         className={styles.songDetailThumbnail}/>
                 </div>

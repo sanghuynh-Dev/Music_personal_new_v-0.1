@@ -18,7 +18,6 @@ function Suggestions({ topArtists, newSuggestedArtists }) {
     useEffect(() => {
         if (topArtists && newSuggestedArtists) {
             setLoading(true);
-            console.log("newSuggestedArtists");
         }
     }, [topArtists, newSuggestedArtists]);
 

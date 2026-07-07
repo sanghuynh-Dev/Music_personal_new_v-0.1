@@ -36,6 +36,7 @@ function App() {
   const { user } = useAuth();
   const pageRef = useRef(null);
   const [homeData, setHomeData] = useState({});
+  const [favoritesData, setFavoritesData] = useState({});
   const { currentSong } = usePlayerStore();
   const { reload } = useSongStore();
   const { reloadFollow } = useFollowStore();
@@ -48,6 +49,12 @@ function App() {
           setHomeData(data);
       });
   }, [currentSong, reload,reloadFollow]);
+
+  useEffect(() => {
+      appRoute.favoritesRoute().then((data) => {
+          setFavoritesData(data);
+      });
+  }, [currentSong,reload]);
 
   useEffect(() => {
       setPageRef(pageRef.current);
@@ -64,7 +71,7 @@ function App() {
             <Routes>
               <Route path="/" element={homeData ? <Home homeData={homeData}/> : <div>Loading...</div>} />
               <Route path="/search" element={<Search />} />
-              <Route path="/favorites" element={<Favorites />} />
+              <Route path="/favorites" element={<Favorites favoritesData={favoritesData} />} />
               <Route path="/history" element={<History />} />
               <Route path="/artist/dashboard" element={<ArtistDashboard />} />
               <Route path="/songs/upload" element={<Upload />} />
