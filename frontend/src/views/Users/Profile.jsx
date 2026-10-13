@@ -26,13 +26,11 @@ function Profile() {
     const setCurrentSong = usePlayerStore(s => s.setCurrentSong);
 
     const toggleFollowSingle = useFollowStore(s => s.toggleFollowSingle);
-    const reloadFollow = useFollowStore(s => s.reloadFollow);
 
     const deleteSong = useSongStore(s => s.deleteSong);
     const songs = useSongStore(s => s.songs);
     const setSongs = useSongStore(s => s.setSongs);
     const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
-    const reload = useSongStore(s => s.reload);
 
     const openMenu = usePlaylistStore(s => s.openMenu);
 
@@ -46,20 +44,62 @@ function Profile() {
             playSong(song._id);
         }
     }   
-    function handleFollow(artistId,isFollowing) {
-        toggleFollowSingle(artistId,isFollowing);
+    async function handleFollow(artistId, isFollowing) {
+        // Optimistic button flip — no refetch of already-loaded profile.
+        setProfileData((prev) => {
+            if (!prev?.profileUser || String(prev.profileUser._id) !== String(artistId)) return prev;
+            const delta = isFollowing ? -1 : 1;
+            return {
+                ...prev,
+                profileUser: {
+                    ...prev.profileUser,
+                    isFollowing: !isFollowing,
+                    followerCount: Math.max(0, (prev.profileUser.followerCount || 0) + delta),
+                },
+            };
+        });
+        const data = await toggleFollowSingle(artistId, isFollowing);
+        if (!data || data.success === false) {
+            // revert on failure
+            setProfileData((prev) => {
+                if (!prev?.profileUser || String(prev.profileUser._id) !== String(artistId)) return prev;
+                const delta = isFollowing ? 1 : -1;
+                return {
+                    ...prev,
+                    profileUser: {
+                        ...prev.profileUser,
+                        isFollowing,
+                        followerCount: Math.max(0, (prev.profileUser.followerCount || 0) + delta),
+                    },
+                };
+            });
+        }
     }
 
     function handleShowPlaylist (song,e) {
         e.stopPropagation();
         const rect = e.currentTarget.getBoundingClientRect();
         openMenu(song._id, {
-            x: rect.left - 200,
-            y: rect.bottom 
+            left: rect.left,
+            top: rect.top,
+            right: rect.right,
+            bottom: rect.bottom
         });
     };
     async function handleLike(song) {
-        toggleLikeLocal(song._id);
+        const data = await toggleLikeLocal(song._id);
+        // Optimistic local sync — no refetch of already-loaded tracks.
+        if (data && typeof data.liked !== 'undefined') {
+            setProfileData((prev) => {
+                if (!prev?.tracks) return prev;
+                return {
+                    ...prev,
+                    tracks: prev.tracks.map((t) =>
+                        t._id === song._id ? { ...t, liked: data.liked } : t
+                    ),
+                };
+            });
+        }
     } 
 
     async function handleChangeAvatar(e) {
@@ -130,7 +170,7 @@ function Profile() {
         appRoute.getProfileUser(id).then(data => {
             setProfileData(data);
         });
-    }, [id, reload, reloadFollow]);
+    }, [id]);
     return (
         <div className="profile-container event-chang-icon-js">
             {/* <!-- Header Background Cover --> */}

@@ -24,7 +24,6 @@ function Detail() {
 
     // song
     const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
-    const reload = useSongStore(s => s.reload);
     const isCurrentSong = (song) => song._id === currentSong?._id;
 
     // playlist
@@ -44,13 +43,19 @@ function Detail() {
         e.stopPropagation();
         const rect = e.currentTarget.getBoundingClientRect();
         openMenu(song._id, {
-            x: rect.left - 200,
-            y: rect.bottom 
+            left: rect.left,
+            top: rect.top,
+            right: rect.right,
+            bottom: rect.bottom
         });
     };
     async function handleLike(song) {
-        toggleLikeLocal(song._id);
-    } 
+        const data = await toggleLikeLocal(song._id);
+        // Optimistic local sync — no refetch of already-loaded detail.
+        if (data && typeof data.liked !== 'undefined') {
+            setSongData((prev) => (prev && prev._id === song._id ? { ...prev, liked: data.liked } : prev));
+        }
+    }
     useEffect(() => {
         let alive = true;
         appRoute.songDetailRoute(id).then((data) => {
@@ -59,7 +64,7 @@ function Detail() {
             else setLoadError('Song not found.');
         }).catch(() => { if (alive) setLoadError('Failed to load song.'); });
         return () => { alive = false; };
-    }, [id,reload]);
+    }, [id]);
 
     async function handleShare() {
         const url = window.location.href;

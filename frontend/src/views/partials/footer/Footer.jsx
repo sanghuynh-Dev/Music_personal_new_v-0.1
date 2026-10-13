@@ -24,6 +24,10 @@ function Footer() {
     const [isExpanded, setIsExpanded] = useState(false);
     const { user } = useAuth();
     const audioRef = useRef(null);
+    // ID of the track currently loaded in <audio>. Guards against
+    // reloading the same track (e.g. when a like toggle replaces the
+    // currentSong object) which would restart playback from 0.
+    const loadedIdRef = useRef(null);
 
     const currentSong = usePlayerStore(s => s.currentSong);
     const isPlaying = usePlayerStore(s => s.isPlaying);
@@ -46,9 +50,17 @@ function Footer() {
 
     // Load a new track; autoplay only when the store says we're playing
     // (never autoplay after a refresh — isPlaying rehydrates as false).
+    // Same song id => keep playing position (like toggles must not restart).
     useEffect(() => {
         const el = audioRef.current;
+        if (!currentSong) {
+            loadedIdRef.current = null;
+            if (el) { el.pause(); el.removeAttribute('src'); el.load(); }
+            return;
+        }
         if (!el || !currentSong?.audioUrl?.url) return;
+        if (loadedIdRef.current && String(loadedIdRef.current) === String(currentSong._id)) return;
+        loadedIdRef.current = currentSong._id;
         el.src = currentSong.audioUrl.url;
         el.load();
         setCurrentTime(0);

@@ -1,20 +1,38 @@
 import { NavLink } from 'react-router-dom';
 import { X, Play, Pause } from 'lucide-react';
 import clsx from 'clsx';
+import { useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/shallow';
 import usePlayerStore, { selectQueueList } from "../../stores/playerStore";
 import useUiStore from '../../stores/uiStore.js';
 import styles from './RightPanel.module.scss';
 
+// Desktop breakpoint mirrors the CSS drawer switch in RightPanel.module.scss.
+const DESKTOP_MIN = 1281;
+
 function RightPanel() {
     const open = useUiStore(s => s.rightPanelOpen);
     const setOpen = useUiStore(s => s.toggleRightPanel);
+    const setRightPanelOpen = useUiStore(s => s.setRightPanelOpen);
     const currentSong = usePlayerStore(s => s.currentSong);
     const isPlaying = usePlayerStore(s => s.isPlaying);
     const pauseSong = usePlayerStore(s => s.pauseSong);
     const resumeSong = usePlayerStore(s => s.resumeSong);
     const playFromQueue = usePlayerStore(s => s.playFromQueue);
     const tracks = usePlayerStore(useShallow(selectQueueList));
+    const lastSongId = useRef(currentSong?._id);
+
+    // Auto-show the panel when a NEW track starts — desktop only, so the
+    // mobile overlay drawer never covers content uninvited. Not persisted.
+    useEffect(() => {
+        const id = currentSong?._id;
+        if (id && String(id) !== String(lastSongId.current)) {
+            lastSongId.current = id;
+            if (typeof window !== 'undefined' && window.innerWidth >= DESKTOP_MIN) {
+                setRightPanelOpen(true);
+            }
+        }
+    }, [currentSong, setRightPanelOpen]);
 
     if (!open) return null;
 

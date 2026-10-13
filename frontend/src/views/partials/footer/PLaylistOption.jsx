@@ -17,7 +17,8 @@ function PlaylisOption() {
         closeMenu,
         reloadPlaylist,
         pageRef,
-        toggleModal
+        toggleModal,
+        fitMenuToViewport
     } = usePlaylistStore();
     
     useEffect(() => {
@@ -50,6 +51,22 @@ function PlaylisOption() {
             pageRef.removeEventListener("scroll", closeMenu);
         };
     }, [isMenuOpen]);
+    // Exact anchoring: measure the real menu height after paint and let
+    // the store correct the position (flip above the button when short of
+    // room). Estimates alone can't cover 1 vs 20 playlists.
+    useEffect(() => {
+        if (!isMenuOpen) return;
+        const fit = () => {
+            const el = dropdownRef.current;
+            if (el) fitMenuToViewport(el.offsetHeight);
+        };
+        const raf = requestAnimationFrame(fit);
+        window.addEventListener("resize", fit);
+        return () => {
+            cancelAnimationFrame(raf);
+            window.removeEventListener("resize", fit);
+        };
+    }, [isMenuOpen, fitMenuToViewport, userPlayLists]);
     
 
     return (

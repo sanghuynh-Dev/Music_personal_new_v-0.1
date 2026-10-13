@@ -15,6 +15,7 @@ function TrackTable({
     user,
     playsHeader = "Plays",
     renderPlays = (song) => song.playCount || 0,
+    renderMetaExtra = null,
 }) {
     const isCurrentSong = (song) => song._id === currentSong?._id;
 
@@ -60,6 +61,9 @@ function TrackTable({
                         <div className="song-row-info">
                             <NavLink to={`/songs/${song._id}`} className="song-row-title">{song.title}</NavLink>
                             <NavLink to={`/profile/${song.uploadedBy?._id}`} className="song-row-artist">{song.artist}</NavLink>
+                            {renderMetaExtra && (
+                                <span className="song-row-extra">{renderMetaExtra(song)}</span>
+                            )}
                         </div>
                     </div>
                     <div className="col-genre">{song.genre || 'Unknown'}</div>

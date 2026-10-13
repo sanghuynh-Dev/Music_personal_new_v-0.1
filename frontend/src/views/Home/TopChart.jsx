@@ -42,8 +42,10 @@ function TopChart({ songs }) {
         e.stopPropagation();
         const rect = e.currentTarget.getBoundingClientRect();
         openMenu(song._id, {
-            x: Math.max(8, Math.min(rect.left - 160, window.innerWidth - 216)),
-            y: rect.bottom
+            left: rect.left,
+            top: rect.top,
+            right: rect.right,
+            bottom: rect.bottom
         });
     }
 

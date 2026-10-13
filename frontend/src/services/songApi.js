@@ -33,8 +33,9 @@ export const uploadSong = async (data, onProgress) => {
                 Accept: "application/json"
             },
             onUploadProgress: (event) => {
+                const total = event.total || event.loaded || 1;
                 const percent = Math.round(
-                    (event.loaded * 100) / event.total
+                    (event.loaded * 100) / total
                 );
 
                 onProgress?.(percent);

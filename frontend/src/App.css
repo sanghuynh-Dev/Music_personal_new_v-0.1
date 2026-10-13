@@ -87,8 +87,14 @@
         width: 76px;
         gap: 6px;
     }
+    .songs-table-header {
+        padding: 8px 10px;
+    }
     .song-row {
         padding: 8px 10px;
+    }
+    .song-row-extra {
+        display: block;
     }
     .page-header-simple {
         gap: 14px;
@@ -124,6 +130,8 @@
 
 .col-title {
     flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: 14px;
@@ -132,14 +140,22 @@
 
 .col-genre {
     width: 120px;
+    min-width: 0;
     font-size: var(--text-sm);
     color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .col-plays {
     width: 150px;
+    flex-shrink: 0;
     font-size: var(--text-sm);
     color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .col-actions {
@@ -163,8 +179,13 @@
     flex-direction: column;
 }
 
+/* ── Song table: grid locks header and rows to identical columns.
+   (Flex + fixed widths misaligned under shrink because each row
+   shrank proportionally to its own content.) ── */
 .songs-table-header {
-    display: flex;
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) 120px 150px 100px;
+    align-items: center;
     padding: 8px 16px;
     border-bottom: 1px solid var(--border);
     color: var(--text-secondary);
@@ -175,7 +196,8 @@
 }
 
 .song-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) 120px 150px 100px;
     align-items: center;
     padding: 8px 16px;
     border-radius: var(--radius-sm);
@@ -207,12 +229,15 @@
 .song-row-img {
     width: 40px;
     height: 40px;
+    flex-shrink: 0;
     object-fit: cover;
     border-radius: var(--radius-sm);
 }
 
 .song-row-info {
     display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
     max-width: 350px;
     flex-direction: column;
     overflow: hidden;
@@ -238,6 +263,37 @@
 .song-row-artist:hover {
     text-decoration: underline;
     color: var(--text-primary);
+}
+
+/* Inline extra meta (e.g. listened date on History). Hidden on wide
+   screens where the dedicated column shows it; revealed on small
+   screens where that column is dropped. */
+.song-row-extra {
+    display: none;
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Responsive column templates MUST come after the base grid rules above:
+   same specificity, so source order decides when the query matches. */
+@media (max-width: 900px) {
+    .songs-table-header,
+    .song-row {
+        grid-template-columns: 40px minmax(0, 1fr) 90px 100px;
+    }
+}
+
+@media (max-width: 640px) {
+    .songs-table-header,
+    .song-row {
+        grid-template-columns: 36px minmax(0, 1fr) 76px;
+    }
+    .col-index {
+        width: 36px;
+    }
 }
 
 /* â”€â”€ Action icon buttons â”€â”€ */

@@ -22,7 +22,6 @@ function FavoritesPage({ favoritesData }) {
     const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
     const setSongs = useSongStore(s => s.setSongs);
     const songsData = useSongStore(s => s.songs);
-    const reload = useSongStore(s => s.reload);
     const { user } = useAuth();
 
     const { openMenu } = usePlaylistStore();
@@ -39,22 +38,34 @@ function FavoritesPage({ favoritesData }) {
         }
     }
 
+    async function handleUnlike(song) {
+        const data = await toggleLikeLocal(song._id);
+        // Optimistic removal — no refetch of the favorites list.
+        if (data && data.liked === false) {
+            const list = useSongStore.getState().songs || [];
+            useSongStore.getState().setSongs(list.filter((s) => s._id !== song._id));
+        }
+    }
+
     function handleShowPlaylist(song, e) {
         e.stopPropagation();
         const rect = e.currentTarget.getBoundingClientRect();
         openMenu(song._id, {
-            x: Math.max(8, Math.min(rect.left - 160, window.innerWidth - 216)),
-            y: rect.bottom
+            left: rect.left,
+            top: rect.top,
+            right: rect.right,
+            bottom: rect.bottom
         });
     }
 
     useEffect(() => {
-        setSongs(favoritesData.songs);
-    }, [reload]);
+        if (favoritesData?.songs) setSongs(favoritesData.songs);
+    }, [favoritesData, setSongs]);
 
     if (!loading) return <Loading />;
 
-    const count = favoritesData.songs?.length || 0;
+    const list = songsData || [];
+    const count = list.length;
 
     return (
         <div className={styles.collection}>
@@ -70,11 +81,11 @@ function FavoritesPage({ favoritesData }) {
 
             {count > 0 ? (
                 <TrackTable
-                    songs={songsData}
+                    songs={list}
                     currentSong={currentSong}
                     isPlaying={isPlaying}
                     onPlay={handleClick}
-                    onLike={(song) => toggleLikeLocal(song._id)}
+                    onLike={handleUnlike}
                     onAdd={handleShowPlaylist}
                     user={user}
                     playsHeader="Plays"

@@ -22,17 +22,6 @@
     z-index: 1;
 }
 
-.profileHeaderBanner::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 3px;
-    background: var(--accent-gradient);
-    z-index: 2;
-}
-
 .headerUploadForm {
     position: absolute;
     top: 16px;
@@ -101,6 +90,8 @@
 
 .profileMeta {
     flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .profileRole {
@@ -114,14 +105,17 @@
     font-family: var(--font-display);
     font-size: var(--display-md);
     font-weight: 600;
-    line-height: 1;
+    line-height: 1.05;
     letter-spacing: -0.02em;
     margin: 0 0 14px;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .profileStats {
     display: flex;
-    gap: 0;
+    flex-wrap: wrap;
+    row-gap: 10px;
     font-size: var(--text-sm);
     color: var(--text-secondary);
 }
@@ -181,4 +175,66 @@
     color: var(--text-muted);
     font-size: var(--text-md);
     font-weight: 500;
+}
+
+/* ── Profile header on small screens ── */
+@media (max-width: 640px) {
+    .profileHeaderBanner {
+        min-height: 0;
+        padding: 120px 20px 20px;
+    }
+    .profileHeaderInfo {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    .profileAvatarWrapper {
+        width: 104px;
+        height: 104px;
+    }
+    .profileUsername {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+    .profileStats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 16px;
+        width: 100%;
+    }
+    .profileStats > span {
+        padding: 0;
+        margin: 0;
+    }
+    .profileStats > span + span {
+        border-left: none;
+        padding-left: 0;
+    }
+    .btnProfileFollow {
+        padding: 10px 22px;
+    }
+    /* Follow button sits on its own row, right-aligned (mobile only). */
+    .profileHeaderInfo > :global(.profile-actions) {
+        align-self: flex-end;
+    }
+    .profileContent {
+        margin-top: 28px;
+    }
+}
+
+@media (max-width: 420px) {
+    .profileHeaderBanner {
+        padding: 100px 14px 16px;
+    }
+    .profileAvatarWrapper {
+        width: 88px;
+        height: 88px;
+    }
+    .profileUsername {
+        font-size: 27px;
+    }
+    .profileStats {
+        font-size: var(--text-xs);
+        gap: 10px 12px;
+    }
 }

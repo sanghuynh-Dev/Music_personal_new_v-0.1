@@ -319,6 +319,12 @@
     background-color: rgba(255, 255, 255, 0.06);
 }
 
+/* Right-panel toggle lives in .navRight and must stay reachable at every
+   breakpoint — it is the only way to open the panel on small screens. */
+.navRight .iconBtn {
+    display: flex;
+}
+
 .searchBarForm {
     max-width: 420px;
     width: 100%;

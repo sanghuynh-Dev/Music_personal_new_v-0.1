@@ -8,8 +8,25 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const IMAGE_MIMES = ['image/jpeg', 'image/png', 'image/webp'];
-const AUDIO_MIMES = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/x-wav', 'audio/webm'];
+const IMAGE_MIMES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+// NOTE: keep in sync with frontend accept="audio/..." on Upload.jsx.
+// Browsers report .m4a as audio/mp4 or audio/x-m4a, .ogg as audio/ogg,
+// .flac as audio/flac, and .wav as audio/wav | audio/x-wav | audio/wave.
+const AUDIO_MIMES = [
+    'audio/mpeg',
+    'audio/mp3',
+    'audio/wav',
+    'audio/x-wav',
+    'audio/wave',
+    'audio/x-wave',
+    'audio/webm',
+    'audio/mp4',
+    'audio/x-m4a',
+    'audio/aac',
+    'audio/ogg',
+    'audio/flac',
+    'audio/x-flac',
+];
 
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
@@ -42,7 +59,7 @@ function fileFilter(req, file, cb) {
     }
     if (file.fieldname === 'file') {
         if (!AUDIO_MIMES.includes(file.mimetype)) {
-            return cb(new Error('Invalid audio type. Only MP3/WAV/WebM allowed.'));
+            return cb(new Error('Invalid audio type. Only MP3/WAV/M4A/OGG/FLAC/AAC/WebM allowed.'));
         }
         return cb(null, true);
     }

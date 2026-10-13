@@ -43,6 +43,8 @@ export const useSongStore = create((set, get) => ({
             usePlayerStore.getState().setTrackLiked(songId, data.liked);
         } catch { /* player store optional */ }
 
+        // Optimistic-only: every visible surface updates locally below.
+        // No global reload flip — already-fetched data must not refetch.
         set((state) => ({
             songs: state.songs.map(song =>
                 song._id === songId
@@ -59,8 +61,6 @@ export const useSongStore = create((set, get) => ({
             songDetail: state.songDetail?._id === songId
                 ? { ...state.songDetail, liked: data.liked }
                 : state.songDetail,
-
-            reload: !get().reload
         }));
         return data;
     },
@@ -135,13 +135,24 @@ export const useSongStore = create((set, get) => ({
 
                 return data;
             }
+
+            // Backend responded without success (no throw): reset state and surface error.
+            set({
+                uploading: false,
+                progress: 0
+            });
+            useAlertStore.getState().openModal('Error', data?.error || 'Upload failed. Please try again.');
+            return data;
         } catch (err) {
             set({
                 uploading: false,
                 progress: 0
             });
 
-            useAlertStore.getState().openModal('Error', err.message || 'Upload failed. Please try again.');
+            // Axios wraps HTTP errors: prefer the server's message (e.g. "Invalid audio type.")
+            const serverMessage = err?.response?.data?.error;
+            useAlertStore.getState().openModal('Error', serverMessage || err.message || 'Upload failed. Please try again.');
+            return { success: false, error: serverMessage || err.message };
         }
     }
 }));

@@ -43,8 +43,10 @@ function HistoryPage() {
         e.stopPropagation();
         const rect = e.currentTarget.getBoundingClientRect();
         openMenu(song._id, {
-            x: Math.max(8, Math.min(rect.left - 160, window.innerWidth - 216)),
-            y: rect.bottom
+            left: rect.left,
+            top: rect.top,
+            right: rect.right,
+            bottom: rect.bottom
         });
     }
 
@@ -90,6 +92,7 @@ function HistoryPage() {
                     user={user}
                     playsHeader="Listened"
                     renderPlays={(song) => song.listenedAt ? new Date(song.listenedAt).toLocaleDateString() : '—'}
+                    renderMetaExtra={(song) => song.listenedAt ? `Listened ${new Date(song.listenedAt).toLocaleDateString()}` : null}
                 />
             ) : (
                 <EmptyState

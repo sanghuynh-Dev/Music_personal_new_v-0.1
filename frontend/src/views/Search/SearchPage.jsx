@@ -111,6 +111,18 @@ function SearchPage() {
         if (isCurrentSong(song)) { isPlaying ? pauseSong() : resumeSong(); }
         else playSong(song._id);
     };
+    async function handleSearchLike(songId) {
+        const data = await toggleLikeLocal(songId);
+        // Optimistic local sync — no refetch of already-loaded results.
+        if (data && typeof data.liked !== 'undefined') {
+            setResults((prev) => ({
+                ...prev,
+                songs: prev.songs.map((s) =>
+                    s._id === songId ? { ...s, liked: data.liked } : s
+                ),
+            }));
+        }
+    }
 
     const counts = useMemo(() => ({
         songs: results.songs.length, artists: results.artists.length, playlists: results.playlists.length,
@@ -216,7 +228,7 @@ function SearchPage() {
                                     {user && (
                                         <button
                                             className={clsx(styles.likeBtn, song.liked && styles.liked)}
-                                            onClick={() => toggleLikeLocal(song._id)}
+                                            onClick={() => handleSearchLike(song._id)}
                                             aria-label={`Like ${song.title}`}
                                             aria-pressed={!!song.liked}
                                         >
