@@ -1,11 +1,9 @@
 
-import { NavLink } from 'react-router-dom';
 import { memo } from "react";
 import clsx from "clsx";
 import usePlayerStore from "../../../stores/playerStore";
 import styles from './Footer.module.scss';
-function ControlBtn({originalInfoQueue}) {
-    const playSong = usePlayerStore(s => s.playSong);
+function ControlBtn() {
     const pauseSong = usePlayerStore(s => s.pauseSong);
     const resumeSong = usePlayerStore(s => s.resumeSong);
     const isPlaying = usePlayerStore(s => s.isPlaying);
@@ -36,22 +34,26 @@ function ControlBtn({originalInfoQueue}) {
     }
     return (
         <div className={styles.playerControlBtns}>
-            <button 
+            <button
                 onClick={() => toggleShuffle()}
-                className={clsx(styles.controlBtn, isShuffle && styles.active)} 
-                title="Shuffle">
+                className={clsx(styles.controlBtn, isShuffle && styles.active)}
+                title="Shuffle"
+                aria-label="Toggle shuffle"
+                aria-pressed={isShuffle}>
                 <i className="ti-control-shuffle"></i>
             </button>
-            <button 
+            <button
                 onClick={() => handlePrevSong()}
-                className={styles.controlBtn} 
-                title="Previous">
+                className={styles.controlBtn}
+                title="Previous"
+                aria-label="Previous track">
                     <i className="ti-control-skip-backward"></i>
             </button>
-            <button 
+            <button
                 className={clsx(styles.controlBtn, styles.playBtn)}
                 onClick={() => handlePlay()}
-                title="Play/Pause">
+                title="Play/Pause"
+                aria-label={isPlaying ? 'Pause' : 'Play'}>
                 { isPlaying ? (
                     <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
@@ -65,13 +67,16 @@ function ControlBtn({originalInfoQueue}) {
             <button 
                 onClick={() => handleNextSong()}
                 className={styles.controlBtn} 
-                title="Next">
+                title="Next"
+                aria-label="Next track">
                 <i className="ti-control-skip-forward"></i>
             </button>
             <button 
                 className={clsx(styles.controlBtn, ["all", "one"].includes(repeatMode) && styles.active, repeatMode === "one" && styles.loopOne)} 
                 onClick={() => toggleRepeat()}
-                title="Repeat">
+                title={`Repeat: ${repeatMode}`}
+                aria-label={`Repeat mode: ${repeatMode}`}
+                aria-pressed={repeatMode !== "off"}>
                 <i className="ti-loop"></i>
             </button>
         </div>

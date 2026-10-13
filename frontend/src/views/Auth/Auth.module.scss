@@ -1,99 +1,271 @@
-
+/* Soundora auth — centered card, token-driven, responsive. */
 
 .authBody {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    background-color: var(--background-color);
+    min-height: 100vh;
+    padding: 24px 16px;
+    background-color: var(--bg-base);
+    background-image: radial-gradient(600px 320px at 50% -80px, rgba(245, 166, 35, 0.08), transparent);
+}
+
+.authSplit {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 920px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    background-color: var(--bg-surface);
+}
+
+.authBrand {
+    padding: clamp(28px, 5vw, 56px);
+    background:
+        radial-gradient(420px 280px at 15% 10%, rgba(245, 166, 35, 0.16), transparent),
+        linear-gradient(160deg, #17131f 0%, #0d0d14 70%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+    border-right: 1px solid var(--border);
+}
+
+.authBrandLogo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.authBrandLogo i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--accent-gradient);
+    color: #09090F;
+    font-size: 18px;
+}
+
+.authBrandTitle {
+    font-family: var(--font-display);
+    font-size: clamp(38px, 5vw, 60px);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+.authBrandText {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--text-md);
+    line-height: 1.6;
+    max-width: 34ch;
+}
+
+.authBrandPoints {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.authBrandPoints li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.authBrandPoints li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    flex-shrink: 0;
 }
 
 .authCard {
-    background-color: var(--secondary-bg);
-    border-radius: 8px;
-    padding: 40px;
-    width: 420px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+    padding: 36px 32px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .authLogo {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    font-size: 24px;
+    gap: 10px;
+    font-size: 22px;
     font-weight: 800;
-    color: var(--primary-color);
-    margin-bottom: 32px;
+    color: var(--accent);
+    margin-bottom: 28px;
+    letter-spacing: -0.3px;
 }
 
 .authLogo i {
-    font-size: 45px;
+    font-size: 30px;
 }
 
 .authCard h2 {
-    font-size: 18px;
+    font-size: var(--text-lg);
+    font-weight: 700;
     text-align: center;
-    margin-bottom: 24px;
+    margin: 0 0 6px;
+    color: var(--text-primary);
+}
+
+.authSub {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    margin: 0 0 22px;
 }
 
 .authFormGroup {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
+}
+
+.authFormGroup label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
 }
 
 .authFormGroup input {
     width: 100%;
-    padding: 12px 16px;
-    background-color: var(--hover-bg);
-    border: 1px solid transparent;
-    border-radius: 4px;
-    color: var(--text-color);
+    padding: 11px 14px 11px 40px;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--text-md);
+    font-family: inherit;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.authFormGroup input::placeholder {
+    color: var(--text-muted);
 }
 
 .authFormGroup input:focus {
-    border-color: var(--secondary-text);
+    border-color: var(--accent);
+    background-color: var(--bg-elevated);
 }
 
 .errorMsg {
-    position: absolute;
-    color: #e74c3c;
-    font-size: 12px;
-    margin-top: 2px;
+    color: var(--danger);
+    font-size: var(--text-sm);
+    margin-top: 6px;
+    line-height: 1.4;
 }
 
 .authSubmitBtn {
     width: 100%;
     padding: 12px;
-    background-color: var(--primary-color);
-    color: #000;
+    background-color: var(--accent);
+    color: #09090F;
     font-weight: 700;
-    border-radius: 4px;
-    margin-top: 12px;
-    font-size: 15px;
-    transition: transform 0.2s;
+    border-radius: var(--radius-pill);
+    margin-top: 14px;
+    font-size: var(--text-md);
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
-.authSubmitBtn:hover {
-    transform: scale(1.02);
+.authSubmitBtn:hover:not(:disabled) {
+    background-color: var(--accent-hover);
+}
+
+.authSubmitBtn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.authSubmitBtn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
 }
 
 .authSwitchPrompt {
-    font-size: 13px;
-    color: var(--secondary-text);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
     text-align: center;
-    margin-top: 24px;
+    margin-top: 22px;
+    line-height: 1.6;
 }
 
 .authSwitchPrompt a {
-    color: var(--primary-color);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.authSwitchPrompt a:hover {
     text-decoration: underline;
 }
 
 .passwordVisibilityBtn {
-    font-size: 16px;
     position: absolute;
-    top: 50%;
-    left: 93%;
-    transform: translate(-50%, -50%);
+    right: 10px;
+    top: 34px;
+    color: var(--text-secondary);
+    padding: 6px;
+    border-radius: var(--radius-circle);
+    display: flex;
+}
+
+.passwordVisibilityBtn:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-overlay);
+}
+
+.authIcon {
+    position: absolute;
+    left: 13px;
+    top: 35px;
+    color: var(--text-muted);
+    font-size: 15px;
+    pointer-events: none;
+}
+
+@media (max-width: 820px) {
+    .authSplit {
+        grid-template-columns: 1fr;
+        max-width: 440px;
+    }
+    .authBrand {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 28px 24px;
+        gap: 12px;
+    }
+    .authBrandPoints {
+        display: none;
+    }
+    .authBrandText {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .authCard {
+        padding: 28px 20px;
+    }
 }

@@ -1,5 +1,5 @@
 
-import { data, NavLink, useParams, useNavigate } from "react-router-dom";
+import { NavLink, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 
@@ -8,6 +8,7 @@ import usePlayerStore from "../../stores/playerStore";
 import usePLaylistStore from "../../stores/playlistStore";
 import { useAuth } from "../../contexts/AuthContext"
 import appRoute from "../../routes/appRoute"
+import playlistApi from "../../services/playlistApi"
 import styles from './Playlist.module.scss'
 
 function Detail() {
@@ -29,13 +30,15 @@ function Detail() {
     const songsData = useSongStore(s => s.songs);
     const isCurrentSong = (song) => song._id === currentSong?._id;
 
-    // playlistStore
-    const {
-        removeSongToPlaylist,
-        deletePlaylist,
-        reloadPlaylist
-    } = usePLaylistStore();
+    // playlistStore (narrow selectors — whole-store subscribes re-render on any write)
+    const removeSongToPlaylist = usePLaylistStore(s => s.removeSongToPlaylist);
+    const deletePlaylist = usePLaylistStore(s => s.deletePlaylist);
+    const reloadPlaylist = usePLaylistStore(s => s.reloadPlaylist);
     const isCurrentPlaylist = activePlaylistId === id;
+    const [editing, setEditing] = useState(false);
+    const [editName, setEditName] = useState('');
+    const [editPrivate, setEditPrivate] = useState(false);
+    const [saving, setSaving] = useState(false);
 
     function handlePlaylistClick() {
         if (isCurrentPlaylist) {
@@ -48,28 +51,39 @@ function Detail() {
     async function handleLike(song) {
         toggleLikeLocal(song._id);
     } 
-    function handlePlaySongClick(song,playlist) {
+    function handlePlaySongClick(song,songIds) {
         if (isCurrentSong(song)) {
             if (isPlaying) pauseSong();
             else resumeSong();
         } else {
-            playSong(song._id,playlist);
+            playSong(song._id,songIds);
         }
     }
-
-    function handleShowPlaylist (song,e) {
-        e.stopPropagation();
-        const rect = e.currentTarget.getBoundingClientRect();
-        openMenu(song._id, {
-            x: rect.left - 200,
-            y: rect.bottom 
-        });
-    };
 
     async function handleDeletePlaylist() {
         const result = await deletePlaylist(id);
         if (result.success) navigate('/');
-        
+
+    }
+
+    function startEditing() {
+        setEditName(playlistData.playlist?.name || '');
+        setEditPrivate(!!playlistData.playlist?.isPrivate);
+        setEditing(true);
+    }
+
+    async function handleSavePlaylist(e) {
+        e.preventDefault();
+        setSaving(true);
+        try {
+            const data = await playlistApi.updatePlaylist(id, { name: editName, isPrivate: editPrivate });
+            if (data.success) {
+                setEditing(false);
+                setPlaylistData((prev) => ({ ...prev, playlist: data.playlist, title: data.playlist.name }));
+            }
+        } finally {
+            setSaving(false);
+        }
     }
     function removeSong(songID) {
         removeSongToPlaylist(id,songID);
@@ -88,45 +102,71 @@ function Detail() {
     },[reloadPlaylist,id]);
 
     return (
-        <div className="playlist-detail-container event-chang-icon-js">
-            <div className="page-header-simple">
-                <div className="header-icon-circle playlist-icon">
-                    <i className="ti-list"></i>
+        <div className={styles.playlistPage}>
+            <div className={styles.coverHead}>
+                <div className={styles.mosaic} aria-hidden="true">
+                    {[0, 1, 2, 3].map((i) => {
+                        const s = playlistData.songs?.[i];
+                        return s?.imageUrl?.url
+                            ? <img key={i} src={s.imageUrl.url} alt="" loading="lazy" />
+                            : <span key={i} className={styles.mosaicEmpty}><i className="ti-music-alt"></i></span>;
+                    })}
                 </div>
-                <div className="header-text-meta">
-                    <span>PLAYLIST</span>
-                    <h1>{playlistData.playlist?.name}</h1>
-                    <p>Created by <NavLink to={`/profile/${playlistData.playlist?.user._id}`}>{playlistData.playlist?.user.username}</NavLink> &bull; { playlistData.songs ? playlistData.songs.length : 0 } tracks</p>
-                </div>
-                
-                { playlistData.isOwner && (
-                    <div className="playlist-header-actions">
-                        <button className={styles.btnDeletePlaylist} onClick={() => handleDeletePlaylist()}>
-                            <i className="ti-trash"></i> Delete Playlist
-                        </button>
+                <div className={styles.coverMeta}>
+                    <p className={styles.playlistKicker}>
+                        Playlist{playlistData.playlist?.isPrivate ? ' · Private' : ''}
+                    </p>
+                    {editing ? (
+                        <form onSubmit={handleSavePlaylist} className={styles.editForm}>
+                            <input value={editName} onChange={(e) => setEditName(e.target.value)}
+                                maxLength={100} required aria-label="Playlist name" />
+                            <label className={styles.privateCheck}>
+                                <input type="checkbox" checked={editPrivate} onChange={(e) => setEditPrivate(e.target.checked)} /> Private
+                            </label>
+                            <button type="submit" disabled={saving} className="btn-play-playlist">
+                                {saving ? 'Saving...' : 'Save'}
+                            </button>
+                            <button type="button" onClick={() => setEditing(false)} className={styles.cancelLink}>Cancel</button>
+                        </form>
+                    ) : (
+                        <h1 className={styles.playlistTitle}>{playlistData.playlist?.name}</h1>
+                    )}
+                    <p className={styles.playlistByline}>
+                        By <NavLink to={`/profile/${playlistData.playlist?.user._id}`}>{playlistData.playlist?.user.username}</NavLink>
+                        <span className="numeric">, {playlistData.songs ? playlistData.songs.length : 0} tracks</span>
+                    </p>
+                    <div className={styles.coverActions}>
+                        { playlistData.songs && playlistData.songs?.length > 0 && (
+                            <button
+                                className="btn-play-playlist play-list-btn-js"
+                                onClick={() => handlePlaylistClick()}>
+                                 {isCurrentPlaylist && isPlaying ? (
+                                    <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
+                                    </svg>
+                                ) : (
+                                    <svg className="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M8 5v14l11-7z"></path>
+                                    </svg>
+                                )}
+                                Play
+                            </button>
+                        )}
+                        { playlistData.isOwner && !editing && (
+                            <button className={styles.btnGhost} onClick={startEditing}>
+                                Edit
+                            </button>
+                        )}
+                        { playlistData.isOwner && (
+                            <button className={styles.btnDeletePlaylist} onClick={() => handleDeletePlaylist()}>
+                                <i className="ti-trash"></i> Delete
+                            </button>
+                        )}
                     </div>
-                )}
+                </div>
             </div>
 
             <div className="profile-content">
-                { playlistData.songs && playlistData.songs?.length > 0 && (
-                    <div className={styles.playlistPlayRow}>
-                        <button 
-                            className="btn-play-playlist play-list-btn-js" 
-                            onClick={() => handlePlaylistClick()}>
-                             {isCurrentPlaylist && isPlaying ? (
-                                <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
-                                </svg> 
-                            ) : (
-                                <svg className="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M8 5v14l11-7z"></path>
-                                </svg>
-                            )}
-                            Play
-                        </button>
-                    </div>
-                )}
 
                 <div className="songs-list-container">
                     { playlistData.songs && playlistData.songs?.length > 0 ? (
@@ -145,7 +185,7 @@ function Detail() {
                                         <span className="row-num">{index + 1}</span>
                                         <button 
                                             className="row-play-btn play-btn-js" 
-                                            onClick={() => handlePlaySongClick(song,playlistData.playlist.songs)} 
+                                            onClick={() => handlePlaySongClick(song,playlistData.playlist.songs.map(s => s._id))} 
                                             title="Play">
                                             { isCurrentSong(song) && isPlaying ? (
                                                 <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">

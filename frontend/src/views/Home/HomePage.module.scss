@@ -1,234 +1,631 @@
 .homeContainer {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 44px;
 }
 
-.homeSection {
-    width: 100%;
+/* ── Section heading row ── */
+.sectionHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
 }
 
-.recentlyPlayedGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 18px;
+.sectionTitle {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
 }
 
-.recentSongCard {
-    background-color: var(--card-bg);
-    border-radius: 6px;
-    padding: 16px;
+.sectionLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    transition: color var(--transition-fast);
+}
+
+.sectionLink:hover {
+    color: var(--accent);
+}
+
+.sectionTools {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* ── Hero: editorial split ── */
+.hero {
     position: relative;
-    transition: background-color 0.3s;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid var(--border);
+    background-color: var(--bg-surface);
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 32px;
+    align-items: center;
+    padding: clamp(28px, 5vw, 64px);
+    min-height: 380px;
+    animation: heroIn 0.4s var(--ease-out);
+}
+
+@keyframes heroIn {
+    from { opacity: 0; transform: translateY(14px); }
+}
+
+.heroBg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    transform: scale(1.06);
+    filter: saturate(1.1);
+}
+
+.heroOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        100deg,
+        rgba(11, 11, 17, 0.94) 20%,
+        rgba(11, 11, 17, 0.72) 52%,
+        rgba(11, 11, 17, 0.35) 100%
+    );
+    z-index: -1;
+}
+
+.heroContent {
+    max-width: 560px;
+}
+
+.heroKicker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--accent);
+    margin: 0 0 14px;
+}
+
+.heroTitle {
+    font-size: var(--display-lg);
+    font-weight: 600;
+    line-height: 0.98;
+    margin: 0 0 12px;
+    color: var(--text-primary);
+    text-wrap: balance;
+}
+
+.heroArtist {
+    color: var(--text-secondary);
+    margin: 0 0 26px;
+    font-size: var(--text-lg);
+}
+
+.heroPlays {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    margin-left: 10px;
+}
+
+.heroActions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.heroPlayBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background-color: var(--accent);
+    color: #09090F;
+    font-weight: 700;
+    font-size: var(--text-md);
+    padding: 13px 30px;
+    border-radius: var(--radius-pill);
+    transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.heroPlayBtn:hover {
+    background-color: var(--accent-hover);
+    transform: scale(1.03);
+    box-shadow: var(--glow-accent);
+}
+
+.heroGhostBtn {
+    display: inline-flex;
+    align-items: center;
+    padding: 13px 24px;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.heroGhostBtn:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.heroArt {
+    display: block;
+    justify-self: end;
+    width: min(100%, 340px);
+    aspect-ratio: 1;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    transform: rotate(2deg);
+    transition: transform var(--transition-slow) var(--ease-out);
+}
+
+.heroArt:hover {
+    transform: rotate(0deg) scale(1.015);
+}
+
+.heroArt img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Equalizer: motion answers playback state */
+.eq {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+}
+
+.eq i {
+    width: 3px;
+    background-color: var(--accent);
+    border-radius: 2px;
+    animation: eqBounce 0.9s ease-in-out infinite;
+}
+
+.eq i:nth-child(1) { height: 60%; animation-delay: 0s; }
+.eq i:nth-child(2) { height: 100%; animation-delay: 0.22s; }
+.eq i:nth-child(3) { height: 45%; animation-delay: 0.44s; }
+.eq i:nth-child(4) { height: 80%; animation-delay: 0.11s; }
+
+.eqPaused i {
+    animation-play-state: paused;
+    height: 30%;
+}
+
+@keyframes eqBounce {
+    0%, 100% { transform: scaleY(0.5); }
+    50% { transform: scaleY(1); }
+}
+
+/* ── Top chart: ranked dossier rows ── */
+.chart {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
 }
 
-.recentSongCard:hover {
-    background-color: var(--hover-bg);
+.chartRow {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    border-bottom: 1px solid var(--border);
+    transition: background-color var(--transition-fast);
 }
 
-.recentSongCard img {
+.chartRow:last-child {
+    border-bottom: none;
+}
+
+.chartRow:hover {
+    background-color: rgba(255, 255, 255, 0.035);
+}
+
+.chartRowCurrent {
+    background-color: var(--accent-dim);
+}
+
+.chartRank {
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--text-muted);
+    width: 52px;
+    flex-shrink: 0;
+    text-align: right;
+    line-height: 1;
+}
+
+.chartRow:nth-child(-n+3) .chartRank {
+    color: var(--accent);
+}
+
+.chartCoverBtn {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.chartCoverBtn img {
     width: 100%;
-    aspect-ratio: 1;
+    height: 100%;
     object-fit: cover;
-    border-radius: 4px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+    display: block;
+    transition: transform var(--transition-normal);
 }
 
-.recentMeta h4 {
-    font-size: 14px;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 4px;
+.chartRow:hover .chartCoverBtn img {
+    transform: scale(1.08);
 }
 
-.recentMeta h4:hover {
-    filter: brightness(0.7);
-}
-
-.recentMeta p {
-    font-size: 12px;
-    color: var(--secondary-text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.recentPlayBtn {
+.chartCoverIcon {
     position: absolute;
-    top: 40%;
-    left: 50%;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background-color: var(--primary-color);
-    color: #000;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    background-color: rgba(9, 9, 15, 0.55);
+    color: #fff;
     opacity: 0;
-    transform: translate(-50%, -20%);
-    transition: all 0.3s ease;
+    transition: opacity var(--transition-fast);
 }
 
-.recentSongCard:hover .recentPlayBtn {
+.chartRow:hover .chartCoverIcon,
+.chartRowCurrent .chartCoverIcon {
     opacity: 1;
-    transform: translate(-50%, -50%);
 }
 
-.recentPlayBtn:hover {
-    filter: brightness(0.7);
-}
-
-.mainSongsFeed {
-    flex-grow: 1;
-}
-
-
-/* Suggestions Sidebar */
-.homeSuggestions {
-    width: 320px;
-    flex-shrink: 0;
-    background-color: var(--secondary-bg);
-    border-radius: 8px;
-    padding: 20px;
-}
-
-.suggestionsList {
+.chartMeta {
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 1px;
 }
 
-.suggestionCard {
+.chartTitle {
+    font-size: var(--text-md);
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chartTitle:hover {
+    text-decoration: underline;
+}
+
+.chartArtist {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chartArtist:hover {
+    color: var(--text-primary);
+}
+
+.chartPlays {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    min-width: 90px;
+    text-align: right;
+}
+
+.chartActions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.chartIconBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-circle);
+    color: var(--text-secondary);
+    transition: color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.chartIconBtn:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.chartIconBtn.liked {
+    color: var(--accent);
+}
+
+/* ── Rails: snap carousel with arrows ── */
+.railArrows {
+    display: flex;
+    gap: 6px;
+}
+
+.railArrows button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-circle);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.railArrows button:hover {
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: clamp(150px, 18vw, 200px);
+    gap: 18px;
+    overflow-x: auto;
+    padding: 4px 2px 14px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar {
+    display: none;
+}
+
+.railCard {
+    scroll-snap-align: start;
+    min-width: 0;
+}
+
+.railArt {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-bottom: 10px;
+    background-color: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.railArt img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition-slow) var(--ease-out);
+}
+
+.railCard:hover .railArt img {
+    transform: scale(1.06);
+}
+
+.railArt::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(9, 9, 15, 0.45);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.railCard:hover .railArt::after,
+.railCard:focus-within .railArt::after {
+    opacity: 1;
+}
+
+.railPlayBtn {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-circle);
+    background-color: var(--accent);
+    color: #09090F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.85);
+    transition: opacity var(--transition-normal), transform var(--transition-normal) var(--ease-out), background-color var(--transition-fast);
+    box-shadow: var(--shadow-md);
+    z-index: 1;
+}
+
+.railCard:hover .railPlayBtn,
+.railPlayBtn:focus-visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.railPlayBtn:hover {
+    background-color: var(--accent-hover);
+    transform: translate(-50%, -50%) scale(1.07);
+}
+
+.railTitle {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.railTitle:hover {
+    text-decoration: underline;
+}
+
+.railArtist {
+    margin: 1px 0 0;
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── Artists ── */
+.artistStrip {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: 26px;
+    overflow-x: auto;
+    padding: 6px 2px 16px;
+    scrollbar-width: none;
+}
+
+.artistStrip::-webkit-scrollbar {
+    display: none;
+}
+
+.artistCell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 108px;
+    text-align: center;
+}
+
+.artistCell img {
+    width: 96px;
+    height: 96px;
+    border-radius: var(--radius-circle);
+    object-fit: cover;
+    border: 2px solid transparent;
+    transition: border-color var(--transition-fast), transform var(--transition-normal);
+}
+
+.artistCell:hover img {
+    border-color: var(--accent);
+    transform: scale(1.04);
+}
+
+.artistCell strong {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.artistCell small {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+}
+
+.followList {
+    list-style: none;
+    margin: 20px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
+}
+
+.followList li {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--border);
 }
 
-.suggestionInfo {
+.followWho {
     display: flex;
     align-items: center;
     gap: 12px;
-    flex-grow: 1;
-    overflow: hidden;
+    min-width: 0;
 }
 
-.suggestionImg {
+.followWho img {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: var(--radius-circle);
     object-fit: cover;
 }
 
-.suggestionMeta {
+.followWho span {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
 
-.suggestionName {
-    font-size: 14px;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.followWho strong {
+    font-size: var(--text-sm);
 }
 
-.suggestionRole {
-    font-size: 11px;
-    color: var(--secondary-text);
+.followWho small {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
 }
 
-.homeSection {
-    width: 100%;
+@media (max-width: 900px) {
+    .hero {
+        grid-template-columns: 1fr;
+        min-height: 0;
+        gap: 24px;
+    }
+    .heroArt {
+        justify-self: start;
+        width: min(100%, 260px);
+        order: -1;
+    }
+    .chartPlays {
+        display: none;
+    }
+    .chartRank {
+        width: 38px;
+        font-size: 24px;
+    }
 }
 
-.sectionTitle {
-    font-size: 22px;
-    font-weight: 800;
-    margin-bottom: 18px;
-}
-
-/* Recently Played Grid */
-.recentlyPlayedGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 18px;
-}
-
-.recentSongCard {
-    background-color: var(--card-bg);
-    border-radius: 6px;
-    padding: 16px;
-    position: relative;
-    transition: background-color 0.3s;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    cursor: pointer;
-}
-
-.recentSongCard:hover {
-    background-color: var(--hover-bg);
-}
-
-.recentSongCard img {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    border-radius: 4px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-}
-
-.recentMeta h4 {
-    font-size: 14px;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 4px;
-}
-
-.recentMeta p {
-    font-size: 12px;
-    color: var(--secondary-text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.recentPlayBtn {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background-color: var(--primary-color);
-    color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-    opacity: 0;
-    transform: translate(-50%, -20%);
-    transition: all 0.3s ease;
-}
-
-.recentSongCard:hover .recentPlayBtn {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-}
-
-.recentPlayBtn:hover {
-    filter: brightness(0.7);
+@media (max-width: 640px) {
+    .homeContainer {
+        gap: 34px;
+    }
+    .railArrows {
+        display: none;
+    }
+    .heroActions .heroGhostBtn {
+        display: none;
+    }
 }

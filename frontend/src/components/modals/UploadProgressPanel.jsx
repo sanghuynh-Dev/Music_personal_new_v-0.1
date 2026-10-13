@@ -4,7 +4,9 @@ import useSongStore from "../../stores/songStore";
 import styles from './Modals.module.scss';
 
 function UploadProgressPanel() {
-    const { uploading, progress, uploadStatus } = useSongStore();
+    const uploading = useSongStore(s => s.uploading);
+    const progress = useSongStore(s => s.progress);
+    const uploadStatus = useSongStore(s => s.uploadStatus);
     return (
         uploading && (
             <div className={styles.uploadPanel}>

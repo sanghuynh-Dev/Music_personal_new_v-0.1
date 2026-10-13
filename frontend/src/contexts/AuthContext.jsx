@@ -5,14 +5,18 @@ export const AuthContext = createContext();
 
 function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [checked, setChecked] = useState(false);
 
     useEffect(() => {
-        apiUser.getUser().then((user) => {
-            setUser(user);
-        });
+        let alive = true;
+        apiUser.getUser()
+            .then((u) => { if (alive) setUser(u); })
+            .catch(() => { if (alive) setUser(null); })
+            .finally(() => { if (alive) setChecked(true); });
+        return () => { alive = false; };
     }, []);
     return (
-        <AuthContext.Provider value={{ user, setUser }}>
+        <AuthContext.Provider value={{ user, setUser, checked }}>
             {children}
         </AuthContext.Provider>
     )

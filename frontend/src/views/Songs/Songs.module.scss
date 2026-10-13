@@ -1,69 +1,87 @@
 
 
-/* Upload Track View styling */
+/* Studio form */
 .uploadContainer {
     display: flex;
     justify-content: center;
 }
 
 .formWrapper {
-    background-color: var(--secondary-bg);
-    padding: 32px;
-    border-radius: 8px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border);
+    padding: clamp(24px, 4vw, 44px);
+    border-radius: var(--radius-xl);
     width: 100%;
-    max-width: 800px;
+    max-width: 880px;
 }
 
 .formTitle {
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 6px;
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
 }
 
 .formSubtitle {
-    font-size: 14px;
-    color: var(--secondary-text);
-    margin-bottom: 24px;
+    font-size: var(--text-md);
+    color: var(--text-secondary);
+    margin: 0 0 28px;
 }
 
 .formGrid {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
     gap: 32px;
 }
 
+@media (max-width: 760px) {
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .formLeftCol {
-    flex-grow: 2;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-width: 0;
 }
 
 .formFieldGroup {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
 }
 
 .formFieldGroup label {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--secondary-text);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
 }
 
 .formFieldGroup input,
 .formFieldGroup textarea {
-    background-color: var(--hover-bg);
-    border: 1px solid transparent;
-    padding: 10px 14px;
-    border-radius: 4px;
-    color: var(--text-color);
+    background-color: var(--bg-input);
+    border: 1px solid var(--border);
+    padding: 11px 14px;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: var(--text-md);
+    font-family: inherit;
+    transition: border-color var(--transition-fast);
+}
+
+.formFieldGroup input:focus,
+.formFieldGroup textarea:focus {
+    border-color: var(--accent);
 }
 
 .formRightCol {
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    min-width: 0;
 }
 
 .fileUploadBox {
@@ -73,37 +91,38 @@
 }
 
 .fileUploadBox label {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--secondary-text);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
 }
 
 .fileDropZone {
-    border: 2px dashed var(--border-color);
-    background-color: var(--hover-bg);
-    border-radius: 6px;
-    padding: 32px 16px;
+    border: 1.5px dashed var(--border-strong);
+    background-color: var(--bg-input);
+    border-radius: var(--radius-lg);
+    padding: 28px 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
     cursor: pointer;
     position: relative;
-    transition: border-color 0.2s;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
 .fileDropZone:hover {
-    border-color: var(--secondary-text);
+    border-color: var(--accent);
+    background-color: var(--bg-elevated);
 }
 
 .fileDropZone i {
-    font-size: 28px;
-    color: var(--secondary-text);
+    font-size: 26px;
+    color: var(--accent);
 }
 
 .fileZoneText {
-    font-size: 12px;
-    color: var(--secondary-text);
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
     text-align: center;
 }
 
@@ -118,13 +137,13 @@
 }
 
 .selectedFilename {
-    font-size: 11px;
-    color: var(--primary-color);
+    font-size: var(--text-xs);
+    color: var(--accent);
     text-align: center;
-    // white-space: nowrap; 
-    // overflow: hidden; 
-    // text-overflow: ellipsis;
-    // max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .formSubmitWrapper {
@@ -134,26 +153,128 @@
 }
 
 .btnSubmitTrack {
-    background-color: var(--primary-color);
-    color: #000;
-    font-weight: 800;
+    background-color: var(--accent);
+    color: #09090F;
+    font-weight: 700;
     padding: 12px 36px;
-    border-radius: 4px;
-    font-size: 15px;
-    transition: transform 0.2s;
+    border-radius: var(--radius-pill);
+    font-size: var(--text-md);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
 }
 
 .btnSubmitTrack:hover {
+    background-color: var(--accent-hover);
     transform: scale(1.02);
 }
 
-/* Song Details Page */
+/* Song Details Page — dossier layout */
 .songDetailContainer {
     display: flex;
     flex-direction: column;
     gap: 32px;
 }
 
+.dossier {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 56px);
+    align-items: start;
+}
+
+.dossierRail {
+    position: sticky;
+    top: 76px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dossierArtWrap {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    aspect-ratio: 1;
+    background-color: var(--bg-surface);
+}
+
+.dossierPlay {
+    width: 100%;
+    justify-content: center;
+}
+
+.dossierMain {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.dossierTitle {
+    font-family: var(--font-display);
+    font-size: var(--display-md);
+    font-weight: 600;
+    line-height: 1;
+    margin: 0;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+.dossierByline {
+    margin: 0;
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+}
+
+.dossierByline a {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.dossierByline a:hover {
+    text-decoration: underline;
+}
+
+.statBand {
+    display: flex;
+    gap: 0;
+    margin: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.statBand > div {
+    padding: 14px 28px 14px 0;
+    margin-right: 28px;
+}
+
+.statBand > div + div {
+    border-left: 1px solid var(--border);
+    padding-left: 28px;
+}
+
+.statBand dt {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    margin-bottom: 2px;
+}
+
+.statBand dd {
+    margin: 0;
+    font-size: var(--text-lg);
+    font-weight: 700;
+}
+
+@media (max-width: 860px) {
+    .dossier {
+        grid-template-columns: 1fr;
+    }
+    .dossierRail {
+        position: static;
+        max-width: 420px;
+    }
+}
+
+/* Legacy header classes kept for compatibility */
 .songDetailHeader {
     display: flex;
     align-items: flex-end;
@@ -185,11 +306,10 @@
 }
 
 .detailLabel {
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: var(--secondary-text);
-    margin-bottom: 8px;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--accent);
+    margin: 0 0 10px;
 }
 
 .detailTitle {
@@ -414,6 +534,7 @@ textarea::-webkit-scrollbar {
     gap: 16px;
     padding-bottom: 16px;
     border-bottom: 1px solid var(--border-color);
+    min-width: 0;
 }
 
 .commentItem:last-child {
@@ -432,6 +553,7 @@ textarea::-webkit-scrollbar {
     flex-direction: column;
     gap: 6px;
     flex-grow: 1;
+    min-width: 0;
 }
 
 .commentItemHeader {
@@ -460,4 +582,7 @@ textarea::-webkit-scrollbar {
     color: var(--secondary-text);
     line-height: 1.5;
     white-space: pre-line;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    min-width: 0;
 }

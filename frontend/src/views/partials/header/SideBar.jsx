@@ -1,72 +1,107 @@
-import { useEffect, useContext } from "react";
+import { NavLink } from 'react-router-dom';
+import {
+    Home,
+    Compass,
+    Search,
+    Library,
+    Heart,
+    History,
+    Mic2,
+    Upload,
+    ShieldCheck,
+} from 'lucide-react';
+import clsx from 'clsx';
 import { useAuth } from "../../../contexts/AuthContext.jsx";
 
-import { NavLink } from 'react-router-dom';
-import apiUser from '../../../services/userApi';
+const linkClass = ({ isActive }, styles) => clsx(styles.navLink, isActive && styles.active);
 
+function SideBar({ styles }) {
+    const { user } = useAuth();
+    const isArtist = user && (user.role === 'artist' || user.role === 'admin');
 
-function SideBar({styles}) {
-
-    const {user} = useAuth();
-
-    return(
-        <nav className={styles.sidebarNav}>
+    return (
+        <nav className={styles.sidebarNav} aria-label="Main navigation">
+            <p className={styles.navGroupLabel}>Menu</p>
             <ul>
                 <li>
-                    <NavLink to="/" end className={({ isActive }) => isActive ? styles.active : ''}>
-                        <i className="ti-home"></i>
+                    <NavLink to="/" end className={(p) => linkClass(p, styles)}>
+                        <Home size={19} strokeWidth={2} />
                         <span>Home</span>
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/search" className={({ isActive }) => isActive ? styles.active : ''}>
-                        <i className="ti-search"></i>
+                    <NavLink to="/explore" className={(p) => linkClass(p, styles)}>
+                        <Compass size={19} strokeWidth={2} />
+                        <span>Explore</span>
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/search" className={(p) => linkClass(p, styles)}>
+                        <Search size={19} strokeWidth={2} />
                         <span>Search</span>
                     </NavLink>
                 </li>
-                { user && (
-                    <>
+            </ul>
+
+            {user && (
+                <>
+                    <p className={styles.navGroupLabel}>Collection</p>
+                    <ul>
                         <li>
-                            <NavLink to="/favorites" className={({ isActive }) => isActive ? styles.active : ''}>
-                                <i className="ti-heart"></i>
+                            <NavLink to="/library" className={(p) => linkClass(p, styles)}>
+                                <Library size={19} strokeWidth={2} />
+                                <span>Library</span>
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/favorites" className={(p) => linkClass(p, styles)}>
+                                <Heart size={19} strokeWidth={2} />
                                 <span>Favorites</span>
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to="/history" className={({ isActive }) => isActive ? styles.active : ''}>
-                                <i className="ti-time"></i>
+                            <NavLink to="/history" className={(p) => linkClass(p, styles)}>
+                                <History size={19} strokeWidth={2} />
                                 <span>History</span>
                             </NavLink>
                         </li>
-                        { user && (user.role === 'artist' || user.role === 'admin') && (
-                            <>
-                                <li>
-                                    <NavLink to="/artist/dashboard" className={({ isActive }) => isActive ? styles.active : ''}>
-                                        <i className="ti-layout-grid2"></i>
-                                        <span>Artist Dashboard</span>
-                                    </NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/songs/upload" className={({ isActive }) => isActive ? styles.active : ''}>
-                                        <i className="ti-upload"></i>
-                                        <span>Upload Track</span>
-                                    </NavLink>
-                                </li>
-                            </>
-                        )}
-                        { user && user.role === 'admin' && (
-                            <>
-                                <li>
-                                    <NavLink to="/admin/dashboard" className={({ isActive }) => isActive ? styles.active : ''}>
-                                        <i className="ti-settings"></i>
-                                        <span>Admin Panel</span>
-                                    </NavLink>
-                                </li>
-                            </>
-                        )}
-                    </>
-                )}
-            </ul>
+                    </ul>
+                </>
+            )}
+
+            {isArtist && (
+                <>
+                    <p className={styles.navGroupLabel}>Studio</p>
+                    <ul>
+                        <li>
+                            <NavLink to="/artist/dashboard" className={(p) => linkClass(p, styles)}>
+                                <Mic2 size={19} strokeWidth={2} />
+                                <span>Artist dashboard</span>
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/songs/upload" className={(p) => linkClass(p, styles)}>
+                                <Upload size={19} strokeWidth={2} />
+                                <span>Upload track</span>
+                            </NavLink>
+                        </li>
+                    </ul>
+                </>
+            )}
+
+            {user && user.role === 'admin' && (
+                <>
+                    <p className={styles.navGroupLabel}>Manage</p>
+                    <ul>
+                        <li>
+                            <NavLink to="/admin/dashboard" className={(p) => linkClass(p, styles)}>
+                                <ShieldCheck size={19} strokeWidth={2} />
+                                <span>Admin panel</span>
+                            </NavLink>
+                        </li>
+                    </ul>
+                </>
+            )}
         </nav>
     )
 }

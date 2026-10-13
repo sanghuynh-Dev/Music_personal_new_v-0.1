@@ -2,7 +2,7 @@ const Playlist = require('../models/Playlist');
 const Song = require('../models/Song');
 
 class PlaylistService {
-    async createPlaylist(name, userId) {
+    async createPlaylist(name, userId, isPrivate = false) {
         if (!name || name.trim() === '') {
             throw new Error('Playlist name cannot be empty');
         }
@@ -10,9 +10,26 @@ class PlaylistService {
         const playlist = new Playlist({
             name: name.trim(),
             user: userId,
-            songs: []
+            songs: [],
+            isPrivate: isPrivate === true
         });
 
+        return await playlist.save();
+    }
+
+    async updatePlaylist(playlistId, userId, { name, isPrivate }) {
+        const playlist = await Playlist.findOne({ _id: playlistId, user: userId });
+        if (!playlist) {
+            throw new Error('Playlist not found or access denied');
+        }
+        if (name !== undefined) {
+            const clean = String(name).trim().slice(0, 100);
+            if (!clean) throw new Error('Playlist name cannot be empty');
+            playlist.name = clean;
+        }
+        if (isPrivate !== undefined) {
+            playlist.isPrivate = isPrivate === true;
+        }
         return await playlist.save();
     }
 

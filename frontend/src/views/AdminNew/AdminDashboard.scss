@@ -1,0 +1,1011 @@
+/* AdminDashboard.scss */
+
+// Variables — aligned with Soundora token system (index.css)
+$bg-main: var(--bg-base);
+$bg-sidebar: var(--sidebar-bg);
+$bg-header: var(--bg-base);
+$bg-card: var(--bg-surface);
+$bg-card-hover: var(--bg-elevated);
+$primary-color: #F5A623;
+$primary-color-hover: #FFB83F;
+$primary-dim: rgba(245, 166, 35, 0.14);
+$text-main: var(--text-primary);
+$text-secondary: var(--text-secondary);
+$text-primary: var(--text-primary);
+$text-muted: var(--text-secondary);
+$bg-elevated: var(--bg-elevated);
+$bg-overlay: var(--bg-overlay);
+$border-color: var(--border);
+$border-strong: var(--border-strong);
+$font-family: 'Satoshi', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+$font-display: 'Clash Display', 'Satoshi', -apple-system, sans-serif;
+
+// Responsive breakpoints
+$mobile: 768px;
+
+
+// ----------------- Sub-Views Components Styling -----------------
+
+// Overview / Dashboard Styles
+.dashboard-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  // Stats band — flat, tabular numerals, 4 per row
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px 28px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-card {
+      background-color: transparent;
+      border: none;
+      border-left: 2px solid $border-color;
+      border-radius: 0;
+      padding: 6px 0 6px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: border-color 0.2s ease;
+
+      &:hover {
+        transform: none;
+        background-color: transparent;
+        box-shadow: none;
+        border-color: $primary-color;
+      }
+
+      .stat-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: $text-secondary;
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid $border-color;
+      }
+
+      .stat-details {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        .stat-value {
+          font-family: $font-display;
+          font-size: 30px;
+          font-weight: 600;
+          font-variant-numeric: tabular-nums;
+          color: $text-main;
+          line-height: 1.1;
+        }
+
+        .stat-label {
+          font-size: 13px;
+          font-weight: 500;
+          color: $text-muted;
+        }
+      }
+    }
+  }
+
+  // Dashboard Visualizations
+  .dashboard-visuals {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
+
+    .visual-card {
+      background-color: $bg-card;
+      border: 1px solid $border-color;
+      border-radius: 12px;
+      padding: 24px;
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+
+        h3 {
+          font-size: 18px;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        .header-actions {
+          color: $text-muted;
+          font-size: 13px;
+        }
+      }
+
+      // SVGs Custom Chart Style
+      .chart-container {
+        position: relative;
+        width: 100%;
+        height: 220px;
+
+        .chart-svg {
+          width: 100%;
+          height: 100%;
+        }
+
+        .grid-line {
+          stroke: rgba(255, 255, 255, 0.05);
+          stroke-width: 1;
+        }
+
+        .chart-line {
+          stroke: $primary-color;
+          stroke-width: 3;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          fill: none;
+        }
+
+        .chart-area {
+          fill: url(#chart-gradient);
+          opacity: 0.15;
+        }
+
+        .chart-dot {
+          fill: $primary-color;
+          stroke: $bg-card;
+          stroke-width: 2;
+          cursor: pointer;
+          transition: r 0.2s ease;
+
+          &:hover {
+            r: 7;
+          }
+        }
+
+        .chart-x-labels {
+          font-size: 11px;
+          fill: $text-muted;
+          text-anchor: middle;
+        }
+      }
+    }
+
+    // Week bars (replaces line charts)
+    .week-bars {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      align-items: stretch;
+      padding-top: 8px;
+    }
+
+    .week-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .week-bars-pair {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 5px;
+      height: 150px;
+      width: 100%;
+    }
+
+    .week-bar {
+      width: 14px;
+      max-width: 32%;
+      border-radius: 4px 4px 2px 2px;
+      transition: height 0.3s ease;
+    }
+
+    .week-bar-users {
+      background-color: $primary-color;
+    }
+
+    .week-bar-songs {
+      background-color: #7c6cf5;
+    }
+
+    .week-day {
+      font-size: 11px;
+      color: $text-muted;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-amber {
+      background-color: $primary-color;
+    }
+
+    .dot-indigo {
+      background-color: #7c6cf5;
+    }
+
+    .header-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: $primary-color;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    // Needs-attention queue
+    .attention-card {
+      .attention-empty {
+        color: $text-muted;
+        margin: 0;
+        padding: 12px 0;
+      }
+
+      .attention-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .attention-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+
+        &:last-child {
+          border-bottom: none;
+          padding-bottom: 0;
+        }
+      }
+
+      .attention-main {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+
+        strong {
+          font-size: 14px;
+          text-transform: capitalize;
+        }
+
+        span {
+          font-size: 12px;
+          color: $text-muted;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 280px;
+        }
+      }
+    }
+
+    // Quick lists
+    .recent-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      .item-value {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: $text-muted;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+
+      .list-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+
+        &:last-child {
+          padding-bottom: 0;
+          border-bottom: none;
+        }
+
+        .item-info {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          .item-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            object-fit: cover;
+
+            &.circle {
+              border-radius: 50%;
+            }
+          }
+
+          .item-details {
+            display: flex;
+            flex-direction: column;
+
+            .item-title {
+              font-size: 14px;
+              font-weight: 600;
+              color: $text-main;
+            }
+
+            .item-subtitle {
+              font-size: 12px;
+              color: $text-muted;
+            }
+          }
+        }
+
+        .item-value {
+          font-size: 13px;
+          color: $text-muted;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+// Table / Data Management Styles
+.management-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    .search-filter {
+      position: relative;
+      min-width: 300px;
+      max-width: 100%;
+
+      @media (max-width: $mobile) {
+        width: 100%;
+      }
+
+      input {
+        width: 100%;
+        background-color: $bg-card;
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        padding: 12px 16px 12px 42px;
+        color: $text-main;
+        font-size: 14px;
+        transition: all 0.2s;
+
+        &:focus {
+          border-color: $primary-color;
+          box-shadow: 0 0 0 2px rgba(245, 166, 35, 0.15);
+        }
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $text-muted;
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    .btn-primary {
+      background-color: $primary-color;
+      color: #000;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      &:hover {
+        background-color: $primary-color-hover;
+        transform: scale(1.02);
+      }
+    }
+  }
+
+  // Modern Styled Admin Data Table
+  .table-wrapper {
+    background-color: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    overflow-x: auto;
+    width: 100%;
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      min-width: 800px;
+
+      th {
+        padding: 16px 24px;
+        font-size: 12px;
+        font-weight: 600;
+        color: $text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid $border-color;
+      }
+
+      td {
+        padding: 16px 24px;
+        font-size: 14px;
+        color: $text-main;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        vertical-align: middle;
+        overflow-wrap: anywhere;
+      }
+
+      // Long user text (comments, reasons) must wrap, never push the table
+      .comment-cell {
+        max-width: 360px;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        white-space: normal;
+      }
+
+      tr {
+        transition: background-color 0.2s;
+
+        &:last-child td {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.02);
+        }
+      }
+
+      // Special table cells
+      .cell-profile,
+      .cell-cover {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        img {
+          width: 42px;
+          height: 42px;
+          border-radius: 4px;
+          object-fit: cover;
+
+          &.circle {
+            border-radius: 50%;
+          }
+        }
+
+        .name-wrapper {
+          display: flex;
+          flex-direction: column;
+
+          .main-name {
+            font-weight: 600;
+            color: $text-main;
+          }
+
+          .sub-name {
+            font-size: 12px;
+            color: $text-muted;
+          }
+        }
+      }
+
+      // Badges — dot + sentence case, scannable without rainbow pills
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 4px 0;
+        font-size: 13px;
+        font-weight: 500;
+        color: $text-secondary;
+        text-transform: capitalize;
+
+        &::before {
+          content: '';
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background-color: currentColor;
+          flex-shrink: 0;
+        }
+
+        // Status Badges
+        &.active,
+        &.published,
+        &.verified,
+        &.resolved {
+          color: #7ddba3;
+        }
+
+        &.pending,
+        &.draft,
+        &.review {
+          color: #f1c40f;
+        }
+
+        &.banned,
+        &.suspended,
+        &.blocked {
+          color: #e74c3c;
+        }
+
+        &.dismissed {
+          color: $text-muted;
+        }
+
+        // Role Badges
+        &.role-admin {
+          color: #b48be0;
+        }
+
+        &.role-artist {
+          color: #7fb5e8;
+        }
+
+        &.role-user {
+          color: $text-muted;
+        }
+      }
+
+      // Action buttons
+      .table-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        button {
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 600;
+          transition: all 0.2s;
+
+          &.btn-action-outline {
+            border: 1px solid $border-color;
+            color: $text-main;
+
+            &:hover {
+              background-color: rgba(255, 255, 255, 0.05);
+              border-color: $text-muted;
+            }
+          }
+
+          &.btn-action-primary {
+            background-color: rgba($primary-color, 0.15);
+            color: $primary-color;
+
+            &:hover {
+              background-color: $primary-color;
+              color: #000;
+            }
+          }
+
+          &.btn-action-danger {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+
+            &:hover {
+              background-color: #e74c3c;
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+
+    .empty-state {
+      padding: 64px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      color: $text-muted;
+
+      .empty-icon {
+        width: 48px;
+        height: 48px;
+        color: rgba(255, 255, 255, 0.1);
+      }
+
+      p {
+        font-size: 15px;
+        margin: 0;
+      }
+    }
+
+  }
+}
+
+// ----------------- Responsive Adjustments -----------------
+
+// ================= Console layout (top-tab command bar) =================
+.console-layout {
+  min-height: 100vh;
+  background-color: $bg-main;
+  color: $text-main;
+  font-family: $font-family;
+  display: flex;
+  flex-direction: column;
+}
+
+.console-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 0 28px;
+  height: 64px;
+  background-color: rgba(11, 11, 17, 0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid $border-color;
+}
+
+.console-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  color: $text-main;
+  text-decoration: none;
+
+  .console-brand-icon {
+    color: $primary-color;
+  }
+
+  .console-brand-word {
+    font-family: $font-display;
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+}
+
+.console-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  height: 100%;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.console-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  height: 64px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $text-muted;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.18s ease;
+
+  .console-tab-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  &:hover {
+    color: $text-main;
+  }
+}
+
+.console-tab-active {
+  color: $text-main;
+  border-bottom-color: $primary-color;
+}
+
+.console-tab-badge {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background-color: $primary-color;
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.console-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.console-back {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: $text-muted;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
+
+  &:hover {
+    color: $text-main;
+    border-color: $border-color;
+  }
+}
+
+.console-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.console-username {
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.console-pagehead {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 26px 32px 0;
+}
+
+.console-crumbs {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+
+  a:hover {
+    color: var(--text-primary);
+  }
+
+  [aria-current="page"] {
+    color: var(--text-secondary);
+  }
+}
+
+.console-crumb-sep {
+  margin: 0 8px;
+  color: var(--border-strong);
+}
+
+.console-page-title {
+  font-family: $font-display;
+  font-size: clamp(30px, 4vw, 44px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin: 0;
+}
+
+.console-content {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 32px 64px;
+  animation: consoleIn 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes consoleIn {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+// Kill global .banned/.normal border leak from App.css inside console
+.console-layout {
+  .badge.banned,
+  .badge.normal {
+    border: none !important;
+  }
+}
+
+.admin-page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px 24px;
+  flex-wrap: wrap;
+}
+
+.admin-page-head .admin-page-titles {
+  min-width: 0;
+}
+
+.admin-page-head .admin-page-title {
+  font-family: $font-display;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: $text-main;
+  display: inline;
+}
+
+.admin-page-head .admin-page-blurb {
+  margin: 6px 0 0;
+  color: $text-muted;
+  font-size: 14px;
+}
+
+.admin-page-head .admin-page-side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-page-head .admin-page-count {
+  font-size: 13px;
+  color: $text-muted;
+  font-weight: 400;
+  margin-left: 12px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.admin-page-head .admin-page-count strong {
+  font-family: $font-display;
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: $text-main;
+  margin-right: 6px;
+}
+
+.detail-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(360px, 92vw);
+  background-color: $bg-elevated;
+  border-left: 1px solid $border-strong;
+  box-shadow: -16px 0 48px rgba(0, 0, 0, 0.55);
+  z-index: 600;
+  padding: 24px;
+  overflow-y: auto;
+  animation: drawerIn 0.22s ease;
+}
+
+.detail-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.detail-drawer-header h3 { margin: 0; font-size: 18px; }
+
+.detail-drawer-header button {
+  color: $text-secondary;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+}
+
+.detail-drawer-header button:hover {
+  color: $text-primary;
+  background-color: $bg-overlay;
+}
+
+.detail-drawer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-drawer-body img.circle { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
+
+.detail-drawer-body ul {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: $text-secondary;
+}
+
+@keyframes drawerIn {
+  from { opacity: 0; transform: translateX(24px); }
+}
+
+@media (max-width: 900px) {
+  .console-topbar {
+    gap: 12px;
+    padding: 0 14px;
+  }
+
+  .console-brand-word,
+  .console-username,
+  .console-back span {
+    display: none;
+  }
+
+  .console-pagehead {
+    padding: 22px 16px 0;
+  }
+
+  .console-content {
+    padding: 18px 16px 48px;
+  }
+
+  .management-container .table-wrapper {
+    margin: 0 -16px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}
+

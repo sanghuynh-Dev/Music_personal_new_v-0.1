@@ -7,8 +7,8 @@ const songService = require('../services/songService');
 class HomeController {
     async index(req, res) {
         try {
-            const userId = req.session.userID;
-            const user = await User.findById(userId);
+            const userId = req.session?.userID;
+            const user = userId ? await User.findById(userId).select('followingArtists').lean() : null;
 
             // Fetch a pool of songs for the home screen (e.g., up to 16)
             const songs = await Song.aggregate([
@@ -43,7 +43,7 @@ class HomeController {
                 { $limit: 5 }
             ]);
             const topArtistIds = topFollows.map(f => f._id);
-            let topArtists = await User.find({ _id: { $in: topArtistIds } }).lean();
+            let topArtists = await User.find({ _id: { $in: topArtistIds } }).select('-password').lean();
             topArtists = topArtists.map(artist => {
                 const followObj = topFollows.find(f => f._id.toString() === artist._id.toString());
                 return {
@@ -57,7 +57,7 @@ class HomeController {
                 const extraArtists = await User.find({
                     role: 'artist',
                     _id: { $nin: existingIds }
-                }).limit(5 - topArtists.length).lean();
+                }).select('-password').limit(5 - topArtists.length).lean();
                 
                 const extraWithCount = extraArtists.map(a => ({ ...a, followerCount: 0 }));
                 topArtists = [...topArtists, ...extraWithCount];
@@ -81,7 +81,7 @@ class HomeController {
                 (user?.followingArtists || []).map(id => id.toString())
             );
 
-            suggestedArtists = await User.find(query).limit(5).lean();
+            suggestedArtists = await User.find(query).select('-password').limit(5).lean();
             const newSuggestedArtists = suggestedArtists.map(artist => ({
                 ...artist,
                 isFollowing: userId ? followingSet.has(artist._id.toString()) : false
@@ -106,9 +106,9 @@ class HomeController {
                 recentlyPlayed
             });
         } catch (error) {
-            console.error('Home controller error:', error);
-            res.status(500).send(error.message);
-            
+            console.error('Home controller error:', error.message);
+            res.status(500).json({ error: 'Unable to load home.' });
+
         }
     }
 

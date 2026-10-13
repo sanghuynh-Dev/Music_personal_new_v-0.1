@@ -1,36 +1,40 @@
 const songService = require('../services/songService');
+const User = require('../models/User');
+const Playlist = require('../models/Playlist');
+const { escapeRegExp } = require('../middlewares/validate');
 
 class SearchController {
     async search(req, res) {
         try {
-            const query = req.query.q || '';
-            const userId = req.session.userID;
-            console.log(query);
+            const query = String(req.query.q || '').slice(0, 100);
+            const userId = req.session?.userID;
             if (query.trim() === '') {
-                if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
-                    return res.json({ songs: [] });
-                }
-                return res.json({ title: 'Search', songs: [], query });
+                return res.json({ songs: [], artists: [], playlists: [] });
             }
 
-            const songs = await songService.searchSongs(query, userId);
+            const safe = escapeRegExp(query);
+            const regex = new RegExp(safe, 'i');
+            const [songs, artists, playlists] = await Promise.all([
+                songService.searchSongs(query, userId),
+                User.find({ $or: [{ username: regex }, { email: regex }], role: { $in: ['artist', 'user'] } })
+                    .select('username avatar role')
+                    .limit(5)
+                    .lean(),
+                Playlist.find({ name: regex })
+                    .populate('user', 'username')
+                    .limit(5)
+                    .lean()
+            ]);
 
-            if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
-                return res.json({ songs });
+            const result = { songs, artists, playlists };
+            if (req.xhr || (req.headers.accept || '').includes('json')) {
+                return res.json(result);
             }
 
-            res.json({
-                success: true,
-                title: `Search Results for "${query}"`,
-                songs,
-                query
-            });
+            res.json({ success: true, ...result, query });
         } catch (error) {
-            console.error('Search controller error:', error);
-            if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
-                return res.status(500).json({ error: error.message });
-            }
-            res.status(500).send(error.message);
+            console.error('Search controller error:', error.message);
+            res.status(500).json({ error: 'Search failed.' });
         }
     }
 }

@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect } from "react";
+import { Heart } from "lucide-react";
 import clsx from "clsx";
 
-import appRoute from '../../routes/appRoute';
 import useSongStore from "../../stores/songStore";
 import usePlayerStore from "../../stores/playerStore";
 import usePlaylistStore from "../../stores/playlistStore";
+import { useAuth } from "../../contexts/AuthContext.jsx";
+import { EmptyState } from "../../components/ui";
+import TrackTable from "../../components/TrackTable.jsx";
 import Loading from "../../components/loading/Loading.jsx";
 
-function FavoritesPage({favoritesData}) {
+import styles from './Collection.module.scss';
 
+function FavoritesPage({ favoritesData }) {
     const currentSong = usePlayerStore(s => s.currentSong);
     const isPlaying = usePlayerStore(s => s.isPlaying);
     const playSong = usePlayerStore(s => s.playSong);
@@ -19,135 +22,73 @@ function FavoritesPage({favoritesData}) {
     const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
     const setSongs = useSongStore(s => s.setSongs);
     const songsData = useSongStore(s => s.songs);
-    const { reload } = useSongStore();
+    const reload = useSongStore(s => s.reload);
+    const { user } = useAuth();
 
     const { openMenu } = usePlaylistStore();
 
-    const isCurrentSong = (song) => song._id === currentSong?._id;
-
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (favoritesData) {
-            setLoading(true);
-        }
-    }, []);
+    const loading = !!favoritesData?.songs;
 
     function handleClick(song) {
-        if (isCurrentSong(song)) {
+        const isCurrent = song._id === currentSong?._id;
+        if (isCurrent) {
             if (isPlaying) pauseSong();
             else resumeSong();
         } else {
             playSong(song._id);
         }
-    }   
+    }
 
-    function handleShowPlaylist (song,e) {
+    function handleShowPlaylist(song, e) {
         e.stopPropagation();
         const rect = e.currentTarget.getBoundingClientRect();
         openMenu(song._id, {
-            x: rect.left - 200,
-            y: rect.bottom 
+            x: Math.max(8, Math.min(rect.left - 160, window.innerWidth - 216)),
+            y: rect.bottom
         });
-    };
-    async function handleLike(song) {
-        toggleLikeLocal(song._id);
-    } 
+    }
+
     useEffect(() => {
         setSongs(favoritesData.songs);
     }, [reload]);
-    return (
-        <>
-            { !loading ?  (
-                <Loading />
-            ) : (
-                <div className="favorites-container event-chang-icon-js">
-                <div className="page-header-simple">
-                    <div className="header-icon-circle">
-                        <i className="ti-heart"></i>
-                    </div>
-                    <div className="header-text-meta">
-                        <span>PLAYLIST</span>
-                        <h1>Favorite Songs</h1>
-                        <p>Your personal collection of liked tracks.</p>
-                    </div>
-                </div>
 
-                <div className="profile-content">
-                    <div className="songs-list-container">
-                        { favoritesData.songs && favoritesData.songs.length > 0 ? (
-                            <div className="songs-table">
-                                <div className="songs-table-header">
-                                    <div className="col-index">#</div>
-                                    <div className="col-title">Title</div>
-                                    <div className="col-genre">Genre</div>
-                                    <div className="col-plays"><i className="ti-headphone"></i></div>
-                                    <div className="col-actions"></div>
-                                </div>
-                                
-                                { songsData?.map((song, index) => (
-                                    <div key={song._id} className="song-row" id={"song-row-" + song._id} data-id={song._id}>
-                                        <div className="col-index">
-                                            <span className="row-num">{index + 1}</span>
-                                            <button 
-                                                className="row-play-btn play-btn-js" 
-                                                onClick={() => handleClick(song)} 
-                                                title="Play">
-                                                { isCurrentSong(song) && isPlaying ? (
-                                                    <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                                        <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
-                                                    </svg>
-                                                ): (
-                                                    <svg className="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                                        <path d="M0 5v14l11-7z"></path>
-                                                    </svg>
-                                                )}
-                                            </button>
-                                        </div>
-                                        <div className="col-title">
-                                            <img src={song.imageUrl?.url} alt={song.title} className="song-row-img"/>
-                                            <div className="song-row-info">
-                                                <NavLink to={`/songs/${song._id}`} className="song-row-title">{song.title}</NavLink>
-                                                <NavLink to={`/profile/${song.uploadedBy._id}`} className="song-row-artist">{song.artist}</NavLink>
-                                            </div>
-                                        </div>
-                                        <div className="col-genre">{song.genre || "Unknown"}</div>
-                                        <div className="col-plays">{song.plays}</div>
-                                        <div className="col-actions">
-                                            <button 
-                                                className={clsx("action-icon-btn like-btn", song.liked && "liked")}
-                                                onClick={() => handleLike(song)} 
-                                                title="Unlike">
-                                                <i className="ti-heart"></i>
-                                            </button>
-                                            <button 
-                                                className="action-icon-btn opt-btn" 
-                                                onClick={(e) => handleShowPlaylist(song,e)}
-                                                title="Add to Playlist">
-                                                <i className="ti-more-alt"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <>
-                                { !loading ? (
-                                    <Loading />
-                                ) : (
-                                    <div className="empty-favorites">
-                                        <i className="ti-heart-broken"></i>
-                                        <p>You haven't favorited any songs yet. Go check out the <a href="/">explore</a> page!</p>
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </div>
-                </div>
-            </div>
+    if (!loading) return <Loading />;
+
+    const count = favoritesData.songs?.length || 0;
+
+    return (
+        <div className={styles.collection}>
+            <header className={styles.masthead}>
+                <p className={styles.kicker}>Collection</p>
+                <h1 className={clsx(styles.title, "font-display")}>Favorite songs</h1>
+                <p className={styles.lede}>
+                    {count === 0
+                        ? 'Every favorite starts with one tap of the heart.'
+                        : `${count} track${count === 1 ? '' : 's'} you keep coming back to.`}
+                </p>
+            </header>
+
+            {count > 0 ? (
+                <TrackTable
+                    songs={songsData}
+                    currentSong={currentSong}
+                    isPlaying={isPlaying}
+                    onPlay={handleClick}
+                    onLike={(song) => toggleLikeLocal(song._id)}
+                    onAdd={handleShowPlaylist}
+                    user={user}
+                    playsHeader="Plays"
+                    renderPlays={(song) => song.playCount || 0}
+                />
+            ) : (
+                <EmptyState
+                    icon={Heart}
+                    title="No favorites yet"
+                    text="Tap the heart on any song and it will live here."
+                />
             )}
-        </>
-    )
+        </div>
+    );
 }
 
-export default FavoritesPage
+export default FavoritesPage;

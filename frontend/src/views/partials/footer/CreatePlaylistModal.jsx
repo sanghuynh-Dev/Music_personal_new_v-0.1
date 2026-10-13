@@ -10,18 +10,20 @@ import styles from "./Footer.module.scss";
 function PlaylisOption() {
     const [userPlayLists, setUserPlayLists] = useState([]);
     const [name, setName] = useState('');
+    const [isPrivate, setIsPrivate] = useState(false);
     const navigate = useNavigate();
-    const dropdownRef = useRef(null);   
+    const dropdownRef = useRef(null);
     const {
         isModalOpen,
         toggleModal,
         createPlaylist
     } = usePlaylistStore();
-    
+
     function handleSubmit (e) {
         e.preventDefault();
-        createPlaylist(name);
+        createPlaylist(name, isPrivate);
         setName('');
+        setIsPrivate(false);
         navigate('/');
     }
 
@@ -35,13 +37,23 @@ function PlaylisOption() {
                 <form onSubmit={handleSubmit}>
                     <div className={styles.modalFormGroup}>
                         <label htmlFor="new-playlist-name">Name</label>
-                        <input 
+                        <input
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            type="text" 
-                            id="new-playlist-name" 
-                            name="name" 
+                            type="text"
+                            id="new-playlist-name"
+                            name="name"
                             placeholder="My Awesome Playlist" required/>
+                    </div>
+                    <div className={styles.modalFormGroup}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+                            <input
+                                type="checkbox"
+                                checked={isPrivate}
+                                onChange={(e) => setIsPrivate(e.target.checked)}
+                            />
+                            Private (only you can see it)
+                        </label>
                     </div>
                     <div className={styles.modalActions}>
                         <button     

@@ -24,7 +24,7 @@ export const removeSongToPlaylist = async (playlistId, songId) => {
    return await response.json();
 }
 
-export const createPlaylist = async (name) => {
+export const createPlaylist = async (name, isPrivate = false) => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/playlists/create`, {
         method: 'POST',
         headers: {
@@ -32,7 +32,7 @@ export const createPlaylist = async (name) => {
             'Accept': 'application/json'
         },
         credentials: 'include',
-        body: JSON.stringify({ name })
+        body: JSON.stringify({ name, isPrivate })
     });
    return await response.json();
 }
@@ -61,10 +61,24 @@ export const getPlaylistById = async (playlistId) => {
    return await response.json();
 }
 
+export const updatePlaylist = async (playlistId, data) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/playlists/${playlistId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(data)
+    });
+   return await response.json();
+}
+
 export default {
   addSongToPlaylist,
   removeSongToPlaylist,
   createPlaylist,
   deletePlaylist,
-  getPlaylistById
+  getPlaylistById,
+  updatePlaylist
 };

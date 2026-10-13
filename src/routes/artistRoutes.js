@@ -9,5 +9,7 @@ router.use(requireRole(['artist', 'admin']));
 
 router.get('/dashboard', artistController.showDashboard);
 router.get('/statistics', artistController.getStatistics);
+router.get('/songs', artistController.mySongs);
+router.get('/followers', artistController.myFollowers);
 
 module.exports = router;

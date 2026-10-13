@@ -1,13 +1,14 @@
 .profileHeaderBanner {
-    height: 280px;
+    min-height: 340px;
     background-size: cover;
     background-position: center;
     position: relative;
     padding: 32px;
     display: flex;
     align-items: flex-end;
-    border-radius: 8px;
+    border-radius: var(--radius-xl);
     overflow: hidden;
+    border: 1px solid var(--border);
 }
 
 .profileHeaderBanner::before {
@@ -17,8 +18,19 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    background: linear-gradient(180deg, rgba(11,11,17,0.15) 0%, rgba(11,11,17,0.55) 55%, rgba(11,11,17,0.92) 100%);
     z-index: 1;
+}
+
+.profileHeaderBanner::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--accent-gradient);
+    z-index: 2;
 }
 
 .headerUploadForm {
@@ -52,11 +64,13 @@
 
 .profileAvatarWrapper {
     position: relative;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
+    width: 148px;
+    height: 148px;
+    border-radius: var(--radius-circle);
     overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    box-shadow: var(--shadow-lg);
+    border: 3px solid rgba(255, 255, 255, 0.14);
+    flex-shrink: 0;
 }
 
 .profileAvatar {
@@ -90,56 +104,81 @@
 }
 
 .profileRole {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--accent);
+    margin: 0 0 4px;
 }
 
 .profileUsername {
-    font-size: 48px;
-    font-weight: 800;
-    margin: 8px 0;
+    font-family: var(--font-display);
+    font-size: var(--display-md);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
 }
 
 .profileStats {
     display: flex;
-    gap: 20px;
-    font-size: 14px;
-    color: var(--secondary-text);
+    gap: 0;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.profileStats > span {
+    padding-right: 20px;
+    margin-right: 20px;
+}
+
+.profileStats > span + span {
+    border-left: 1px solid var(--border);
+    padding-left: 20px;
 }
 
 .profileStats strong {
-    color: var(--text-color);
+    color: var(--text-primary);
+    font-size: var(--text-md);
 }
 
 .btnProfileFollow {
-    padding: 10px 24px;
-    border-radius: 500px;
+    padding: 11px 26px;
+    border-radius: var(--radius-pill);
     font-weight: 700;
-    transition: transform 0.2s;
+    font-size: var(--text-sm);
+    transition: transform var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .btnProfileFollow:hover {
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 
 .btnProfileFollow.follow {
-    background-color: transparent;
-    border: 1px solid var(--text-color);
+    background-color: var(--text-primary);
+    color: #09090F;
 }
 
 .btnProfileFollow.following {
-    background-color: var(--primary-color);
-    color: #000;
+    background-color: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
 }
 
 .profileContent {
-    margin-top: 32px;
+    margin-top: 36px;
 }
 
 .contentTitle {
-    font-size: 20px;
-    margin-bottom: 16px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 8px;
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.contentCount {
+    color: var(--text-muted);
+    font-size: var(--text-md);
+    font-weight: 500;
 }

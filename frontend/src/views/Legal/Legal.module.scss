@@ -1,0 +1,52 @@
+.legal {
+    max-width: 740px;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 6px;
+}
+
+.body p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--text-md);
+    line-height: 1.75;
+    max-width: 68ch;
+}
+
+.body p:first-child::first-letter {
+    font-family: var(--font-display);
+    font-size: 2.6em;
+    font-weight: 600;
+    float: left;
+    line-height: 0.9;
+    padding-right: 8px;
+    color: var(--text-primary);
+}
+
+.siblingNav {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+}
+
+.siblingLink {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.siblingLink:hover {
+    color: var(--text-primary);
+    border-color: var(--border-strong);
+}

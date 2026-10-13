@@ -4,8 +4,15 @@ const Follow = require('../models/Follow');
 const ListeningHistory = require('../models/ListeningHistory');
 
 class UserService {
+    sanitize(user) {
+        if (!user) return null;
+        const obj = typeof user.toObject === 'function' ? user.toObject() : { ...user };
+        delete obj.password;
+        return obj;
+    }
+
     async getUserProfile(targetUserId, currentUserId = null) {
-        const user = await User.findById(targetUserId).lean();
+        const user = await User.findById(targetUserId).select('-password').lean();
         if (!user) return null;
 
         // Get uploaded tracks
@@ -52,8 +59,9 @@ class UserService {
             throw new Error('You cannot follow yourself');
         }
 
-        const artist = await User.findById(targetArtistId);
+        const artist = await User.findById(targetArtistId).select('_id role status');
         if (!artist) throw new Error('Artist not found');
+        if (artist.role !== 'artist' && artist.role !== 'admin') throw new Error('Can only follow artists');
 
         const currentUser = await User.findById(currentUserId);
         if (!currentUser) throw new Error('User not found');
@@ -71,6 +79,16 @@ class UserService {
                 { _id: currentUserId },
                 { $addToSet: { followingArtists: targetArtistId } }
             );
+
+            try {
+                const { notify } = require('./notifyService');
+                await notify({
+                    recipient: targetArtistId,
+                    type: 'follow',
+                    text: `${currentUser.username} started following you.`,
+                    link: `/profile/${currentUser._id}`
+                });
+            } catch { /* notifications never break follows */ }
         } else if (action === 'unfollow') {
             // Delete follow relationship
             await Follow.deleteOne({ follower: currentUserId, artist: targetArtistId });
@@ -107,12 +125,12 @@ class UserService {
     }
 
     async getFollowings(userId) {
-        const follows = await Follow.find({ follower: userId }).populate('artist').lean();
+        const follows = await Follow.find({ follower: userId }).populate('artist', 'username avatar role').lean();
         return follows.map(f => f.artist).filter(Boolean);
     }
 
     async getFollowers(userId) {
-        const follows = await Follow.find({ artist: userId }).populate('follower').lean();
+        const follows = await Follow.find({ artist: userId }).populate('follower', 'username avatar role').lean();
         return follows.map(f => f.follower).filter(Boolean);
     }
 }

@@ -1,0 +1,84 @@
+.explore {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.masthead {
+    padding-top: 8px;
+}
+
+.title {
+    font-size: var(--display-lg);
+    font-weight: 600;
+    line-height: 1;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+}
+
+.lede {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--text-lg);
+}
+
+/* Genre index: oversized typographic rows */
+.genreIndex {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
+}
+
+.genreRow {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 14px 6px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    transition: background-color var(--transition-fast), padding-left var(--transition-normal);
+}
+
+.genreRow:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+    padding-left: 14px;
+}
+
+.genreName {
+    flex: 1;
+    font-size: clamp(24px, 3.4vw, 40px);
+    font-weight: 500;
+    line-height: 1.05;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+
+.genreActive .genreName {
+    color: var(--accent);
+}
+
+.genreCount {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    min-width: 70px;
+    text-align: right;
+}
+
+.genreArrow {
+    color: var(--text-muted);
+    transition: color var(--transition-fast), transform var(--transition-normal);
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.genreRow:hover .genreArrow,
+.genreActive .genreArrow {
+    color: var(--accent);
+    transform: translate(2px, -2px);
+}
+
+@media (max-width: 640px) {
+    .explore {
+        gap: 32px;
+    }
+}

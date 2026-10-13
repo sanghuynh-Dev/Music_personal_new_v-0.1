@@ -16,10 +16,15 @@ const songSchema = new Schema({
     },
     uploadedBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    playCount: { type: Number, default: 0 },
-    duration: { type: Number, default: 0 } // duration in seconds
+    playCount: { type: Number, default: 0, min: 0 },
+    duration: { type: Number, default: 0, min: 0 } // duration in seconds
 }, {
     timestamps: true
 });
+
+songSchema.index({ uploadedBy: 1 });
+songSchema.index({ createdAt: -1 });
+songSchema.index({ playCount: -1 });
+songSchema.index({ title: 'text', artist: 'text', genre: 'text' });
 
 module.exports = mongoose.model('Song', songSchema);

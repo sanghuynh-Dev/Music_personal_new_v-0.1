@@ -8,5 +8,6 @@ const listeningHistorySchema = new Schema({
 });
 
 listeningHistorySchema.index({ user: 1, listenedAt: -1 });
+listeningHistorySchema.index({ user: 1, song: 1 }, { unique: true });
 
 module.exports = mongoose.model('ListeningHistory', listeningHistorySchema);

@@ -1,0 +1,31 @@
+.collection {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+}
+
+.masthead {
+    padding-top: 10px;
+    max-width: 720px;
+}
+
+.kicker {
+    font-size: var(--text-sm);
+    color: var(--accent);
+    font-weight: 500;
+    margin: 0 0 10px;
+}
+
+.title {
+    font-size: var(--display-md);
+    font-weight: 600;
+    line-height: 1;
+    margin: 0 0 10px;
+    letter-spacing: -0.02em;
+}
+
+.lede {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--text-md);
+}

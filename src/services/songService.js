@@ -1,6 +1,7 @@
 const Song = require('../models/Song');
 const User = require('../models/User');
 const ListeningHistory = require('../models/ListeningHistory');
+const { escapeRegExp } = require('../middlewares/validate');
 
 class SongService {
     async getSongById(songId, userId = null) {
@@ -78,12 +79,13 @@ class SongService {
         const song = await Song.findById(songId);
         if (!song) throw new Error('Song not found');
 
-        const index = song.likes.indexOf(userId);
+        const uid = userId.toString();
+        const idx = song.likes.findIndex((id) => id.toString() === uid);
         let liked = false;
 
-        if (index > -1) {
+        if (idx > -1) {
             // Already liked, so unlike it
-            song.likes.splice(index, 1);
+            song.likes.splice(idx, 1);
             liked = false;
         } else {
             // Like it
@@ -101,7 +103,8 @@ class SongService {
         const user = await User.findById(userId);
         if (!user) throw new Error('User not found');
 
-        const index = user.favoriteSongs.indexOf(songId);
+        const sid = songId.toString();
+        const index = user.favoriteSongs.findIndex((id) => id.toString() === sid);
         let favorited = false;
 
         if (index > -1) {
@@ -132,7 +135,9 @@ class SongService {
     }
 
     async searchSongs(query, userId = null) {
-        const regex = new RegExp(query, 'i');
+        const safe = escapeRegExp(query);
+        if (!safe) return [];
+        const regex = new RegExp(safe, 'i');
         // Search by title, artist name, or genre
         const songs = await Song.find({
             $or: [

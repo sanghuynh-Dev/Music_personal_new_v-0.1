@@ -25,17 +25,16 @@ function Profile() {
     const resumeSong = usePlayerStore(s => s.resumeSong);
     const setCurrentSong = usePlayerStore(s => s.setCurrentSong);
 
-    const {toggleFollowSingle,reloadFollow} = useFollowStore();
+    const toggleFollowSingle = useFollowStore(s => s.toggleFollowSingle);
+    const reloadFollow = useFollowStore(s => s.reloadFollow);
 
-    const { 
-        deleteSong, 
-        songs, 
-        setSongs, 
-        toggleLikeLocal,
-        reload 
-    } = useSongStore();
+    const deleteSong = useSongStore(s => s.deleteSong);
+    const songs = useSongStore(s => s.songs);
+    const setSongs = useSongStore(s => s.setSongs);
+    const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
+    const reload = useSongStore(s => s.reload);
 
-    const { openMenu } = usePlaylistStore();
+    const openMenu = usePlaylistStore(s => s.openMenu);
 
     const isCurrentSong = (song) => song._id === currentSong?._id;
 
@@ -137,11 +136,11 @@ function Profile() {
             {/* <!-- Header Background Cover --> */}
             <div className={styles.profileHeaderBanner} 
                 style={{ 
-                    backgroundImage: !profileData.isOwnProfile
+                    backgroundImage: profileData.isOwnProfile
                         ? `url(${user?.background?.url || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1974&auto=format&fit=crop'})`
                         : `url(${profileData.profileUser?.background?.url || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1974&auto=format&fit=crop'})` 
                         }}>
-                { !profileData.isOwnProfile && (
+                { profileData.isOwnProfile && (
                     <form encType="multipart/form-data" className={styles.headerUploadForm} id="header-form">
                         <label htmlFor="header-file-input" className={styles.btnChangeHeader} title="Change Banner">
                             <i className="ti-camera"></i> Update Banner
@@ -152,10 +151,10 @@ function Profile() {
                 
                 <div className={styles.profileHeaderInfo}>
                     <div className={styles.profileAvatarWrapper}>
-                        <img src={ !profileData.isOwnProfile
+                        <img src={ profileData.isOwnProfile
                             ?  user?.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1781293476/955c965a3e831375a9fc2ed4e7599882_zlbj68.jpg'
                             :  profileData.profileUser?.avatar?.url || 'https://res.cloudinary.com/dqynaodv1/image/upload/v1781293476/955c965a3e831375a9fc2ed4e7599882_zlbj68.jpg'} alt=">" className={styles.profileAvatar}/>
-                        { !profileData.isOwnProfile && (
+                        { profileData.isOwnProfile && (
                             <form action="/profile/avatar" method="POST" encType="multipart/form-data" className="avatar-upload-form" id="avatar-form">
                                 <label htmlFor="avatar-file-input" className={styles.avatarUploadOverlay} title="Change Avatar">
                                     <i className="ti-camera"></i>
@@ -166,20 +165,23 @@ function Profile() {
                     </div>
                     
                     <div className={styles.profileMeta}>
-                        <span className={styles.profileRole}>{profileData.profileUser?.role.toUpperCase()}</span>
+                        <p className={styles.profileRole}>
+                            {profileData.profileUser?.role === 'artist' ? 'Artist' : profileData.profileUser?.role === 'admin' ? 'Admin' : 'Listener'}
+                            {profileData.profileUser?.artistVerified ? ' · Verified' : ''}
+                        </p>
                         <h1 className={styles.profileUsername}>{profileData.profileUser?.username}</h1>
-                        
+
                         <div className={styles.profileStats}>
-                            <span id="stat-tracks"><strong>{profileData.profileUser?.tracksCount || 0}</strong> Tracks</span>
-                            { profileData.profileUser?.role === 'artist' || profileData.profileUser?.role === 'admin' && (
-                                <span id="stat-plays"><strong>{profileData.profileUser?.totalPlays || 0}</strong> Plays</span>
+                            <span id="stat-tracks"><strong className="numeric">{profileData.profileUser?.tracksCount || 0}</strong> Tracks</span>
+                            { (profileData.profileUser?.role === 'artist' || profileData.profileUser?.role === 'admin') && (
+                                <span id="stat-plays"><strong className="numeric">{profileData.profileUser?.totalPlays || 0}</strong> Plays</span>
                             )}
-                            <span id="stat-followers"><strong>{profileData.profileUser?.followerCount || 0}</strong> Followers</span>
-                            <span id="stat-following"><strong>{profileData.profileUser?.followingCount || 0}</strong> Following</span>
+                            <span id="stat-followers"><strong className="numeric">{profileData.profileUser?.followerCount || 0}</strong> Followers</span>
+                            <span id="stat-following"><strong className="numeric">{profileData.profileUser?.followingCount || 0}</strong> Following</span>
                         </div>
                     </div>
                     
-                    { profileData.isOwnProfile && user && (
+                    { !profileData.isOwnProfile && user && (
                         <div className="profile-actions">
                             <button 
                                 className={clsx(styles.btnProfileFollow, profileData.profileUser?.isFollowing ? "following" : "follow")} 
@@ -193,7 +195,12 @@ function Profile() {
 
             {/* <!-- Uploaded Songs List --> */}
             <div className={styles.profileContent}>
-                <h2 className={styles.contentTitle}>Uploaded Songs</h2>
+                <h2 className={styles.contentTitle}>
+                    {profileData.isOwnProfile ? 'Your uploads' : 'Uploaded songs'}
+                    {profileData.tracks?.length > 0 && (
+                        <span className={styles.contentCount}> {profileData.tracks.length}</span>
+                    )}
+                </h2>
                 
                 <div className="songs-list-container">
                     { profileData.tracks && profileData.tracks.length > 0 ? (
@@ -249,7 +256,7 @@ function Profile() {
                                                     title="Add to Playlist">
                                                     <i className="ti-more-alt"></i>
                                                 </button>
-                                                { !profileData.isOwnProfile  || (user && user.role === 'admin') && (
+                                                { (profileData.isOwnProfile || user?.role === 'admin') && (
                                                     <button 
                                                         className="action-icon-btn delete-btn" 
                                                         onClick={() => handleDeleteSong(song)} 

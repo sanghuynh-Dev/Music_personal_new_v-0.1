@@ -45,7 +45,7 @@ export const usePLaylistStore = create((set, get) => ({
         if (data.success) {
             useAlertStore.getState().openModal('Success','Added to playlist!');
         } else {
-            alert(data.error || 'Failed to add song');
+            useAlertStore.getState().openModal('Error', data.error || 'Failed to add song');
         }
         set({
             isMenuOpen: false
@@ -64,13 +64,13 @@ export const usePLaylistStore = create((set, get) => ({
                 useAlertStore.getState().closeModal();
             }, 3000)
         } else {
-            alert(data.error || 'Failed to remove song');
+            useAlertStore.getState().openModal('Error', data.error || 'Failed to remove song');
         }
     },
 
-    createPlaylist: async (name) => {
+    createPlaylist: async (name, isPrivate = false) => {
         if (timeoutId) clearTimeout(timeoutId);
-        const data = await playlistApi.createPlaylist(name);
+        const data = await playlistApi.createPlaylist(name, isPrivate);
         if (data.success) {
             useAlertStore.getState().openModal('Success','Playlist created successfully.');
             set({
@@ -81,7 +81,7 @@ export const usePLaylistStore = create((set, get) => ({
                 useAlertStore.getState().closeModal();
             }, 3000)
         } else {
-            alert(data.error || 'Failed to create playlist');
+            useAlertStore.getState().openModal('Error', data.error || 'Failed to create playlist');
         }
     },
 
@@ -102,7 +102,7 @@ export const usePLaylistStore = create((set, get) => ({
             }, 3000)
             return data;
         } else {
-            alert(data.error || 'Failed to delete playlist');
+            useAlertStore.getState().openModal('Error', data.error || 'Failed to delete playlist');
         }
     }
 }));

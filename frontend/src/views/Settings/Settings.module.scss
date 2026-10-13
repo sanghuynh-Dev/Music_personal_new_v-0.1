@@ -1,0 +1,49 @@
+.settings {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 680px;
+}
+
+.card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+}
+
+.cardHead {
+    margin-bottom: 16px;
+}
+
+.cardHead h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    margin: 0 0 4px;
+}
+
+.cardHead p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+}
+
+.form {
+    display: grid;
+    gap: 12px;
+}
+
+.note {
+    margin: 12px 0 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+}
+
+.danger {
+    border-color: rgba(224, 92, 92, 0.35);
+}
+
+.danger h2 {
+    color: var(--danger);
+}

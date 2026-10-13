@@ -5,6 +5,7 @@ const playlistRoutes = require('./playlistRoutes');
 const searchRoutes = require('./searchRoutes');
 const artistRoutes = require('./artistRoutes');
 const adminRoutes = require('./adminRoutes');
+const reportRoutes = require('./reportRoutes');
 const homeController = require('../controllers/homeController');
 
 function route(app) {
@@ -32,6 +33,9 @@ function route(app) {
 
     // Admin Panel
     app.use('/admin', adminRoutes);
+
+    // Reports (user submit + mine)
+    app.use('/', reportRoutes);
 
     // User Profile, Favorites, History, Follows
     app.use('/', userRoutes);

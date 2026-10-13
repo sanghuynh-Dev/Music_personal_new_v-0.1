@@ -1,10 +1,11 @@
 
 import { NavLink, useNavigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Eye, EyeOff } from "lucide-react";
 
 import useAlert from '../../stores/alertStore'
 import authApi from '../../services/authApi'
+import AuthLayout from './AuthLayout.jsx';
 import styles from './Auth.module.scss'
 function Register() {
     const [username, setUsername] = useState("");
@@ -84,13 +85,7 @@ function Register() {
     }
 
     return (
-        <div className={styles.authBody}>
-            <div className={styles.authCard}>
-                <div className={styles.authLogo}>
-                    <i className="ti-music-alt"></i>
-                    <h1>Soundora</h1>
-                </div>
-                
+        <AuthLayout>
                 <h2>Create an account</h2>
                 
                 <form onSubmit={handleSubmit}>
@@ -142,8 +137,10 @@ function Register() {
                 <p className={styles.authSwitchPrompt}>
                     Already have an account? <NavLink to="/login">Sign in</NavLink> here.
                 </p>
-            </div>
-        </div>
+                <p className={styles.authSwitchPrompt} style={{ marginTop: 12, fontSize: 12 }}>
+                    By registering you agree to the <NavLink to="/terms">Terms</NavLink> and <NavLink to="/privacy">Privacy Policy</NavLink>.
+                </p>
+        </AuthLayout>
     )
 }
 

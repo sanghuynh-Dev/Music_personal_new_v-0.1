@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 import { useAuth } from "../../contexts/AuthContext";
 import useCommentStore from "../../stores/commentStore";
-import songApi from "../../services/songApi";
+import useAlertStore from "../../stores/alertStore";
 import Loading from "../../components/loading/Loading";
 import styles from './Songs.module.scss'
 
@@ -34,7 +34,7 @@ function CommentsSection({ songId }) {
         if (result.success) {
             setContent("");
         } else {
-            alert(data.error || "Failed to submit comment");
+            useAlertStore.getState().openModal('Error', result.error || "Failed to submit comment");
         }
     }
 

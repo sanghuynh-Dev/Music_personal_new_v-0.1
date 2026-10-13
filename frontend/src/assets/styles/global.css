@@ -1,15 +1,5 @@
-:root {
-    --primary-color: #1DB954;
-    --background-color: #121212;
-    --secondary-bg: #181818;
-    --sidebar-bg: #000000;
-    --text-color: #FFFFFF;
-    --secondary-text: #B3B3B3;
-    --hover-bg: #282828;
-    --card-bg: #181818;
-    --border-color: #282828;
-}
-
+/* Legacy sidebar styles — tokens now live in index.css (:root).
+   Kept for backward-compat; new code uses Header.module.scss. */
 
 .sidebar {
     width: 240px;
@@ -26,7 +16,7 @@
     gap: 12px;
     font-size: 20px;
     font-weight: 800;
-    color: var(--primary-color);
+    color: var(--accent);
     padding: 0 12px;
     margin-bottom: 24px;
 }

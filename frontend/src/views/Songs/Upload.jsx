@@ -14,7 +14,7 @@ function Upload() {
 
     const [file, setFile] = useState(null)
     const [image, setImage] = useState(null)
-    const { uploadSong } = useSongStore();
+    const uploadSong = useSongStore(s => s.uploadSong);
 
     async function handleSubmit(e) {
         e.preventDefault();

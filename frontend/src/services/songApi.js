@@ -46,7 +46,9 @@ export const uploadSong = async (data, onProgress) => {
 };
 
 export const deleteSong = async (songId) => {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/song/${songId}`, {
+    // Owner delete (artist/admin checked server-side) — NOT the admin-only endpoint,
+    // so artists can delete their own uploads.
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/songs/${songId}`, {
         method: "DELETE",
         headers: {
             'Accept': 'application/json'

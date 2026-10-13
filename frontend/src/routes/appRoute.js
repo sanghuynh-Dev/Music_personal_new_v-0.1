@@ -51,50 +51,6 @@ export const dashboardArtistRoute = async () => {
     return data;
 }
 
-export const dashboardAdminRoute = async () => {
-    const data = await fetch(`${import.meta.env.VITE_API_URL}/admin/dashboard`, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json'
-        },
-        credentials: 'include'
-    }).then(res => res.json());
-    return data;
-}
-
-export const dashboardAdminGetArtistRoute = async () => {
-    const data = await fetch(`${import.meta.env.VITE_API_URL}/admin/artists`, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json'
-        },
-        credentials: 'include'
-    }).then(res => res.json());
-    return data;
-}
-
-export const dashboardAdminGetUserRoute = async () => {
-    const data = await fetch(`${import.meta.env.VITE_API_URL}/admin/users`, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json'
-        },
-        credentials: 'include'
-    }).then(res => res.json());
-    return data;
-}
-
-export const dashboardAdminGetSongRoute = async () => {
-    const data = await fetch(`${import.meta.env.VITE_API_URL}/admin/songs`, {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json'
-        },
-        credentials: 'include'
-    }).then(res => res.json());
-    return data;
-}
-
 export const songDetailRoute = async (songID) => {
     const data = await fetch(`${import.meta.env.VITE_API_URL}/songs/${songID}`, {
         method: 'GET',
@@ -171,10 +127,6 @@ export default {
   favoritesRoute,
   historyRoute,
   dashboardArtistRoute,
-  dashboardAdminRoute,
-  dashboardAdminGetArtistRoute,
-  dashboardAdminGetUserRoute,
-  dashboardAdminGetSongRoute,
   songDetailRoute,
   getSongInfo,
   getProfileUser,

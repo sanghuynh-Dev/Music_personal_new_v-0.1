@@ -7,10 +7,8 @@ function SideBarPlayList({styles}) {
     const {user, setUser} = useContext(AuthContext);
     const [userPlayLists, setUserPlayLists] = useState([]);
 
-    const {
-        toggleModal,
-        reloadPlaylist
-    } = usePLaylistStore();
+    const toggleModal = usePLaylistStore(s => s.toggleModal);
+    const reloadPlaylist = usePLaylistStore(s => s.reloadPlaylist);
     
     useEffect(() => {
         apiUser.getUser().then((user) => {
@@ -27,7 +25,7 @@ function SideBarPlayList({styles}) {
     return (
        <div className={styles.sidebarPlaylists}>
             <div className={styles.playlistsHeader}>
-                <h3>PLAYLISTS</h3>
+                <h3>Playlists</h3>
                 { user && (
                     <button 
                         type="button" 

@@ -1,5 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 // Define source schemas (old codebase structure)
 const sourceUserSchema = new mongoose.Schema({
@@ -29,10 +30,18 @@ const Song = require('../src/models/Song');
 const Follow = require('../src/models/Follow');
 const Playlist = require('../src/models/Playlist');
 
-const sourceURI = 'mongodb://sanghuynhkuro:sanhok2004@ac-rju1bdq-shard-00-00.d5qeymc.mongodb.net:27017,ac-rju1bdq-shard-00-01.d5qeymc.mongodb.net:27017,ac-rju1bdq-shard-00-02.d5qeymc.mongodb.net:27017/music_personal?ssl=true&replicaSet=atlas-12frx0-shard-0&authSource=admin&appName=Cluster0';
+const sourceURI = process.env.SEED_SOURCE_URI;
 const targetURI = process.env.MONGO_URI;
 
 async function seed() {
+    if (process.env.NODE_ENV === 'production' && !process.env.ALLOW_SEED) {
+        console.error('Refusing to seed in production without ALLOW_SEED=1.');
+        process.exit(1);
+    }
+    if (!sourceURI) {
+        console.error('Missing SEED_SOURCE_URI. Aborting seed (credential must come from env, never hardcoded).');
+        process.exit(1);
+    }
     console.log('Starting migration and seeding...');
 
     // 1. Connect to source database and fetch records
@@ -73,7 +82,7 @@ async function seed() {
             _id: u._id,
             username: u.username || 'User_' + u._id.toString().substring(18),
             email: u.email,
-            password: u.password || '123456',
+            password: await bcrypt.hash('123456', 10),
             avatar: u.avatar || { url: '', public_id: '' },
             background: u.background || { url: '', public_id: '' },
             role: role,
@@ -124,7 +133,7 @@ async function seed() {
         const adminUser = new User({
             username: 'Administrator',
             email: adminEmail,
-            password: 'adminpassword',
+            password: await bcrypt.hash(process.env.SEED_ADMIN_PASSWORD || 'ChangeMe123!', 10),
             role: 'admin'
         });
         await adminUser.save();
@@ -139,7 +148,7 @@ async function seed() {
         const testUser = new User({
             username: 'John Doe',
             email: testUserEmail,
-            password: 'userpassword',
+            password: await bcrypt.hash(process.env.SEED_USER_PASSWORD || 'ChangeMe123!', 10),
             role: 'user'
         });
         await testUser.save();

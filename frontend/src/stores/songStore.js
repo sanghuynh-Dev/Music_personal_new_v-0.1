@@ -26,7 +26,22 @@ export const useSongStore = create((set, get) => ({
 
 
     toggleLikeLocal: async (songId) => {
-        const data = await songApi.toggleLikeApi(songId);
+        let data;
+        try {
+            data = await songApi.toggleLikeApi(songId);
+        } catch {
+            data = null;
+        }
+        // Backend returns {error} on 401/invalid id — never corrupt local state.
+        if (!data || typeof data.liked === 'undefined') {
+            useAlertStore.getState().openModal('Error', data?.error || 'Failed to update like. Please sign in again.');
+            return data;
+        }
+
+        // Keep footer / expanded player / queue in sync with lists.
+        try {
+            usePlayerStore.getState().setTrackLiked(songId, data.liked);
+        } catch { /* player store optional */ }
 
         set((state) => ({
             songs: state.songs.map(song =>
@@ -47,6 +62,7 @@ export const useSongStore = create((set, get) => ({
 
             reload: !get().reload
         }));
+        return data;
     },
 
     deleteSong: async (songId) => {
@@ -69,7 +85,7 @@ export const useSongStore = create((set, get) => ({
             }, 3000)
             
         } else {
-            alert(data.error || 'Failed to delete song');
+            useAlertStore.getState().openModal('Error', data.error || 'Failed to delete song');
         }
     },
 
@@ -125,7 +141,7 @@ export const useSongStore = create((set, get) => ({
                 progress: 0
             });
 
-            alert("Upload failed");
+            useAlertStore.getState().openModal('Error', err.message || 'Upload failed. Please try again.');
         }
     }
 }));

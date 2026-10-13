@@ -3,12 +3,13 @@ const Song = require('../models/Song');
 const User = require('../models/User');
 const Comment = require('../models/Comment');
 const { cloudinary } = require('../config/cloudinary');
+const { sanitizeUser, cleanText, isValidObjectId } = require('../middlewares/validate');
 
 class SongController {
     async showUpload(req, res) {
         // User must be authenticated, which is checked by middleware.
-        const user = await User.findById(req.session.userID);
-        res.json({ 
+        const user = await User.findById(req.session?.userID).select('-password').lean();
+        res.json({
             title: 'Upload Song',
             user
          });
@@ -17,7 +18,10 @@ class SongController {
     async showSongDetail(req, res) {
         try {
             const songId = req.params.id;
-            const userId = req.session.userID;
+            if (!isValidObjectId(songId)) {
+                return res.status(400).json({ error: 'Invalid song id' });
+            }
+            const userId = req.session?.userID;
 
             const song = await songService.getSongById(songId, userId);
             if (!song) {
@@ -29,25 +33,33 @@ class SongController {
                 song
             });
         } catch (error) {
-            console.error('Show song detail error:', error);
-            res.status(500).render('errors/500', {
-                title: '500 - Server Error',
-                message: error.message
-            });
+            console.error('Show song detail error:', error.message);
+            res.status(500).json({ error: 'Unable to load song.' });
         }
     }
 
     async uploadSong(req, res) {
+        let uploadedFiles = [];
         try {
             const userId = req.session.userID;
-            const { title, artist, genre, description} = req.body;
+            const title = cleanText(req.body.title, 200);
+            const artist = cleanText(req.body.artist, 200);
+            const genre = cleanText(req.body.genre, 100);
+            const description = cleanText(req.body.description, 2000);
 
             const audioFile = req.files?.file?.[0];
             const imageFile = req.files?.image?.[0];
-            console.log(req.body);
 
             if (!audioFile || !imageFile) {
-                return res.status(400).send('Missing files for upload. Audio and Image are required.');
+                return res.status(400).json({ error: 'Missing files for upload. Audio and Image are required.' });
+            }
+            uploadedFiles = [audioFile, imageFile];
+            // 5MB image cap (multer caps 20MB per file for audio)
+            if (imageFile.size && imageFile.size > 5 * 1024 * 1024) {
+                throw new Error('Image too large (max 5MB).');
+            }
+            if (!title || !artist) {
+                throw new Error('Title and artist are required.');
             }
 
             const song = new Song({
@@ -73,22 +85,34 @@ class SongController {
             // Optionally update user's tracks count if keeping that field
             // user.tracksCount = ... (we can also compute tracksCount dynamically from DB)
 
-            res.json({ success: true });
+            res.json({ success: true, songId: song._id });
         } catch (error) {
-            console.error('Upload controller error:', error);
-            res.status(500).send('Upload failed: ' + error.message);
+            // Cleanup orphan files on Cloudinary if DB save failed
+            for (const f of uploadedFiles) {
+                try {
+                    if (f?.filename) {
+                        const rt = f.mimetype?.startsWith('audio') ? { resource_type: 'video' } : {};
+                        await cloudinary.uploader.destroy(f.filename, rt);
+                    }
+                } catch (e) { console.error('Orphan cleanup failed:', e.message); }
+            }
+            console.error('Upload controller error:', error.message);
+            res.status(400).json({ error: error.message || 'Upload failed.' });
         }
     }
 
     async getSongInfo(req, res) {
         try {
-            const song = await songService.getSongById(req.params.id, req.session.userID);
+            if (!isValidObjectId(req.params.id)) {
+                return res.status(400).json({ error: 'Invalid song id' });
+            }
+            const song = await songService.getSongById(req.params.id, req.session?.userID);
             if (!song) {
                 return res.status(404).json({ error: 'Song not found' });
             }
             res.json(song);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ error: 'Unable to load song.' });
         }
     }
 
@@ -98,21 +122,27 @@ class SongController {
             if (!currentSongId) {
                 return res.status(400).json({ error: 'Missing currentSongId parameter' });
             }
-            const queue = await songService.getSongQueue(currentSongId, req.session.userID);
+            if (!isValidObjectId(currentSongId)) {
+                return res.status(400).json({ error: 'Invalid song id' });
+            }
+            const queue = await songService.getSongQueue(currentSongId, req.session?.userID);
             res.json(queue);
         } catch (error) {
-            console.error('Queue controller error:', error);
-            res.status(500).json({ error: error.message });
+            console.error('Queue controller error:', error.message);
+            res.status(500).json({ error: 'Unable to load queue.' });
         }
     }
 
     async playMusic(req, res) {
         try {
             const songId = req.params.id;
-            await songService.registerPlay(songId, req.session.userID);
+            if (!isValidObjectId(songId)) {
+                return res.status(400).json({ error: 'Invalid song id' });
+            }
+            await songService.registerPlay(songId, req.session?.userID);
             res.json({ success: true });
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ error: 'Unable to register play.' });
         }
     }
 
@@ -123,6 +153,9 @@ class SongController {
             if (!userId) {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
+            if (!isValidObjectId(songId)) {
+                return res.status(400).json({ error: 'Invalid song id' });
+            }
 
             const resultLike = await songService.toggleLike(songId, userId);
             const resultFavorite = await songService.toggleFavorite(songId, userId);
@@ -131,7 +164,7 @@ class SongController {
                 ...resultFavorite
             });
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ error: 'Unable to update like.' });
         }
     }
 
@@ -139,10 +172,13 @@ class SongController {
         try {
             const songId = req.params.id;
             const userId = req.session.userID;
-            const { content } = req.body;
+            const content = cleanText(req.body.content, 1000);
 
             if (!userId) {
                 return res.status(401).json({ error: 'Unauthorized' });
+            }
+            if (!isValidObjectId(songId)) {
+                return res.status(400).json({ error: 'Invalid song id' });
             }
             if (!content || content.trim() === '') {
                 return res.status(400).json({ error: 'Comment content cannot be empty' });
@@ -151,7 +187,7 @@ class SongController {
             const comment = new Comment({
                 user: userId,
                 song: songId,
-                content: content.trim()
+                content
             });
 
             await comment.save();
@@ -159,25 +195,33 @@ class SongController {
             const populatedComment = await Comment.findById(comment._id).populate('user', 'username avatar');
             res.json({ success: true, comment: populatedComment });
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ error: 'Unable to add comment.' });
         }
     }
 
     async getComments(req, res) {
         try {
             const songId = req.params.id;
+            if (!isValidObjectId(songId)) {
+                return res.status(400).json({ error: 'Invalid song id' });
+            }
+            const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100);
             const comments = await Comment.find({ song: songId })
                 .populate('user', 'username avatar')
-                .sort({ createdAt: -1 });
+                .sort({ createdAt: -1 })
+                .limit(limit);
             res.json(comments);
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ error: 'Unable to load comments.' });
         }
     }
 
     async deleteSong(req, res) {
         try {
             const songId = req.params.id;
+            if (!isValidObjectId(songId)) {
+                return res.status(400).json({ error: 'Invalid song id' });
+            }
             const userId = req.session.userID;
             const userRole = res.locals.user?.role;
 
@@ -202,13 +246,16 @@ class SongController {
             await Song.deleteOne({ _id: songId });
             res.json({ success: true });
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ error: 'Unable to delete song.' });
         }
     }
 
     async showEditSong(req, res) {
         try {
             const songId = req.params.id;
+            if (!isValidObjectId(songId)) {
+                return res.status(400).json({ error: 'Invalid song id' });
+            }
             const userId = req.session.userID;
             const userRole = res.locals.user?.role;
 
@@ -230,21 +277,22 @@ class SongController {
                 song
             });
         } catch (error) {
-            console.error('Show edit song error:', error);
-            res.status(500).render('errors/500', {
-                title: '500 - Server Error',
-                message: error.message
-            });
+            console.error('Show edit song error:', error.message);
+            res.status(500).json({ error: 'Unable to load song.' });
         }
     }
 
     async editSong(req, res) {
         try {
             const songId = req.params.id;
+            if (!isValidObjectId(songId)) {
+                return res.status(400).json({ error: 'Invalid song id' });
+            }
             const userId = req.session.userID;
             const userRole = res.locals.user?.role;
-            const { title, genre, description } = req.body;
-            console.log(req.body);
+            const title = cleanText(req.body.title, 200);
+            const genre = cleanText(req.body.genre, 100);
+            const description = cleanText(req.body.description, 2000);
 
             const song = await Song.findById(songId);
             if (!song) {
@@ -263,8 +311,8 @@ class SongController {
             await song.save();
             res.json({ success: true });
         } catch (error) {
-            console.error('Edit song error:', error);
-            res.status(500).send('Edit failed: ' + error.message);
+            console.error('Edit song error:', error.message);
+            res.status(500).json({ error: 'Edit failed.' });
         }
     }
 }
