@@ -95,6 +95,24 @@
     background-color: rgba(255, 255, 255, 0.06);
 }
 
+.btnIconGhost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-circle);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-secondary);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btnIconGhost:hover {
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.45);
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
 .editForm {
     display: flex;
     gap: 10px;

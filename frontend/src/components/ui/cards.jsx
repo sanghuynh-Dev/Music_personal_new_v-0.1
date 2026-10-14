@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { CheckCircle2, ChevronRight } from 'lucide-react';
 import clsx from 'clsx';
+import { ArtistLink, SongTitleLink } from '../SongLinks.jsx';
 import styles from './UI.module.css';
 
 const FALLBACK_IMG = 'https://res.cloudinary.com/dqynaodv1/image/upload/v1781293476/955c965a3e831375a9fc2ed4e7599882_zlbj68.jpg';
@@ -44,8 +45,8 @@ export function SongCard({ song, onPlay }) {
     const inner = (
         <>
             <img src={song.imageUrl?.url || FALLBACK_IMG} {...imgProps(song.title)} className={styles.artwork} />
-            <p className={styles.cardTitle}>{song.title}</p>
-            <p className={styles.cardSubtitle}>{song.artist}</p>
+            <p className={styles.cardTitle}><SongTitleLink song={song} /></p>
+            <p className={styles.cardSubtitle}><ArtistLink song={song} /></p>
         </>
     );
     if (onPlay) {
@@ -82,13 +83,15 @@ export function SongRow({ song, index, onPlay, actions }) {
     return (
         <div className={styles.songRow}>
             {typeof index === 'number' && <span style={{ width: 28, color: 'var(--secondary-text)', fontSize: 'var(--text-sm)' }}>{index + 1}</span>}
-            <button onClick={() => onPlay?.(song)} aria-label={`Play ${song.title}`} style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
+            <button onClick={() => onPlay?.(song)} aria-label={`Play ${song.title}`} className={styles.songRowPlayBtn}>
                 <img src={song.imageUrl?.url || FALLBACK_IMG} {...imgProps(song.title)} className={styles.songRowImg} />
-                <span className={styles.songRowMain}>
-                    <span className={styles.cardTitle}>{song.title}</span>
-                    <span className={styles.cardSubtitle}>{song.artist}</span>
-                </span>
             </button>
+            <span className={styles.songRowMain}>
+                <span>
+                    <span className={styles.cardTitle}><SongTitleLink song={song} /></span>
+                    <span className={styles.cardSubtitle}><ArtistLink song={song} /></span>
+                </span>
+            </span>
             <span className={styles.songRowMeta}>
                 {song.playCount != null ? `${Number(song.playCount).toLocaleString()} plays` : ''}
             </span>

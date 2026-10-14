@@ -26,7 +26,10 @@ const userSchema = new Schema({
         default: 'active'
     },
     favoriteSongs: [{ type: Schema.Types.ObjectId, ref: 'Song' }],
-    followingArtists: [{ type: Schema.Types.ObjectId, ref: 'User' }]
+    followingArtists: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    // Single-device login: stores the currently valid express-session ID.
+    // Null = no active session. Old devices are revoked when this changes.
+    activeSessionId: { type: String, default: null, index: true }
 }, {
     timestamps: true
 });

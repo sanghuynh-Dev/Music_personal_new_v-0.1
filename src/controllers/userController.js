@@ -184,6 +184,10 @@ class UserController {
 
     async getUser(req, res) {
         try {
+            if (req.sessionRevoked) {
+                res.clearCookie('connect.sid');
+                return res.status(401).json({ success: false, code: 'SESSION_REVOKED', error: 'Your account was logged in on another device.' });
+            }
             const userId = req.session?.userID;
 
             if (!userId) {

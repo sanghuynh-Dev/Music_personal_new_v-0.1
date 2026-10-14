@@ -12,7 +12,8 @@ export const useAdminStore = create((set, get) => ({
     toggleBan: async (userId, actionText) => {
         const ok = await useConfirmStore.getState().openModal(
             `${actionText === 'unban' ? 'Unban' : 'Ban'} user`,
-            `Are you sure you want to ${actionText} this user?`
+            `Are you sure you want to ${actionText} this user?`,
+            { confirmLabel: actionText === 'unban' ? 'Unban' : 'Ban', danger: actionText !== 'unban' }
         );
         if (!ok) return;
         try {
@@ -30,7 +31,8 @@ export const useAdminStore = create((set, get) => ({
     promoteToArtist: async (userId) => {
         const ok = await useConfirmStore.getState().openModal(
             'Promote to Artist',
-            'Are you sure you want to promote this user to Artist?'
+            'Are you sure you want to promote this user to Artist?',
+            { confirmLabel: 'Promote', danger: false }
         );
         if (!ok) return;
         try {
@@ -48,7 +50,8 @@ export const useAdminStore = create((set, get) => ({
     demoteArtist: async (userId) => {
         const ok = await useConfirmStore.getState().openModal(
             'Demote to User',
-            'Demote this artist back to a regular user? Their songs stay published.'
+            'Demote this artist back to a regular user? Their songs stay published.',
+            { confirmLabel: 'Demote', danger: false }
         );
         if (!ok) return;
         try {
@@ -66,7 +69,8 @@ export const useAdminStore = create((set, get) => ({
     toggleVerify: async (userId, verified) => {
         const ok = await useConfirmStore.getState().openModal(
             verified ? 'Remove verification' : 'Verify artist',
-            verified ? 'Remove the verified badge from this artist?' : 'Mark this artist as verified?'
+            verified ? 'Remove the verified badge from this artist?' : 'Mark this artist as verified?',
+            { confirmLabel: verified ? 'Remove' : 'Verify', danger: false }
         );
         if (!ok) return;
         try {
@@ -84,7 +88,8 @@ export const useAdminStore = create((set, get) => ({
     deleteUser: async (userId) => {
         const ok = await useConfirmStore.getState().openModal(
             'Delete user',
-            'Delete this user and ALL their songs, playlists and comments? This cannot be undone.'
+            'Delete this user and ALL their songs, playlists and comments? This cannot be undone.',
+            { confirmLabel: 'Delete', danger: true }
         );
         if (!ok) return;
         try {
@@ -102,7 +107,8 @@ export const useAdminStore = create((set, get) => ({
     deleteSong: async (songId) => {
         const ok = await useConfirmStore.getState().openModal(
             'Delete song',
-            'Delete this song from the system and Cloudinary? This cannot be undone.'
+            'Delete this song from the system and Cloudinary? This cannot be undone.',
+            { confirmLabel: 'Delete', danger: true }
         );
         if (!ok) return;
         try {
@@ -120,7 +126,8 @@ export const useAdminStore = create((set, get) => ({
     deletePlaylist: async (playlistId) => {
         const ok = await useConfirmStore.getState().openModal(
             'Delete playlist',
-            'Delete this playlist? Songs themselves are kept.'
+            'Delete this playlist? Songs themselves are kept.',
+            { confirmLabel: 'Delete', danger: true }
         );
         if (!ok) return;
         try {
@@ -138,7 +145,8 @@ export const useAdminStore = create((set, get) => ({
     deleteComment: async (commentId) => {
         const ok = await useConfirmStore.getState().openModal(
             'Delete comment',
-            'Delete this comment? This cannot be undone.'
+            'Delete this comment? This cannot be undone.',
+            { confirmLabel: 'Delete', danger: true }
         );
         if (!ok) return;
         try {
@@ -156,7 +164,8 @@ export const useAdminStore = create((set, get) => ({
     reviewReport: async (reportId, action) => {
         const ok = await useConfirmStore.getState().openModal(
             action === 'resolve' ? 'Resolve report' : 'Dismiss report',
-            `Mark report as ${action === 'resolve' ? 'resolved' : 'dismissed'}?`
+            `Mark report as ${action === 'resolve' ? 'resolved' : 'dismissed'}?`,
+            { confirmLabel: action === 'resolve' ? 'Resolve' : 'Dismiss', danger: false }
         );
         if (!ok) return;
         try {

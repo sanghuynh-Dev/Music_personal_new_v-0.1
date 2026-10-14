@@ -427,7 +427,13 @@
 
 .cardSubtitle a:hover,
 .cardTitle a:hover {
+    color: var(--accent);
     text-decoration: underline;
+}
+
+.cardTitle a,
+.cardSubtitle a {
+    color: inherit;
 }
 
 .verifiedBadge {
@@ -452,6 +458,18 @@
 
 .songRow:hover {
     background-color: var(--bg-overlay);
+}
+
+.songRowPlayBtn {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+}
+
+.songRowMain .cardTitle,
+.songRowMain .cardSubtitle {
+    display: block;
 }
 
 .songRowImg {
@@ -515,25 +533,46 @@
     max-width: 420px;
 }
 
-.spinner {
-    width: 32px;
-    height: 32px;
-    border: 3px solid var(--bg-overlay);
-    border-top-color: var(--accent);
-    border-radius: var(--radius-circle);
-    animation: spin 0.8s linear infinite;
+/* Music equalizer loader — on-brand, replaces the generic spinner. */
+.eqLoader {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 40px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background:
+        radial-gradient(60px 30px at 50% 100%, rgba(245, 166, 35, 0.18), transparent),
+        var(--bg-surface);
+    box-shadow: var(--shadow-sm);
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+.eqLoader i {
+    width: 5px;
+    border-radius: 3px;
+    background: linear-gradient(to top, rgba(245, 166, 35, 0.35), var(--accent));
+    box-shadow: 0 0 10px rgba(245, 166, 35, 0.35);
+    animation: loaderEqBounce 1s ease-in-out infinite;
+    transform-origin: bottom;
+}
+
+.eqLoader i:nth-child(1) { height: 55%; animation-delay: 0s; }
+.eqLoader i:nth-child(2) { height: 100%; animation-delay: -0.2s; }
+.eqLoader i:nth-child(3) { height: 40%; animation-delay: -0.5s; background: linear-gradient(to top, rgba(124, 108, 245, 0.35), var(--indigo)); box-shadow: 0 0 10px rgba(124, 108, 245, 0.35); }
+.eqLoader i:nth-child(4) { height: 75%; animation-delay: -0.35s; }
+.eqLoader i:nth-child(5) { height: 50%; animation-delay: -0.65s; }
+
+@keyframes loaderEqBounce {
+    0%, 100% { transform: scaleY(0.35); opacity: 0.55; }
+    50% { transform: scaleY(1); opacity: 1; }
 }
 
 .skeleton {
     position: relative;
     overflow: hidden;
-    background-color: var(--bg-overlay);
+    background: linear-gradient(180deg, var(--bg-overlay), var(--bg-surface));
+    border: 1px solid var(--border);
     border-radius: var(--radius-sm);
 }
 
@@ -541,8 +580,8 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-    animation: shimmer 1.4s infinite;
+    background: linear-gradient(100deg, transparent 20%, rgba(245, 166, 35, 0.12) 50%, transparent 80%);
+    animation: shimmer 1.6s infinite;
 }
 
 @keyframes shimmer {

@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import useCommentStore from "../../stores/commentStore";
 import useAlertStore from "../../stores/alertStore";
+import ReportButton from "../../components/ReportButton.jsx";
 import Loading from "../../components/loading/Loading";
 import styles from './Songs.module.scss'
 
@@ -78,6 +79,16 @@ function CommentsSection({ songId }) {
                                         <div className={styles.commentItemHeader}>
                                             <NavLink to={`/profile/${comment.user?._id}`} className={styles.commentUsername}>{comment.user?.username || 'Deleted User'}</NavLink>
                                             <span className={styles.commentTime}>{timeString(comment.createdAt)}</span>
+                                            {user && (
+                                                <ReportButton
+                                                    targetType="comment"
+                                                    targetId={comment._id}
+                                                    label={`Comment by ${comment.user?.username || 'unknown'}`}
+                                                    className={styles.commentReportBtn}
+                                                    title="Report this comment"
+                                                    size={13}
+                                                />
+                                            )}
                                         </div>
                                         <p className={styles.commentText}>{comment.content}</p>
                                     </div>

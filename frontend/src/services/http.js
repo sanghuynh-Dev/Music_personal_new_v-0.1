@@ -18,7 +18,14 @@ export async function apiFetch(path, { timeout = DEFAULT_TIMEOUT, ...options } =
         const text = await res.text();
         const data = text ? JSON.parse(text) : {};
         if (!res.ok) {
-            throw new Error(data.error || `Request failed (${res.status})`);
+            const err = new Error(data.error || `Request failed (${res.status})`);
+            err.status = res.status;
+            err.code = data.code;
+            err.data = data;
+            if (data.code === 'SESSION_REVOKED') {
+                window.dispatchEvent(new CustomEvent('session-revoked'));
+            }
+            throw err;
         }
         return data;
     } catch (e) {

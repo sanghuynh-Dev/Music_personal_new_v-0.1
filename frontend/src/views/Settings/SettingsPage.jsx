@@ -60,7 +60,8 @@ function SettingsPage() {
         if (!deletePassword) { setDeleteError('Enter your password to confirm.'); return; }
         const ok = await useConfirmStore.getState().openModal(
             'Delete your account?',
-            'This permanently deletes your profile, songs, playlists and history. This cannot be undone.'
+            'This permanently deletes your profile, songs, playlists and history. This cannot be undone.',
+            { confirmLabel: 'Delete', danger: true }
         );
         if (!ok) return;
         try {

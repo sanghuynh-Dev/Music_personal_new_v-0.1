@@ -4,6 +4,7 @@ import { Play, Pause } from "lucide-react";
 import clsx from "clsx";
 
 import usePlayerStore from "../../stores/playerStore";
+import { ArtistLink, SongTitleLink } from "../../components/SongLinks.jsx";
 
 import styles from './HomePage.module.scss'
 
@@ -41,9 +42,9 @@ function HeroSection({ song }) {
                     <Equalizer active={playing} />
                     Featured this week
                 </p>
-                <h1 className={clsx(styles.heroTitle, "font-display")}>{song.title}</h1>
+                <h1 className={clsx(styles.heroTitle, "font-display")}><SongTitleLink song={song} /></h1>
                 <p className={styles.heroArtist}>
-                    {song.artist}
+                    <ArtistLink song={song} />
                     {(song.playCount != null) && (
                         <span className={clsx(styles.heroPlays, "numeric")}>
                             {Number(song.playCount).toLocaleString()} plays

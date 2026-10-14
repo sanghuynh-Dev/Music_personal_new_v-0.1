@@ -4,6 +4,7 @@ import { Play, Pause, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react
 import clsx from "clsx";
 
 import usePlayerStore from "../../stores/playerStore";
+import { ArtistLink } from "../../components/SongLinks.jsx";
 
 import styles from './HomePage.module.scss'
 
@@ -68,7 +69,7 @@ function TrackRail({ title, linkTo, linkLabel, songs, onPlay }) {
                                 </button>
                             </div>
                             <NavLink to={`/songs/${song._id}`} className={styles.railTitle}>{song.title}</NavLink>
-                            <p className={styles.railArtist}>{song.artist}</p>
+                            <ArtistLink song={song} className={styles.railArtist} />
                         </article>
                     );
                 })}

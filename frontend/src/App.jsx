@@ -41,7 +41,6 @@ import './App.css'
 
 function App() {
   const [homeData, setHomeData] = useState(null);
-  const [favoritesData, setFavoritesData] = useState({});
   // Subscribe narrowly — whole-store subscriptions here re-render the
   // entire tree on every store write and create feedback loops.
   const currentSong = usePlayerStore(s => s.currentSong);
@@ -63,14 +62,6 @@ function App() {
   }, [reload, reloadFollow]);
 
   useEffect(() => {
-    let alive = true;
-    appRoute.favoritesRoute().then((data) => {
-      if (alive) setFavoritesData(data);
-    }).catch(() => {});
-    return () => { alive = false; };
-  }, [reload]);
-
-  useEffect(() => {
     setPageRef(pageRef.current);
   }, [setPageRef]);
 
@@ -89,7 +80,7 @@ function App() {
                   <Route path="/search" element={<Search />} />
                   <Route path="/explore" element={<Explore />} />
                   <Route path="/library" element={<RequireAuth><Library /></RequireAuth>} />
-                  <Route path="/favorites" element={<RequireAuth><Favorites favoritesData={favoritesData} /></RequireAuth>} />
+                  <Route path="/favorites" element={<RequireAuth><Favorites /></RequireAuth>} />
                   <Route path="/history" element={<RequireAuth><History /></RequireAuth>} />
                   <Route path="/artist/dashboard" element={<RequireArtist><ArtistDashboard /></RequireArtist>} />
                   <Route path="/songs/upload" element={<RequireArtist><Upload /></RequireArtist>} />

@@ -1,10 +1,11 @@
-import { X, Trash2 } from "lucide-react";
+import { X, Trash2, Info } from "lucide-react";
+import clsx from "clsx";
 
 import useConfirmStore from "../../stores/confirmStore";
 import styles from './Modals.module.scss';
 
 function ConfirmModal() {
-    const { isConfirmOpen, handleConfirm, handleCancel, actionText,message } = useConfirmStore();
+    const { isConfirmOpen, handleConfirm, handleCancel, actionText, message, confirmLabel, danger } = useConfirmStore();
     return (
         isConfirmOpen && (
             <div className={styles.confirmOverlay} onClick={handleCancel}>
@@ -16,8 +17,8 @@ function ConfirmModal() {
                         <X size={22} />
                     </button>
                     <div className={styles.confirmContent}>
-                        <div className={styles.confirmIcon}>
-                            <Trash2 size={30} />
+                        <div className={clsx(styles.confirmIcon, !danger && styles.confirmIconNeutral)}>
+                            {danger ? <Trash2 size={30} /> : <Info size={30} />}
                         </div>
 
                         <h2>{actionText}</h2>
@@ -30,8 +31,8 @@ function ConfirmModal() {
                             Cancel
                         </button>
 
-                        <button className={styles.deleteBtn} onClick={handleConfirm}>
-                            Delete
+                        <button className={danger ? styles.deleteBtn : styles.confirmPrimary} onClick={handleConfirm}>
+                            {confirmLabel}
                         </button>
                     </div>
                 </div>

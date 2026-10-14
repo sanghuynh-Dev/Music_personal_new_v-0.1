@@ -8,6 +8,7 @@ import useSongStore from "../../../stores/songStore";
 import QueuePanel from "./QueuePanel.jsx";
 import ExpandedPlayer from "./ExpandedPlayer.jsx";
 import ControlBtn from "./ControlBtn.jsx";
+import { SongTitleLink } from "../../../components/SongLinks.jsx";
 import styles from './Footer.module.scss'
 
 function formatTime(seconds) {
@@ -159,7 +160,7 @@ function Footer() {
                     <div className={styles.currentSongDetails} id="player-song-details">
                         <img src={currentSong?.imageUrl?.url} alt={currentSong?.title} loading="lazy" className={styles.playerSongImg} id="player-song-thumbnail" data-playing={isPlaying || undefined} />
                         <div className={styles.playerSongMeta}>
-                            <span className={styles.playerSongTitle}>{currentSong?.title}</span>
+                            <SongTitleLink song={currentSong} className={styles.playerSongTitle} />
                             <NavLink to={`/profile/${currentSong?.uploadedBy?._id}`} className={styles.playerSongArtist}>{currentSong?.artist}</NavLink>
                         </div>
 

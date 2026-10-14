@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import clsx from "clsx";
+import PlayPauseIcon from "./PlayPauseIcon";
 
 /**
  * Shared editorial track table. Keeps one interaction pattern
@@ -45,15 +46,7 @@ function TrackTable({
                             title="Play"
                             aria-label={isCurrentSong(song) && isPlaying ? `Pause ${song.title}` : `Play ${song.title}`}
                         >
-                            {isCurrentSong(song) && isPlaying ? (
-                                <svg className="icon-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
-                                </svg>
-                            ) : (
-                                <svg className="icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M0 5v14l11-7z"></path>
-                                </svg>
-                            )}
+                            <PlayPauseIcon playing={isCurrentSong(song) && isPlaying} size={24} />
                         </button>
                     </div>
                     <div className="col-title">

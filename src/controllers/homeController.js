@@ -40,7 +40,7 @@ class HomeController {
             const topFollows = await Follow.aggregate([
                 { $group: { _id: '$artist', followerCount: { $sum: 1 } } },
                 { $sort: { followerCount: -1 } },
-                { $limit: 5 }
+                { $limit: 10 }
             ]);
             const topArtistIds = topFollows.map(f => f._id);
             let topArtists = await User.find({ _id: { $in: topArtistIds } }).select('-password').lean();
@@ -52,12 +52,12 @@ class HomeController {
                 };
             }).sort((a, b) => b.followerCount - a.followerCount);
 
-            if (topArtists.length < 5) {
+            if (topArtists.length < 10) {
                 const existingIds = topArtists.map(a => a._id.toString());
                 const extraArtists = await User.find({
                     role: 'artist',
                     _id: { $nin: existingIds }
-                }).select('-password').limit(5 - topArtists.length).lean();
+                }).select('-password').limit(10 - topArtists.length).lean();
                 
                 const extraWithCount = extraArtists.map(a => ({ ...a, followerCount: 0 }));
                 topArtists = [...topArtists, ...extraWithCount];
@@ -81,7 +81,7 @@ class HomeController {
                 (user?.followingArtists || []).map(id => id.toString())
             );
 
-            suggestedArtists = await User.find(query).select('-password').limit(5).lean();
+            suggestedArtists = await User.find(query).select('-password').limit(10).lean();
             const newSuggestedArtists = suggestedArtists.map(artist => ({
                 ...artist,
                 isFollowing: userId ? followingSet.has(artist._id.toString()) : false
@@ -91,8 +91,8 @@ class HomeController {
             let recentlyPlayed = [];
             if (userId) {
                 recentlyPlayed = await userService.getListeningHistory(userId);
-                // Limit to top 6 for the home page layout
-                recentlyPlayed = recentlyPlayed.slice(0, 6);
+                // Limit to top 12 for the home page layout (matches Library shelf)
+                recentlyPlayed = recentlyPlayed.slice(0, 12);
             }
 
             res.json({

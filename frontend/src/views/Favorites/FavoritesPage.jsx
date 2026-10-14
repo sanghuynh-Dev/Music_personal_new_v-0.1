@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import clsx from "clsx";
 
@@ -9,10 +9,11 @@ import { useAuth } from "../../contexts/AuthContext.jsx";
 import { EmptyState } from "../../components/ui";
 import TrackTable from "../../components/TrackTable.jsx";
 import Loading from "../../components/loading/Loading.jsx";
+import appRoute from "../../routes/appRoute";
 
 import styles from './Collection.module.scss';
 
-function FavoritesPage({ favoritesData }) {
+function FavoritesPage() {
     const currentSong = usePlayerStore(s => s.currentSong);
     const isPlaying = usePlayerStore(s => s.isPlaying);
     const playSong = usePlayerStore(s => s.playSong);
@@ -20,13 +21,15 @@ function FavoritesPage({ favoritesData }) {
     const resumeSong = usePlayerStore(s => s.resumeSong);
 
     const toggleLikeLocal = useSongStore(s => s.toggleLikeLocal);
-    const setSongs = useSongStore(s => s.setSongs);
+    const applySongs = useSongStore(s => s.setSongs);
     const songsData = useSongStore(s => s.songs);
     const { user } = useAuth();
 
     const { openMenu } = usePlaylistStore();
 
-    const loading = !!favoritesData?.songs;
+    // Fresh data on every visit — the route remounts on navigation,
+    // so this refetches whenever the user enters Favorites.
+    const [loading, setLoading] = useState(true);
 
     function handleClick(song) {
         const isCurrent = song._id === currentSong?._id;
@@ -59,10 +62,21 @@ function FavoritesPage({ favoritesData }) {
     }
 
     useEffect(() => {
-        if (favoritesData?.songs) setSongs(favoritesData.songs);
-    }, [favoritesData, setSongs]);
+        let alive = true;
+        appRoute.favoritesRoute()
+            .then((data) => {
+                if (alive && Array.isArray(data?.songs)) applySongs(data.songs);
+            })
+            .catch(() => {})
+            .finally(() => {
+                if (alive) setLoading(false);
+            });
+        return () => {
+            alive = false;
+        };
+    }, [applySongs]);
 
-    if (!loading) return <Loading />;
+    if (loading) return <Loading />;
 
     const list = songsData || [];
     const count = list.length;

@@ -30,6 +30,12 @@ class ReportController {
                 return res.status(404).json({ success: false, error: 'Reported content not found' });
             }
 
+            // One pending report per reporter + target — no pile-ons, no spam.
+            const pending = await Report.findOne({ reporter: userId, targetType, targetId, status: 'pending' }).lean();
+            if (pending) {
+                return res.json({ success: true, duplicate: true, report: pending });
+            }
+
             const report = await Report.create({
                 reporter: userId,
                 targetType,

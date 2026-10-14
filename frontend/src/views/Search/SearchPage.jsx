@@ -1,10 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
-import { NavLink, useSearchParams } from 'react-router-dom';
-import { Play, Pause, Heart, History as HistoryIcon, TrendingUp } from "lucide-react";
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
+import { Play, Pause, Heart, History as HistoryIcon, Search as SearchIcon, TrendingUp } from "lucide-react";
 import clsx from "clsx";
 import usePlayerStore from "../../stores/playerStore";
 import useSongStore from "../../stores/songStore";
 import { useAuth } from "../../contexts/AuthContext.jsx";
+import { ArtistLink } from "../../components/SongLinks.jsx";
 import appRoute from '../../routes/appRoute.js';
 import { ArtistCard, PlaylistCard, CardGrid, LoadingState, NoResults, ErrorState } from "../../components/ui";
 import styles from './Search.module.scss';
@@ -36,6 +37,7 @@ function useDebounced(value, delay = 400) {
 
 function SearchPage() {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const urlQ = searchParams.get("q") || '';
     const [input, setInput] = useState(urlQ);
@@ -136,15 +138,20 @@ function SearchPage() {
         <div className={styles.search}>
             <div className={styles.hero}>
                 <h1 className={clsx("font-display", styles.heroTitle)}>What do you want to hear?</h1>
-                <form onSubmit={submit} role="search" className={styles.heroForm}>
+                <form onSubmit={submit} role="search" className={styles.heroForm} autoComplete="off">
+                    <SearchIcon size={22} className={styles.heroSearchIcon} aria-hidden="true" />
                     <input
                         type="search"
+                        name="soundora-q"
                         aria-label="Search for songs, artists, or playlists"
                         placeholder="Songs, artists, playlists…"
                         value={input}
                         onChange={handleInputChange}
                         className={styles.heroInput}
                         autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck={false}
                     />
                 </form>
                 {!q && recent.length > 0 && (
@@ -191,7 +198,21 @@ function SearchPage() {
                         <div className={styles.spotlightMeta}>
                             <p className={styles.spotlightKicker}><TrendingUp size={13} /> Top result</p>
                             <p className={clsx(styles.spotlightTitle, "font-display")}>{spotlight.title}</p>
-                            <p className={styles.spotlightArtist}>{spotlight.artist}</p>
+                            <p className={styles.spotlightArtist}>
+                                {(() => {
+                                    const aid = spotlight.uploadedBy?._id || spotlight.uploadedBy || null;
+                                    return aid ? (
+                                        <a
+                                            href={`/profile/${aid}`}
+                                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate(`/profile/${aid}`); }}
+                                        >
+                                            {spotlight.artist}
+                                        </a>
+                                    ) : (
+                                        spotlight.artist
+                                    );
+                                })()}
+                            </p>
                         </div>
                         <span
                             role="button"
@@ -222,7 +243,7 @@ function SearchPage() {
                                     <img src={song.imageUrl?.url} alt="" loading="lazy" />
                                     <div className={styles.songMeta}>
                                         <NavLink to={`/songs/${song._id}`}>{song.title}</NavLink>
-                                        <small>{song.artist}</small>
+                                        <small><ArtistLink song={song} /></small>
                                     </div>
                                     <span className={clsx(styles.songIndex, "numeric")}>{String(i + 2).padStart(2, '0')}</span>
                                     {user && (

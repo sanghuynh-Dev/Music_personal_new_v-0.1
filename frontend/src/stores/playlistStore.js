@@ -136,7 +136,7 @@ export const usePLaylistStore = create((set, get) => ({
 
     deletePlaylist: async (playlistId) => {
         if (timeoutId) clearTimeout(timeoutId);
-        const confirmed  = await useConfirmStore.getState().openModal('Delete this playlist?', 'This action cannot be undone.');
+        const confirmed  = await useConfirmStore.getState().openModal('Delete this playlist?', 'This action cannot be undone.', { confirmLabel: 'Delete', danger: true });
         if (!confirmed) {
             return;
         }

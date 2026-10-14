@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useShallow } from 'zustand/shallow';
 import usePlayerStore, { selectQueueList } from "../../../stores/playerStore";
 import { Trash2, X, Shuffle } from "lucide-react";
+import { ArtistLink, SongTitleLink } from "../../../components/SongLinks.jsx";
 import styles from './Footer.module.scss';
 
 function QueuePanel({ onClose }) {
@@ -36,8 +37,8 @@ function QueuePanel({ onClose }) {
                         >
                             <img src={song.imageUrl?.url} alt="" loading="lazy" />
                             <div className={styles.queueItemMeta}>
-                                <strong>{song.title}</strong>
-                                <span>{song.artist}</span>
+                                <strong><SongTitleLink song={song} onNavigate={onClose} /></strong>
+                                <span><ArtistLink song={song} onNavigate={onClose} /></span>
                             </div>
                             {!isCurrent && (
                                 <button

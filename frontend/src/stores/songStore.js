@@ -68,7 +68,7 @@ export const useSongStore = create((set, get) => ({
     deleteSong: async (songId) => {
         if (timeoutId) clearTimeout(timeoutId);
 
-        const confirmed  = await useConfirmStore.getState().openModal('Delete this song?', 'This action cannot be undone.');
+        const confirmed  = await useConfirmStore.getState().openModal('Delete this song?', 'This action cannot be undone.', { confirmLabel: 'Delete', danger: true });
         if (!confirmed ) {
             return;
         }

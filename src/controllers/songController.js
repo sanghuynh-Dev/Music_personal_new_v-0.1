@@ -244,6 +244,11 @@ class SongController {
             }
 
             await Song.deleteOne({ _id: songId });
+            // Drop dangling refs so favorites/history never crash on populate.
+            await User.updateMany(
+                { favoriteSongs: songId },
+                { $pull: { favoriteSongs: songId } }
+            ).catch(() => {});
             res.json({ success: true });
         } catch (error) {
             res.status(500).json({ error: 'Unable to delete song.' });

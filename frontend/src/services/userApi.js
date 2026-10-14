@@ -50,6 +50,12 @@ export const requestVerification = () =>
 export const verifyEmail = (token) =>
     apiFetch('/verify-email', { method: 'POST', body: JSON.stringify({ token }) });
 
+export const verifyEmailOtp = (email, code) =>
+    apiFetch('/verify-email/otp', { method: 'POST', body: JSON.stringify({ email, code }) });
+
+export const resendEmailOtp = (email) =>
+    apiFetch('/verify-email/otp/resend', { method: 'POST', body: JSON.stringify({ email }) });
+
 export const deleteMe = (password) =>
     apiFetch('/user/me', { method: 'DELETE', body: JSON.stringify({ password }) });
 
@@ -71,6 +77,8 @@ export default {
     resetPassword,
     requestVerification,
     verifyEmail,
+    verifyEmailOtp,
+    resendEmailOtp,
     deleteMe,
     getNotifications,
     markAllNotificationsRead,

@@ -7,6 +7,8 @@ import Register from './views/Auth/Register.jsx'
 import AuthProvider from './contexts/AuthContext.jsx'
 import ConfirmModal from "./components/modals/ConfirmDialog.jsx";
 import Alert from "./components/modals/AlertDialog.jsx";
+import ReportModal from "./components/modals/ReportModal.jsx";
+import SessionRevokedModal from "./components/modals/SessionRevokedModal.jsx";
 import UploadProgress from "./components/modals/UploadProgressPanel.jsx";
 import AdminDashboardNew from './views/AdminNew/AdminDashboard.jsx';
 import RequireAdmin from './components/RequireAdmin.jsx';
@@ -35,6 +37,8 @@ createRoot(document.getElementById('root')).render(
 
         <ConfirmModal />
         <Alert />
+        <ReportModal />
+        <SessionRevokedModal />
         <UploadProgress />
       </AuthProvider>
     </BrowserRouter>

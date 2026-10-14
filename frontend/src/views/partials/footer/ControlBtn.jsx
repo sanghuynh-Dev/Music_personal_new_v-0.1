@@ -2,6 +2,7 @@
 import { memo } from "react";
 import clsx from "clsx";
 import usePlayerStore from "../../../stores/playerStore";
+import PlayPauseIcon from "../../../components/PlayPauseIcon";
 import styles from './Footer.module.scss';
 function ControlBtn() {
     const pauseSong = usePlayerStore(s => s.pauseSong);
@@ -54,15 +55,7 @@ function ControlBtn() {
                 onClick={() => handlePlay()}
                 title="Play/Pause"
                 aria-label={isPlaying ? 'Pause' : 'Play'}>
-                { isPlaying ? (
-                    <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
-                    </svg>
-                ) : (
-                    <svg className="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z"></path>
-                    </svg>
-                )}
+                <PlayPauseIcon playing={isPlaying} size={24} />
             </button>
             <button 
                 onClick={() => handleNextSong()}

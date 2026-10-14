@@ -35,6 +35,10 @@ async function deleteUserCascade(userId) {
     await Report.deleteMany({ reporter: userId });
     await Notification.deleteMany({ recipient: userId });
     await AuthToken.deleteMany({ user: userId });
+    try {
+        const EmailOtp = require('../models/EmailOtp');
+        await EmailOtp.deleteMany({ user: userId });
+    } catch (e) { /* older DBs without the collection */ }
     await User.deleteOne({ _id: userId });
 }
 

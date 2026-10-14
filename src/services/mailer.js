@@ -1,6 +1,9 @@
 const nodemailer = require('nodemailer');
 
+// Never touch a real SMTP server from the test suite: even with SMTP_*
+// present in .env, tests must stay hermetic (mailer is stubbed instead).
 const isEmailConfigured = () =>
+    process.env.NODE_ENV !== 'test' &&
     Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
 
 let transporter = null;

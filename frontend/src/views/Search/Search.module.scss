@@ -19,32 +19,65 @@
 }
 
 .heroForm {
+    position: relative;
     width: 100%;
+}
+
+.heroSearchIcon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: color var(--transition-fast);
+}
+
+.heroForm:focus-within .heroSearchIcon {
+    color: var(--accent);
 }
 
 .heroInput {
     width: 100%;
-    font-family: var(--font-display);
-    font-size: clamp(22px, 3vw, 32px);
+    font-size: var(--text-lg);
     font-weight: 500;
     color: var(--text-primary);
-    background-color: transparent;
-    border: none;
-    border-bottom: 2px solid var(--border-strong);
-    padding: 10px 2px 14px;
-    transition: border-color var(--transition-fast);
+    background-color: var(--bg-input);
+    background-image: radial-gradient(240px 60px at 12% 0%, rgba(245, 166, 35, 0.07), transparent);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    padding: 16px 52px 16px 54px;
+    box-shadow: var(--shadow-sm);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .heroInput::placeholder {
     color: var(--text-muted);
 }
 
+.heroInput:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
 .heroInput:focus {
-    border-bottom-color: var(--accent);
+    outline: none;
+    border-color: var(--accent);
+    background-color: var(--bg-elevated);
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.15), var(--shadow-md);
 }
 
 .heroInput::-webkit-search-cancel-button {
     cursor: pointer;
+}
+
+/* Kill Chrome's native suggestion/autofill white surfaces — the box keeps
+   its own colors in every state. */
+.heroInput:-webkit-autofill,
+.heroInput:-webkit-autofill:hover,
+.heroInput:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-primary);
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-input) inset;
+    transition: background-color 99999s ease-in-out 0s;
 }
 
 .recent {
@@ -186,6 +219,15 @@
     font-size: var(--text-md);
 }
 
+.spotlightArtist a {
+    color: inherit;
+}
+
+.spotlightArtist a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
 .spotlightPlay {
     display: flex;
     align-items: center;
@@ -268,6 +310,7 @@
 }
 
 .songMeta a:hover {
+    color: var(--accent);
     text-decoration: underline;
 }
 
@@ -277,6 +320,14 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.songMeta small a {
+    color: inherit;
+}
+
+.songMeta small a:hover {
+    color: var(--accent);
 }
 
 .songIndex {

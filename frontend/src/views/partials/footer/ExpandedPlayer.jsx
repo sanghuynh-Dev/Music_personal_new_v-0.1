@@ -6,6 +6,7 @@ import { useAuth } from "../../../contexts/AuthContext.jsx";
 import usePlayerStore, { selectQueueList } from "../../../stores/playerStore";
 import useSongStore from "../../../stores/songStore";
 import ControlBtn from "./ControlBtn.jsx";
+import { ArtistLink, SongTitleLink } from "../../../components/SongLinks.jsx";
 import styles from './Footer.module.scss';
 
 function formatTime(seconds) {
@@ -33,7 +34,7 @@ function ExpandedPlayer({ onClose, currentTime, duration, onSeek }) {
                 <button className={styles.expandedClose} onClick={onClose} aria-label="Collapse player"><X size={22} /></button>
                 <img src={currentSong.imageUrl?.url} alt={currentSong.title} className={styles.expandedArtwork} />
                 <div className={styles.expandedMeta}>
-                    <h2 className={styles.expandedTitle}>{currentSong.title}</h2>
+                    <h2 className={styles.expandedTitle}><SongTitleLink song={currentSong} onNavigate={onClose} /></h2>
                     <NavLink to={`/profile/${currentSong.uploadedBy?._id}`} className={styles.expandedArtist} onClick={onClose}>
                         {currentSong.artist}
                     </NavLink>
@@ -70,7 +71,7 @@ function ExpandedPlayer({ onClose, currentTime, duration, onSeek }) {
                             <li key={String(song._id)} onClick={() => playFromQueue(String(song._id))}
                                 className={clsx(String(song._id) === String(currentSong._id) && styles.focusItem)}>
                                 <img src={song.imageUrl?.url} alt="" loading="lazy" />
-                                <div><strong>{song.title}</strong><span>{song.artist}</span></div>
+                                <div><strong><SongTitleLink song={song} onNavigate={onClose} /></strong><span><ArtistLink song={song} onNavigate={onClose} /></span></div>
                             </li>
                         ))}
                     </ul>

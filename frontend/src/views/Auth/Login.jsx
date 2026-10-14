@@ -15,7 +15,7 @@ function Login() {
         email: '',
         password: '',
     });
-    const { setUser } = useAuth();
+    const { setUser, setSessionRevoked } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from;
@@ -31,7 +31,11 @@ function Login() {
 
             if(data.success) {
                 setUser(data.user);
+                setSessionRevoked?.(false);
                 data.user.role === 'admin' ? navigate("/admin/dashboard") : navigate(from || "/")
+            } else if (data.code === 'EMAIL_NOT_VERIFIED') {
+                // Account exists but inbox not confirmed — continue the OTP flow.
+                navigate("/verify-email", { state: { email: data.email || email, emailed: true }, replace: true });
             } else {
                 // Backend returns a generic message string (anti-enumeration)
                 setErrors({ email: '', password: data.error || 'Invalid email or password.' });
@@ -47,7 +51,7 @@ function Login() {
     return (
         <AuthLayout>
                 <h2>Sign in to continue</h2>
-                
+                                
                 <form id="login-form" onSubmit={handleSubmit}>
                     <div className={styles.authFormGroup}>
                         <Mail size={18} className={styles.authIcon}/>

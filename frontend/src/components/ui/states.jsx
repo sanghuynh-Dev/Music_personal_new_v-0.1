@@ -6,7 +6,9 @@ import styles from './UI.module.css';
 export function LoadingState({ text = 'Loading...', className }) {
     return (
         <div className={clsx(styles.stateBox, className)} role="status" aria-live="polite">
-            <div className={styles.spinner} />
+            <span className={styles.eqLoader} aria-hidden="true">
+                <i /><i /><i /><i /><i />
+            </span>
             <p className={styles.stateText}>{text}</p>
         </div>
     );

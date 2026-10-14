@@ -252,6 +252,11 @@
     text-overflow: ellipsis;
 }
 
+.song-row-title:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
 .song-row-artist {
     font-size: var(--text-sm);
     color: var(--text-secondary);
@@ -262,7 +267,7 @@
 
 .song-row-artist:hover {
     text-decoration: underline;
-    color: var(--text-primary);
+    color: var(--accent);
 }
 
 /* Inline extra meta (e.g. listened date on History). Hidden on wide

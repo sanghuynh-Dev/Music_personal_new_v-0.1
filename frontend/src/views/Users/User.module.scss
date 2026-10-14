@@ -8,7 +8,8 @@
     align-items: flex-end;
     border-radius: var(--radius-xl);
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: none;
+    box-shadow: none;
 }
 
 .profileHeaderBanner::before {
@@ -57,8 +58,8 @@
     height: 148px;
     border-radius: var(--radius-circle);
     overflow: hidden;
-    box-shadow: var(--shadow-lg);
-    border: 3px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    border: 3px solid var(--bg-base);
     flex-shrink: 0;
 }
 
@@ -156,6 +157,29 @@
     background-color: transparent;
     border: 1px solid var(--border-strong);
     color: var(--text-primary);
+}
+
+.btnIconGhost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-circle);
+    border: 1px solid var(--border-strong);
+    color: var(--text-secondary);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btnIconGhost:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-overlay);
+}
+
+.profileActionsRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .profileContent {

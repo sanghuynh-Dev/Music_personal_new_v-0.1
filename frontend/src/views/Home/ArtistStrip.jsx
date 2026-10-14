@@ -46,7 +46,7 @@ function ArtistStrip({ topArtists, suggested }) {
             </div>
             {followList?.length > 0 && (
                 <ul className={styles.followList}>
-                    {followList.slice(0, 5).map((artist) => (
+                    {followList.slice(0, 10).map((artist) => (
                         <li key={artist._id}>
                             <NavLink to={`/profile/${artist._id}`} className={styles.followWho}>
                                 <img

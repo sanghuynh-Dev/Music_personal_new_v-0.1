@@ -9,6 +9,8 @@ import usePLaylistStore from "../../stores/playlistStore";
 import { useAuth } from "../../contexts/AuthContext"
 import appRoute from "../../routes/appRoute"
 import playlistApi from "../../services/playlistApi"
+import PlayPauseIcon from "../../components/PlayPauseIcon";
+import ReportButton from "../../components/ReportButton.jsx";
 import styles from './Playlist.module.scss'
 
 function Detail() {
@@ -140,15 +142,7 @@ function Detail() {
                             <button
                                 className="btn-play-playlist play-list-btn-js"
                                 onClick={() => handlePlaylistClick()}>
-                                 {isCurrentPlaylist && isPlaying ? (
-                                    <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M6 5h4v14H6zm8 0h4v14h-4z"></path>
-                                    </svg>
-                                ) : (
-                                    <svg className="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M8 5v14l11-7z"></path>
-                                    </svg>
-                                )}
+                                 <PlayPauseIcon playing={isCurrentPlaylist && isPlaying} size={24} />
                                 Play
                             </button>
                         )}
@@ -161,6 +155,16 @@ function Detail() {
                             <button className={styles.btnDeletePlaylist} onClick={() => handleDeletePlaylist()}>
                                 <i className="ti-trash"></i> Delete
                             </button>
+                        )}
+                        { user && !playlistData.isOwner && (
+                            <ReportButton
+                                targetType="playlist"
+                                targetId={playlistData.playlist?._id || id}
+                                label={playlistData.playlist?.name}
+                                className={styles.btnIconGhost}
+                                title="Report this playlist"
+                                size={16}
+                            />
                         )}
                     </div>
                 </div>
@@ -187,15 +191,7 @@ function Detail() {
                                             className="row-play-btn play-btn-js" 
                                             onClick={() => handlePlaySongClick(song,playlistData.playlist.songs.map(s => s._id))} 
                                             title="Play">
-                                            { isCurrentSong(song) && isPlaying ? (
-                                                <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
-                                                </svg>
-                                            ): (
-                                                <svg className="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M0 5v14l11-7z"></path>
-                                                </svg>
-                                            )}
+                                            <PlayPauseIcon playing={isCurrentSong(song) && isPlaying} size={24} />
                                         </button>
                                     </div>
                                     <div className="col-title">

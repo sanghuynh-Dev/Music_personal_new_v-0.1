@@ -9,6 +9,8 @@ import { useAuth } from '../../contexts/AuthContext'
 import appRoute from '../../routes/appRoute'
 
 import CommentsSection from './CommentsSection';
+import PlayPauseIcon from '../../components/PlayPauseIcon';
+import ReportButton from '../../components/ReportButton.jsx';
 import styles from './Songs.module.scss'
 function Detail() {
     const { id } = useParams();
@@ -107,15 +109,7 @@ function Detail() {
                     <button
                         className={clsx(styles.btnPlaySongLarge, styles.dossierPlay, "play-btn-js")}
                         onClick={() => handleClick(songData)}>
-                        { isCurrentSong(songData) && isPlaying ? (
-                            <svg className="icon-pause" id="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
-                            </svg>
-                        ): (
-                            <svg className="icon-play" id="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M0 5v14l11-7z"></path>
-                            </svg>
-                        )} {isCurrentSong(songData) && isPlaying ? 'Pause' : 'Play'}
+                        <PlayPauseIcon playing={isCurrentSong(songData) && isPlaying} size={20} /> {isCurrentSong(songData) && isPlaying ? 'Pause' : 'Play'}
                     </button>
 
                     { user ? (
@@ -139,6 +133,14 @@ function Detail() {
                                 title="Copy link to this song">
                                 <i className="ti-share"></i>
                             </button>
+                            <ReportButton
+                                targetType="song"
+                                targetId={songData._id}
+                                label={`${songData.title} — ${songData.artist}`}
+                                className={styles.detailActionBtn}
+                                title="Report this song"
+                                size={18}
+                            />
                             { canEdit && (
                                 <NavLink to={`/songs/edit/${songData._id}`} className={styles.detailActionBtn} title="Edit Song Details">
                                     <i className="ti-pencil"></i>

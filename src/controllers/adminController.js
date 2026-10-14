@@ -276,6 +276,15 @@ class AdminController {
 
             await Song.deleteOne({ _id: songId });
 
+            // Drop dangling refs so favorites never crash on populate.
+            try {
+                const User = require('../models/User');
+                await User.updateMany(
+                    { favoriteSongs: songId },
+                    { $pull: { favoriteSongs: songId } }
+                );
+            } catch (e) { console.error('Favorite refs cleanup failed:', e.message); }
+
             return res.json({ success: true });
         } catch (error) {
             console.error('Admin delete song error:', error.message);

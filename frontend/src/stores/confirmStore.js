@@ -5,14 +5,18 @@ const useConfirmStore = create((set) => ({
     actionText: '',
     message: '',
     resolver: null,
+    confirmLabel: 'Confirm',
+    danger: true,
 
-    openModal: (text, message) =>
+    openModal: (text, message, options = {}) =>
         new Promise((resolve) => {
             set({
                 isConfirmOpen: true,
                 actionText: text,
                 message: message,
-                resolver: resolve
+                resolver: resolve,
+                confirmLabel: options.confirmLabel || 'Confirm',
+                danger: options.danger !== undefined ? options.danger : true
             });
         }),
 
@@ -24,7 +28,9 @@ const useConfirmStore = create((set) => ({
         set({
             isConfirmOpen: false,
             actionText: '',
-            resolver: null
+            resolver: null,
+            confirmLabel: 'Confirm',
+            danger: true
         });
     },
 
@@ -36,7 +42,9 @@ const useConfirmStore = create((set) => ({
         set({
             isConfirmOpen: false,
             actionText: '',
-            resolver: null
+            resolver: null,
+            confirmLabel: 'Confirm',
+            danger: true
         });
     }
 }));

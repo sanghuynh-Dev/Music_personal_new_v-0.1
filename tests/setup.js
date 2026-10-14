@@ -10,7 +10,7 @@ let cloudinary;
 
 export const getApp = () => app;
 
-export async function makeUser({ username, email, password = 'Secret123', role = 'user', status = 'active' }) {
+export async function makeUser({ username, email, password = 'Secret123', role = 'user', status = 'active', emailVerified = true }) {
     const User = mongoose.model('User');
     const user = new User({
         username,
@@ -18,6 +18,7 @@ export async function makeUser({ username, email, password = 'Secret123', role =
         password: await bcrypt.hash(password, 10),
         role,
         status,
+        emailVerified,
     });
     await user.save();
     return user;

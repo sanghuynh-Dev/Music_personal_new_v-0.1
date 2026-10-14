@@ -1,9 +1,8 @@
 
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeClosed, LockKeyhole, Mail, User } from "lucide-react";
 
-import useAlert from '../../stores/alertStore'
 import authApi from '../../services/authApi'
 import AuthLayout from './AuthLayout.jsx';
 import styles from './Auth.module.scss'
@@ -17,11 +16,7 @@ function Register() {
     const [passwordError, setPasswordError] = useState("");
     const [type, setType] = useState('password');
 
-    const [timeoutID, setTimeoutID] = useState(null);
-
     const navigate = useNavigate();
-
-    const { openModal, closeModal } = useAlert();
 
     async function handleEmailBlur() {
         if (!email) return;
@@ -66,14 +61,7 @@ function Register() {
             const data = await authApi.register(email, username, password);
 
             if (data.success) {
-                openModal("Success", "Registration successful! Please log in.");
-                setTimeoutID(
-                    setTimeout(() => {
-                        closeModal();
-                        clearTimeout(timeoutID);
-                    }, 3000)
-                )
-                navigate("/login");
+                navigate("/verify-email", { state: { email, emailed: data.emailed }, replace: true });
             } else if (data.warning) {
                 if (data.warning.email) {
                     setEmailError(data.warning.email);
@@ -90,6 +78,7 @@ function Register() {
                 
                 <form onSubmit={handleSubmit}>
                     <div className={styles.authFormGroup}>
+                        <User size={18} className={styles.authIcon} />
                         <input 
                             onChange={(e) => setUsername(e.target.value)}
                             value={username}
@@ -102,6 +91,7 @@ function Register() {
                     </div>
 
                     <div className={styles.authFormGroup}>
+                        <Mail size={18} className={styles.authIcon} />
                         <input 
                             onChange={(e) => setEmail(e.target.value)}
                             value={email}
@@ -115,6 +105,7 @@ function Register() {
                     </div>
                     
                     <div className={styles.authFormGroup}>
+                        <LockKeyhole size={18} className={styles.authIcon} />
                         <input 
                             onChange={(e) => setPassword(e.target.value)}
                             value={password}
@@ -126,7 +117,7 @@ function Register() {
                         <div className={styles.errorMsg}>{ passwordError }</div>
                         <button type="button" className={styles.passwordVisibilityBtn} onClick={togglePasswordVisibility}>
                             { password && (
-                                type === 'password' ? <Eye size={20} /> : <EyeOff size={20}/>
+                                type === 'password' ? <EyeClosed size={20} /> : <Eye size={20}/>
                             )}
                         </button>
                     </div>

@@ -120,16 +120,33 @@ class SongService {
     }
 
     async getFavoriteSongs(userId) {
-        const user = await User.findById(userId).populate({
-            path: 'favoriteSongs',
-            populate: { path: 'uploadedBy', select: 'username' }
-        }).lean();
-
+        const user = await User.findById(userId).select('favoriteSongs').lean();
         if (!user) return [];
+        const rawIds = user.favoriteSongs || [];
+        if (rawIds.length === 0) return [];
 
-        return user.favoriteSongs.map(song => ({
+        const songs = await Song.find({ _id: { $in: rawIds } })
+            .populate('uploadedBy', 'username')
+            .lean();
+
+        // Songs deleted elsewhere leave dangling refs — drop them from the
+        // response (never crash the page) and heal the stored list.
+        const liveIds = new Set(songs.map((s) => String(s._id)));
+        const dangling = rawIds.filter((id) => !liveIds.has(String(id)));
+        if (dangling.length > 0) {
+            await User.updateOne(
+                { _id: userId },
+                { $pull: { favoriteSongs: { $in: dangling } } }
+            ).catch(() => {});
+        }
+
+        // Preserve the user's original ordering.
+        const order = new Map(rawIds.map((id, i) => [String(id), i]));
+        songs.sort((a, b) => (order.get(String(a._id)) ?? 0) - (order.get(String(b._id)) ?? 0));
+
+        return songs.map(song => ({
             ...song,
-            liked: song.likes.some(id => id.toString() === userId.toString()),
+            liked: (song.likes || []).some(id => id.toString() === userId.toString()),
             favorited: true
         }));
     }

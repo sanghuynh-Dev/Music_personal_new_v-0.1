@@ -9,7 +9,10 @@ import useSongStore from "../../stores/songStore";
 import useFollowStore from "../../stores/followStore";
 import usePlayerStore from "../../stores/playerStore";
 import usePlaylistStore from "../../stores/playlistStore";
+import ReportButton from "../../components/ReportButton.jsx";
 import { updateAvatarUser, updateBannerUser } from "../../services/userApi";
+import PlayPauseIcon from "../../components/PlayPauseIcon";
+import { ArtistLink } from "../../components/SongLinks.jsx";
 import appRoute from "../../routes/appRoute"
 import styles from './User.module.scss'
 
@@ -222,12 +225,20 @@ function Profile() {
                     </div>
                     
                     { !profileData.isOwnProfile && user && (
-                        <div className="profile-actions">
+                        <div className={clsx("profile-actions", styles.profileActionsRow)}>
                             <button 
                                 className={clsx(styles.btnProfileFollow, profileData.profileUser?.isFollowing ? "following" : "follow")} 
                                 onClick={() => handleFollow(profileData.profileUser?._id, profileData.profileUser?.isFollowing)}>
                                 {profileData.profileUser?.isFollowing ? 'Following' : 'Follow'}
                             </button>
+                            <ReportButton
+                                targetType="user"
+                                targetId={profileData.profileUser?._id}
+                                label={profileData.profileUser?.username}
+                                className={styles.btnIconGhost}
+                                title="Report this user"
+                                size={16}
+                            />
                         </div>
                     )}
                 </div>
@@ -261,22 +272,14 @@ function Profile() {
                                             className="row-play-btn play-btn-js" 
                                             onClick={() => handleClick(song)} 
                                             title="Play">
-                                            { isCurrentSong(song) && isPlaying ? (
-                                                <svg className="icon-pause" id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M0 5h4v14H0zm8 0h4v14H8z"></path>
-                                                </svg>
-                                            ): (
-                                                <svg className="icon-play" id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M0 5v14l11-7z"></path>
-                                                </svg>
-                                            )}
+                                            <PlayPauseIcon playing={isCurrentSong(song) && isPlaying} size={24} />
                                         </button>
                                     </div>
                                     <div className="col-title">
                                         <img src={song.imageUrl?.url || ''} alt={song.title} className="song-row-img"/>
                                         <div className="song-row-info">
                                             <NavLink to={`/songs/${song._id}`} className="song-row-title">{song.title}</NavLink>
-                                            <span className="song-row-artist">{song.artist}</span>
+                                            <ArtistLink song={song} className="song-row-artist" />
                                         </div>
                                     </div>
                                     <div className="col-genre">{song.genre || 'Unknown'}</div>

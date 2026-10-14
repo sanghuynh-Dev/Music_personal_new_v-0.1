@@ -231,6 +231,7 @@
 }
 
 .dossierByline a:hover {
+    color: var(--accent);
     text-decoration: underline;
 }
 
@@ -575,6 +576,29 @@ textarea::-webkit-scrollbar {
 .commentTime {
     font-size: 11px;
     color: var(--secondary-text);
+}
+
+.commentReportBtn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-circle);
+    color: var(--muted-text);
+    opacity: 0;
+    transition: opacity var(--transition-fast), color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.commentItem:hover .commentReportBtn,
+.commentReportBtn:focus-visible {
+    opacity: 1;
+}
+
+.commentReportBtn:hover {
+    color: var(--accent);
+    background-color: var(--bg-overlay);
 }
 
 .commentText {

@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/shallow';
 import usePlayerStore, { selectQueueList } from "../../stores/playerStore";
 import useUiStore from '../../stores/uiStore.js';
+import { ArtistLink, SongTitleLink } from "../../components/SongLinks.jsx";
 import styles from './RightPanel.module.scss';
 
 // Desktop breakpoint mirrors the CSS drawer switch in RightPanel.module.scss.
@@ -86,8 +87,8 @@ function RightPanel() {
                             <button onClick={() => playFromQueue(String(t._id))}>
                                 <img src={t.imageUrl?.url} alt="" loading="lazy" />
                                 <span className={styles.trackMeta}>
-                                    <strong>{t.title}</strong>
-                                    <small>{t.artist}</small>
+                                    <strong><SongTitleLink song={t} /></strong>
+                                    <small><ArtistLink song={t} /></small>
                                 </span>
                             </button>
                         </li>

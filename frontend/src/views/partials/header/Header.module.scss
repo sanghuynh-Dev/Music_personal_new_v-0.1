@@ -365,6 +365,15 @@
     background-color: var(--bg-elevated);
 }
 
+/* Kill Chrome's native suggestion/autofill white surfaces. */
+.searchInputWrapper input:-webkit-autofill,
+.searchInputWrapper input:-webkit-autofill:hover,
+.searchInputWrapper input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-primary);
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-overlay) inset;
+    transition: background-color 99999s ease-in-out 0s;
+}
+
 .navRight {
     display: flex;
     align-items: center;
@@ -411,6 +420,24 @@
 .btnLogout:hover {
     color: var(--danger);
     background-color: rgba(224, 92, 92, 0.1);
+}
+
+/* Icon-only header link (settings gear) — centered circle, unlike the
+   avatar pill (.userBadge) which has asymmetric padding. */
+.iconLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-circle);
+    color: var(--text-secondary);
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.iconLink:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.06);
 }
 
 .authButtons {

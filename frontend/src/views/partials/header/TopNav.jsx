@@ -81,16 +81,20 @@ function TopNav() {
                 >
                     <Menu size={20} />
                 </button>
-                <form onSubmit={handleSearch} className={styles.searchBarForm} role="search">
+                <form onSubmit={handleSearch} className={styles.searchBarForm} role="search" autoComplete="off">
                     <div className={styles.searchInputWrapper}>
                         <i className="ti-search"></i>
                         <input
                             type="search"
-                            name="q"
+                            name="soundora-nav-q"
                             aria-label="Search for songs, artists, or genres"
                             placeholder="Search for songs, artists, or genres..."
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
+                            autoComplete="off"
+                            autoCorrect="off"
+                            autoCapitalize="off"
+                            spellCheck={false}
                         />
                     </div>
                 </form>
@@ -132,7 +136,7 @@ function TopNav() {
                                 </div>
                             )}
                         </div>
-                        <NavLink to="/settings" className={styles.userBadge} title="Account settings" aria-label="Account settings">
+                        <NavLink to="/settings" className={styles.iconLink} title="Account settings" aria-label="Account settings">
                             <SettingsIcon size={16} />
                         </NavLink>
                         <NavLink to={`/profile/${user._id}`} className={styles.userBadge}>
