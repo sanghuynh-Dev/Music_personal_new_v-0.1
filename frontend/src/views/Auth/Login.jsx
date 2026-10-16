@@ -35,7 +35,7 @@ function Login() {
                 data.user.role === 'admin' ? navigate("/admin/dashboard") : navigate(from || "/")
             } else if (data.code === 'EMAIL_NOT_VERIFIED') {
                 // Account exists but inbox not confirmed — continue the OTP flow.
-                navigate("/verify-email", { state: { email: data.email || email, emailed: true }, replace: true });
+                navigate("/verify-email", { state: { email: data.email || email, emailed: data.emailed }, replace: true });
             } else {
                 // Backend returns a generic message string (anti-enumeration)
                 setErrors({ email: '', password: data.error || 'Invalid email or password.' });

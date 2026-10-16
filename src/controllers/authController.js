@@ -48,7 +48,10 @@ class AuthController {
                     success: false,
                     code: 'EMAIL_NOT_VERIFIED',
                     error: error.message,
-                    email: normalizeEmail(req.body?.email)
+                    email: normalizeEmail(req.body?.email),
+                    emailed: !!error.emailed,
+                    reused: !!error.reused,
+                    needsEmailSetup: !!error.needsEmailSetup
                 });
             }
             const msg = error.message === 'This account has been banned by the administrator.'

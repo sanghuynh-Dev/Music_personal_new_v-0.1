@@ -94,15 +94,25 @@ class AuthService {
 
         if (!user.emailVerified && user.role !== 'admin') {
             // Account exists with correct password but email not verified:
-            // make sure a usable code is waiting, then refuse the session.
-            // Admins are exempt — operator accounts must never be locked out.
+            // make sure a usable code is waiting in the inbox, then refuse
+            // the session. Admins are exempt — operator accounts must never
+            // be locked out.
+            let emailed = false;
+            let reused = false;
+            let needsEmailSetup = false;
             try {
-                await this.ensureActiveOtp(user);
+                const r = await this.ensureActiveOtp(user);
+                emailed = !!r.emailed;
+                reused = !!r.reused;
+                needsEmailSetup = !!r.needsEmailSetup;
             } catch (e) {
                 console.warn(`Login OTP not sent to ${norm}: ${e.message}`);
             }
             const err = new Error('Please verify your email before signing in. Use the code from your inbox, or request a new one on the verification page.');
             err.code = 'EMAIL_NOT_VERIFIED';
+            err.emailed = emailed;
+            err.reused = reused;
+            err.needsEmailSetup = needsEmailSetup;
             throw err;
         }
 
@@ -165,10 +175,16 @@ class AuthService {
         return { emailed: true };
     }
 
-    // Reuse a live code; only mint + send when none is usable.
+    // Reuse a fresh code; mint + send a new one when none is usable or the
+    // last send is stale — so login actually delivers mail instead of
+    // silently reusing a code the user may never have received.
     async ensureActiveOtp(user) {
         const active = await this.activeOtpFor(user._id);
-        if (active) return { emailed: true, reused: true };
+        if (active) {
+            const ageMs = Date.now() - new Date(active.lastSentAt || active.createdAt).getTime();
+            if (ageMs < OTP_RESEND_COOLDOWN_MS) return { emailed: true, reused: true };
+            return this.createAndSendOtp(user);
+        }
         return this.createAndSendOtp(user);
     }
 
