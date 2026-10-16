@@ -11,6 +11,9 @@ docs/
 # Agent / local tooling (never commit)
 .agent/
 
+# Local-only tests (never commit)
+tests/
+
 # Logs
 **/logs
 **/*.log

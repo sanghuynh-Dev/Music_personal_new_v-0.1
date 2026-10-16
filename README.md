@@ -144,8 +144,3 @@ Chi tiết xem từng file trong `src/routes/`.
 
 - Backend: Render / Railway / VPS — set đầy đủ `MONGO_URI`, `SESSION_SECRET`, `FRONTEND_URL`, Cloudinary, SMTP.
 - Frontend: Vercel — trỏ `VITE_API_URL` (hoặc tương đương) về URL backend, bật `credentials: include` khi gọi API session.
-
-## Ghi chú bảo mật
-
-- Không commit `.env`, `.env.example` chứa giá trị thật, hay tài khoản/mật khẩu demo vào README.
-- `.agent/` là cấu hình tooling local, không push lên remote.
