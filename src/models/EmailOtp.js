@@ -13,6 +13,10 @@ const emailOtpSchema = new Schema({
     superseded: { type: Boolean, default: false, index: true },
     // Explicit send timestamp for the 60s resend cooldown.
     lastSentAt: { type: Date, default: Date.now },
+    // True once the code was actually handed to SMTP. Login reuses an
+    // active code only when emailed=true; otherwise it mints a fresh one
+    // (e.g. SMTP was down at signup and the inbox has nothing).
+    emailed: { type: Boolean, default: false },
     // Validity is enforced by querying expiresAt; cleanup runs off deleteAt
     // (~70min) so recent send history survives for the hourly spam cap.
     deleteAt: { type: Date, required: true }

@@ -154,7 +154,7 @@ class AuthService {
         const { raw, hash } = this._generateOtp();
         const now = Date.now();
         await EmailOtp.updateMany({ user: user._id, superseded: false }, { $set: { superseded: true } });
-        await EmailOtp.create({
+        const doc = await EmailOtp.create({
             user: user._id,
             email: user.email,
             otpHash: hash,
@@ -172,18 +172,20 @@ class AuthService {
             subject: 'Your Soundora verification code',
             html: otpEmailHtml(user.username, raw)
         });
+        await EmailOtp.updateOne({ _id: doc._id }, { $set: { emailed: true } });
         return { emailed: true };
     }
 
-    // Reuse a fresh code; mint + send a new one when none is usable or the
-    // last send is stale — so login actually delivers mail instead of
-    // silently reusing a code the user may never have received.
+    // Reuse a live code that was actually delivered; mint + send a new one
+    // only when the inbox has nothing usable (no active code, or the active
+    // one was never emailed, e.g. SMTP was down at signup). Never mint when
+    // SMTP is down — that would only burn the hourly send cap.
     async ensureActiveOtp(user) {
         const active = await this.activeOtpFor(user._id);
-        if (active) {
-            const ageMs = Date.now() - new Date(active.lastSentAt || active.createdAt).getTime();
-            if (ageMs < OTP_RESEND_COOLDOWN_MS) return { emailed: true, reused: true };
-            return this.createAndSendOtp(user);
+        if (active && active.emailed) return { emailed: true, reused: true };
+        if (!mailer.isEmailConfigured()) {
+            console.warn(`Login OTP for ${user.email} not sent: SMTP is not configured.`);
+            return { emailed: false, needsEmailSetup: true };
         }
         return this.createAndSendOtp(user);
     }
