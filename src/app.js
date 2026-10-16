@@ -49,7 +49,12 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     rolling: true,
-    store: process.env.MONGO_URI ? MongoStore.create({ mongoUrl: process.env.MONGO_URI }) : undefined,
+    store: process.env.MONGO_URI ? MongoStore.create({
+        mongoUrl: process.env.MONGO_URI,
+        // Skip redundant session writes: with rolling cookies the store only
+        // needs a refresh ~once a day. Fewer writes = fewer touch races.
+        touchAfter: 24 * 60 * 60
+    }) : undefined,
     cookie: {
         httpOnly: true,
         secure: isProd,
@@ -116,6 +121,19 @@ app.use((req, res) => {
 
 // Global error handler (never leak internals)
 app.use((err, req, res, next) => {
+    // express-session can call next(err) after the response was already
+    // flushed (e.g. a background store.touch fails). Never touch headers twice.
+    if (res.headersSent) {
+        return next(err);
+    }
+    // A cookie pointing at a session that no longer exists in the store
+    // (logged out on another tab/device, regenerated at login, expired) is
+    // not a server bug — treat it as logged out instead of 500.
+    if (err.message && /Unable to find the session to touch/i.test(err.message)) {
+        console.warn('Stale session cookie, treating as logged out.');
+        res.clearCookie('connect.sid');
+        return res.status(401).json({ success: false, code: 'SESSION_REVOKED', error: 'Session expired. Please sign in again.' });
+    }
     console.error('Unhandled server error:', err.message);
     // Multer/file errors -> 400 with message (safe, whitelisted)
     if (err.message && /Invalid (image|audio|file)|too large|only .* allowed/i.test(err.message)) {
