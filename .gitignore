@@ -1,7 +1,15 @@
 # Dependencies
 docs/
+**/node_modules
+**/dist
+**/dist-ssr
+
 # Environment variables
 **/.env
+.env.example
+
+# Agent / local tooling (never commit)
+.agent/
 
 # Logs
 **/logs
@@ -12,9 +20,6 @@ docs/
 **/pnpm-debug.log*
 **/lerna-debug.log*
 
-**/node_modules
-**/dist
-**/dist-ssr
 **/*.local
 
 # Editor directories and files
